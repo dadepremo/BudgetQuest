@@ -1,11 +1,9 @@
 package controller;
 
-import dao.CategoryDao;
-import dao.CategoryDaoImpl;
-import dao.TransactionDao;
-import dao.TransactionDaoImpl;
+import dao.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import model.Achievement;
 import model.Category;
 import model.Transaction;
 import model.User;
@@ -37,6 +35,10 @@ public class TransactionFormController {
 
     private final CategoryDao categoryDao = new CategoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
+    private final UserDao userDao = new UserDaoImpl();
+    private final UserAchievementDao userAchievementDao = new UserAchievementDaoImpl();
+    private final AchievementDao achievementDao = new AchievementDaoImpl();
+
     private User currentUser;
 
     public void setCurrentUser(User user) {
@@ -84,9 +86,46 @@ public class TransactionFormController {
 
         transactionDao.insert(currentUser, transaction, cat);
 
+        checkExpensesAchievements(transaction);
+
         clearExpenseFields();
 
         MyUtils.showInfo("Expense", "Expense inserted successfully");
+    }
+
+    /**
+     * All expenses related achievements
+     * */
+    private void checkExpensesAchievements(Transaction transaction) {
+        int expensesCounter = transactionDao.countExpenses(currentUser);
+
+        if (expensesCounter == 1) {
+            tryUnlockAchievement("FIRST_EXPENSE");
+        }
+
+        if (transaction.getAmount().compareTo(BigDecimal.valueOf(100000)) >= 0) {
+            tryUnlockAchievement("FIRST_BIG_EXPENSE");
+        }
+
+    }
+
+    private void tryUnlockAchievement(String code) {
+        if (!userAchievementDao.isAchievementUnlocked(currentUser, code)) {
+            Achievement achievement = achievementDao.findByCode(code);
+            if (achievement != null) {
+                userAchievementDao.unlockAchievement(currentUser, code);
+                MyUtils.showInfo(
+                        "Achievement unlocked",
+                        "You unlocked a new achievement!\n\n" +
+                                achievement.getName() + "\n" +
+                                achievement.getDescription() + "\n\n+ " +
+                                achievement.getXpReward() + " XP\n+ " +
+                                achievement.getPointsReward() + " DP points"
+                );
+                userDao.updateUserLevel(currentUser, achievement.getXpReward());
+                userDao.updateUserPoints(currentUser, achievement.getPointsReward());
+            }
+        }
     }
 
     @FXML
@@ -113,9 +152,23 @@ public class TransactionFormController {
 
         transactionDao.insert(currentUser, transaction, cat);
 
+        checkIncomesAchievements(transaction);
+
         clearIncomeFields();
 
         MyUtils.showInfo("Income", "Income inserted successfully");
+    }
+
+    private void checkIncomesAchievements(Transaction transaction) {
+        int incomesCounter = transactionDao.countIncomes(currentUser);
+
+        if (incomesCounter == 1) {
+            tryUnlockAchievement("FIRST_INCOME");
+        }
+
+        if (transaction.getAmount().compareTo(BigDecimal.valueOf(100000)) >= 0) {
+            tryUnlockAchievement("FIRST_BIG_INCOME");
+        }
     }
 
     @FXML

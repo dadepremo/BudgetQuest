@@ -235,7 +235,55 @@ public class TransactionDaoImpl implements TransactionDao {
         return BigDecimal.ZERO;
     }
 
+    @Override
+    public int countExpenses(User user) {
+        String sql = """
+        select count(*) as counter from transactions t inner join categories c on t.category_id = c.id where c.user_id = ? and c."type" = 'expense'
+    """;
 
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, user.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int result = rs.getInt("counter");
+                Logger.info("The number of expenses is " + result);
+                return result;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int countIncomes(User user) {
+        String sql = """
+        select count(*) as counter from transactions t inner join categories c on t.category_id = c.id where c.user_id = ? and c."type" = 'income'
+    """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, user.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int result = rs.getInt("counter");
+                Logger.info("The number of incomes is " + result);
+                return result;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 
     @Override
     public void insert(User user, Transaction transaction, Category category) {

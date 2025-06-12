@@ -26,5 +26,9 @@ public interface TransactionDao {
     void insert(User user, Transaction transaction, Category category);
 
     List<Transaction> findAllExpensesByUser(User user);
+
+    int countExpenses(User currentUser);
+
+    int countIncomes(User currentUser);
 }
 

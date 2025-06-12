@@ -1,5 +1,6 @@
 package dao;
 
+import model.Achievement;
 import model.User;
 import utils.DbConnection;
 import org.mindrot.jbcrypt.BCrypt;
@@ -214,6 +215,21 @@ public class UserDaoImpl implements UserDao {
         return 0;
     }
 
+    @Override
+    public void grantAchievement(User user, String code) {
+        AchievementDao achievementDao = new AchievementDaoImpl();
+        Achievement achievement = achievementDao.findByCode(code);
+        if (achievement != null) {
+            UserAchievementDao userAchievementDao = new UserAchievementDaoImpl();
+            userAchievementDao.unlockAchievement(user, achievement.getCode());
+
+            UserDao userDao = new UserDaoImpl();
+            userDao.updateUserPoints(user, achievement.getPointsReward());
+            userDao.updateUserLevel(user, achievement.getXpReward());
+
+            MyUtils.showInfo("Achievement unlocked", "You unlocked a new achievement!\n" + achievement.getName() + "\n\n+ " + achievement.getXpReward() + " XP\n+ " + achievement.getPointsReward());
+        }
+    }
 
     @Override
     public void updateUserLevel(User user, int xp) {
@@ -257,7 +273,6 @@ public class UserDaoImpl implements UserDao {
             }
         }
 
-
         Logger.info("User details after xp change: userXp=" + userXp + " userLevel=" + userLevel);
 
         try (Connection conn = DbConnection.connect();
@@ -266,8 +281,44 @@ public class UserDaoImpl implements UserDao {
             ps.setInt(2, userLevel);
             ps.setInt(3, user.getId());
             ps.executeUpdate();
+            checkLevelUpAchievements(user, userLevel);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkLevelUpAchievements(User user, int level) {
+        Logger.info("Level up achievement check");
+        if (level >= 10 && level < 50) {
+            tryUnlockAchievement(user, "LEVEL_10");
+        }
+        if (level >= 50 && level < 100) {
+            tryUnlockAchievement(user, "LEVEL_50");
+        }
+        if (level >= 100) {
+            tryUnlockAchievement(user, "LEVEL_100");
+        }
+    }
+
+    private void tryUnlockAchievement(User currentUser, String code) {
+        UserAchievementDao userAchievementDao = new UserAchievementDaoImpl();
+        AchievementDao achievementDao = new AchievementDaoImpl();
+        UserDao userDao = new UserDaoImpl();
+        if (!userAchievementDao.isAchievementUnlocked(currentUser, code)) {
+            Achievement achievement = achievementDao.findByCode(code);
+            if (achievement != null) {
+                userAchievementDao.unlockAchievement(currentUser, code);
+                MyUtils.showInfo(
+                        "Achievement unlocked",
+                        "You unlocked a new achievement!\n\n" +
+                                achievement.getName() + "\n" +
+                                achievement.getDescription() + "\n\n+ " +
+                                achievement.getXpReward() + " XP\n+ " +
+                                achievement.getPointsReward() + " DP points"
+                );
+                userDao.updateUserLevel(currentUser, achievement.getXpReward());
+                userDao.updateUserPoints(currentUser, achievement.getPointsReward());
+            }
         }
     }
 

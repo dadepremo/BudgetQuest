@@ -28,6 +28,8 @@ public interface UserDao {
 
     int getUserLevel(User user);
 
+    void grantAchievement(User user, String code);
+
     void updateUserLevel(User user, int xp);
 
     void deleteUserData(User user);

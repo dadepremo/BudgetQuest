@@ -33,6 +33,23 @@ CREATE TABLE public.liabilities (
     CONSTRAINT liabilities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE public.achievements (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,        -- Unique key for programmatic use, e.g., 'FIRST_EXPENSE'
+    name VARCHAR(100) NOT NULL,              -- Human-readable title
+    description TEXT NOT NULL,               -- What the user must do
+    points_reward INT DEFAULT 0,             -- Points earned on unlock
+    xp_reward INT DEFAULT 0,                 -- XP earned on unlock
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE public.user_achievements (
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    achievement_id INT NOT NULL REFERENCES achievements(id) ON DELETE CASCADE,
+    unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, achievement_id)
+);
+
 CREATE TABLE public.categories (
     id serial4 NOT NULL,
     user_id int4 NOT NULL,
@@ -87,8 +104,8 @@ CREATE TABLE public.xp_givers (
 );
 
 -- truncate
-TRUNCATE assets, categories, liabilities, net_worth_history, transactions RESTART IDENTITY CASCADE;
-UPDATE users SET xp = 0, level = 1, points = 0;
+TRUNCATE net_worth_history, assets, liabilities, transactions, categories, user_achievements CASCADE;
+UPDATE users SET points = 0, xp = 0, level = 1;
 
 
 
