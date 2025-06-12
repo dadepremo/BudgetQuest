@@ -33,4 +33,7 @@ public interface UserDao {
     void updateUserLevel(User user, int xp);
 
     void deleteUserData(User user);
+
+    void updateLoginStreak(User user);
+
 }

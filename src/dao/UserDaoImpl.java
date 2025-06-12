@@ -8,6 +8,7 @@ import utils.Logger;
 import utils.MyUtils;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -355,6 +356,22 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public void updateLoginStreak(User user) {
+        String sql = "UPDATE users SET last_streak_date = ?, current_streak = ? WHERE id = ?";
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, Date.valueOf(user.getLastStreakDate()));
+            stmt.setInt(2, user.getCurrentStreak());
+            stmt.setInt(3, user.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
@@ -370,6 +387,8 @@ public class UserDaoImpl implements UserDao {
         user.setCurrency(rs.getString("preferred_currency"));
         user.setCurrencySymbol(rs.getString("currency_symbol"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+        user.setLastStreakDate(rs.getDate("last_streak_date") != null ? rs.getDate("last_streak_date").toLocalDate() : LocalDate.now());
+        user.setCurrentStreak(rs.getInt("current_streak"));
         return user;
     }
 

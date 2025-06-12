@@ -19,10 +19,13 @@
                   <Font size="40.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" onAction="#handleOpenAchievements" text="Button">
+            <Button mnemonicParsing="false" onAction="#handleOpenAchievements" text="Achievements">
                <HBox.margin>
                   <Insets left="50.0" />
                </HBox.margin>
+               <font>
+                  <Font size="15.0" />
+               </font>
             </Button>
          </children>
          <padding>

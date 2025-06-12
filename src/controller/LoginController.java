@@ -13,6 +13,7 @@ import utils.Logger;
 import utils.MyUtils;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -42,17 +43,39 @@ public class LoginController {
         Optional<User> userOpt = userDao.getUserByUsername(username);
 
         if (userOpt.isPresent() && BCrypt.checkpw(password, userOpt.get().getPasswordHash())) {
+            User user = userOpt.get();
+
+            // Update streak
+            LocalDate today = LocalDate.now();
+            LocalDate lastDate = user.getLastStreakDate();
+
+            if (lastDate.equals(today) && user.getCurrentStreak() == 0) {
+                user.setCurrentStreak(1);
+                user.setLastStreakDate(today);
+            } else if (lastDate.equals(today.minusDays(1))) {
+                // Continued streak
+                user.setCurrentStreak(user.getCurrentStreak() + 1);
+                user.setLastStreakDate(today);
+            } else {
+                // Missed one or more days, reset streak
+                user.setCurrentStreak(1);
+                user.setLastStreakDate(today);
+            }
+
+            // Save streak update to DB
+            userDao.updateLoginStreak(user);
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/dashboard.fxml"));
                 Scene dashboardScene = new Scene(loader.load());
 
                 DashboardController controller = loader.getController();
                 if (controller != null) {
-                    Logger.info("Login successful: " + userOpt.get().getUsername());
+                    Logger.info("Login successful: " + user.getUsername());
                     Logger.info("Dashboard loading...");
                     Logger.info("Executing update last login");
-                    userDao.updateLastLogin(userOpt.get());
-                    controller.setUser(userOpt.get());
+                    userDao.updateLastLogin(user);
+                    controller.setUser(user);
                 } else {
                     System.err.println("DashboardController is null. Check fx:controller in dashboard.fxml");
                 }
@@ -62,12 +85,12 @@ public class LoginController {
                 stage.centerOnScreen();
             } catch (Exception e) {
                 e.printStackTrace();
-                Logger.error("Failed to load dashboard", (IOException) e);
+                Logger.error("Failed to load dashboard");
                 statusLabel.setText("Failed to load dashboard.");
             }
         } else {
             Logger.info("Invalid credentials");
-            MyUtils.showWarning("Invalid credentials","Invalid credentials.");
+            MyUtils.showWarning("Invalid credentials", "Invalid credentials.");
         }
     }
 

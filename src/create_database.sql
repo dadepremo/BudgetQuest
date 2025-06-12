@@ -90,6 +90,8 @@ CREATE TABLE public.users (
 	last_login timestamp NULL,
 	preferred_currency VARCHAR(10) DEFAULT 'EUR',
 	currency_symbol VARCHAR(5) DEFAULT '€',
+	last_streak_date date,
+    current_streak int DEFAULT 0;
 	CONSTRAINT users_email_key UNIQUE (email),
 	CONSTRAINT users_pkey PRIMARY KEY (id),
 	CONSTRAINT users_username_key UNIQUE (username)

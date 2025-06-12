@@ -39,6 +39,7 @@ public class DashboardController {
     @FXML private Label networthLabel;
     @FXML private Label expensesLabel;
     @FXML private Label incomesLabel;
+    @FXML private Button streakButton;
 
     // labels assets table view
     @FXML private TableView<Asset> assetTable;
@@ -97,6 +98,7 @@ public class DashboardController {
         xpLabel.setText(user.getXp() + " / " + ((user.getLevel() + 1) * 500) + " XP");
         xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
         dpLabel.setText(user.getPoints() + " DP");
+        streakButton.setText(user.getCurrentStreak() + " Days");
 
         BigDecimal lastMonthExpenses = transactionDao.getLastMonthExpensesSum(user);
         BigDecimal lastMonthIncomes = transactionDao.getLastMonthIncomesSum(user);

@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class User {
@@ -17,11 +18,13 @@ public class User {
     private LocalDateTime lastLogin;
     private String currency;
     private String currencySymbol;
+    private LocalDate lastStreakDate;
+    private int currentStreak;
 
     public User() {}
 
     public User(int id, String username, String firstName, String lastName, String email, String passwordHash,
-                LocalDateTime createdAt, boolean isDeleted, int xp, int level, int points, LocalDateTime lastLogin, String currency, String currencySymbol) {
+                LocalDateTime createdAt, boolean isDeleted, int xp, int level, int points, LocalDateTime lastLogin, String currency, String currencySymbol, LocalDate lastStreakDate, int currentStreak) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -36,6 +39,24 @@ public class User {
         this.lastLogin = lastLogin;
         this.currency = currency;
         this.currencySymbol = currencySymbol;
+        this.lastStreakDate = lastStreakDate;
+        this.currentStreak = currentStreak;
+    }
+
+    public LocalDate getLastStreakDate() {
+        return lastStreakDate;
+    }
+
+    public void setLastStreakDate(LocalDate lastStreakDate) {
+        this.lastStreakDate = lastStreakDate;
+    }
+
+    public int getCurrentStreak() {
+        return currentStreak;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
     }
 
     public String getCurrencySymbol() {
