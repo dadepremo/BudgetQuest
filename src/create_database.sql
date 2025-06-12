@@ -71,6 +71,8 @@ CREATE TABLE public.users (
 	"level" int4 DEFAULT 1 NULL,
 	points int4 DEFAULT 1000 NULL,
 	last_login timestamp NULL,
+	preferred_currency VARCHAR(10) DEFAULT 'EUR',
+	currency_symbol VARCHAR(5) DEFAULT '€',
 	CONSTRAINT users_email_key UNIQUE (email),
 	CONSTRAINT users_pkey PRIMARY KEY (id),
 	CONSTRAINT users_username_key UNIQUE (username)
@@ -84,7 +86,9 @@ CREATE TABLE public.xp_givers (
     is_deleted BOOLEAN DEFAULT false
 );
 
-
+-- truncate
+TRUNCATE assets, categories, liabilities, net_worth_history, transactions RESTART IDENTITY CASCADE;
+UPDATE users SET xp = 0, level = 1, points = 0;
 
 
 

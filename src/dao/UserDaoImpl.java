@@ -232,7 +232,7 @@ public class UserDaoImpl implements UserDao {
         userXp += xp;
 
         // Optional: Level down (if you support it)
-        while (userXp < 0 && userLevel > 0) {
+        while (userXp < 0 && userLevel > 1) {
             userLevel--;
             int xpForPreviousLevel = (userLevel + 1) * 500;
             userXp += xpForPreviousLevel;
@@ -271,6 +271,40 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public void deleteUserData(User user) {
+        String deleteTransactions = "DELETE FROM transactions WHERE category_id IN (SELECT id FROM categories WHERE user_id = ?)";
+        String deleteCategories = "DELETE FROM categories WHERE user_id = ?";
+        String deleteUser = "DELETE FROM users WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect()) {
+            conn.setAutoCommit(false); // Start transaction
+
+            try (PreparedStatement stmt1 = conn.prepareStatement(deleteTransactions);
+                 PreparedStatement stmt2 = conn.prepareStatement(deleteCategories);
+                 PreparedStatement stmt3 = conn.prepareStatement(deleteUser)) {
+
+                stmt1.setInt(1, user.getId());
+                stmt1.executeUpdate();
+
+                stmt2.setInt(1, user.getId());
+                stmt2.executeUpdate();
+
+                stmt3.setInt(1, user.getId());
+                stmt3.executeUpdate();
+
+                conn.commit(); // Commit if all succeeded
+
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback if any failed
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));
@@ -282,6 +316,8 @@ public class UserDaoImpl implements UserDao {
         user.setXp(rs.getInt("xp"));
         user.setLevel(rs.getInt("level"));
         user.setPoints(rs.getInt("points"));
+        user.setCurrency(rs.getString("preferred_currency"));
+        user.setCurrencySymbol(rs.getString("currency_symbol"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return user;
     }

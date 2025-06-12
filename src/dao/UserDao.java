@@ -29,4 +29,6 @@ public interface UserDao {
     int getUserLevel(User user);
 
     void updateUserLevel(User user, int xp);
+
+    void deleteUserData(User user);
 }

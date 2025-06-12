@@ -27,7 +27,7 @@ public class Logger {
 
     private static void log(String level, String color, String message) {
         String timestamp = LocalDateTime.now().format(FORMATTER);
-        System.out.println(color + "[" + timestamp + "] " + level + " " + message + RESET);
+        System.out.println(color + "[" + timestamp + "] - " + level + " " + message + RESET);
     }
 
     public static void info(String message) {

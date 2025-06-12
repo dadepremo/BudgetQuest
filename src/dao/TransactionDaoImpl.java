@@ -277,7 +277,7 @@ public class TransactionDaoImpl implements TransactionDao {
             }
 
             stmt.executeUpdate();
-            Logger.info("Transaction saved: " + MyUtils.formatCurrency(transaction.getAmount(), "€") + " in " + category.getName() + " (" + category.getType() + ")");
+            Logger.info("Transaction saved: " + MyUtils.formatCurrency(transaction.getAmount(), user.getCurrencySymbol()) + " in " + category.getName() + " (" + category.getType() + ")");
 
         } catch (SQLException e) {
             e.printStackTrace();

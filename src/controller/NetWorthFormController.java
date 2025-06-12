@@ -51,7 +51,7 @@ public class NetWorthFormController {
             BigDecimal assets = new BigDecimal(assetsField.getText());
             BigDecimal liabilities = new BigDecimal(liabilitiesField.getText());
             BigDecimal netWorth = assets.subtract(liabilities);
-            netWorthLabel.setText("Max Assets: " + MyUtils.formatCurrency(sumAssets, "€") + "\nMax Liabilities: " + MyUtils.formatCurrency(sumLiabilities, "€") + "\nNet Worth: " + MyUtils.formatCurrency(netWorth, "€"));
+            netWorthLabel.setText("Max Assets: " + MyUtils.formatCurrency(sumAssets, currentUser.getCurrencySymbol()) + "\nMax Liabilities: " + MyUtils.formatCurrency(sumLiabilities, currentUser.getCurrencySymbol()) + "\nNet Worth: " + MyUtils.formatCurrency(netWorth, currentUser.getCurrencySymbol()));
         } catch (Exception e) {
             netWorthLabel.setText("Net Worth: € ?");
         }

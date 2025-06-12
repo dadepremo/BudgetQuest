@@ -15,11 +15,13 @@ public class User {
     private int level;
     private int points;
     private LocalDateTime lastLogin;
+    private String currency;
+    private String currencySymbol;
 
     public User() {}
 
     public User(int id, String username, String firstName, String lastName, String email, String passwordHash,
-                LocalDateTime createdAt, boolean isDeleted, int xp, int level, int points, LocalDateTime lastLogin) {
+                LocalDateTime createdAt, boolean isDeleted, int xp, int level, int points, LocalDateTime lastLogin, String currency, String currencySymbol) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -32,6 +34,24 @@ public class User {
         this.level = level;
         this.points = points;
         this.lastLogin = lastLogin;
+        this.currency = currency;
+        this.currencySymbol = currencySymbol;
+    }
+
+    public String getCurrencySymbol() {
+        return currencySymbol;
+    }
+
+    public void setCurrencySymbol(String currencySymbol) {
+        this.currencySymbol = currencySymbol;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public void setId(int id) {

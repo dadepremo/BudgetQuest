@@ -101,12 +101,12 @@ public class DashboardController {
         BigDecimal lastMonthExpenses = transactionDao.getLastMonthExpensesSum(user);
         BigDecimal lastMonthIncomes = transactionDao.getLastMonthIncomesSum(user);
         if (lastMonthExpenses != null && lastMonthExpenses.compareTo(BigDecimal.valueOf(0)) > 0) {
-            expensesLabel.setText(MyUtils.formatCurrency(lastMonthExpenses, "€"));
+            expensesLabel.setText(MyUtils.formatCurrency(lastMonthExpenses, user.getCurrencySymbol()));
         } else {
             expensesLabel.setText("No expenses last month");
         }
         if (lastMonthIncomes != null && lastMonthIncomes.compareTo(BigDecimal.valueOf(0)) > 0) {
-            incomesLabel.setText(MyUtils.formatCurrency(lastMonthIncomes, "€"));
+            incomesLabel.setText(MyUtils.formatCurrency(lastMonthIncomes, user.getCurrencySymbol()));
         } else {
             incomesLabel.setText("No income last month");
         }
@@ -117,7 +117,7 @@ public class DashboardController {
         if (assetsValue == 0) {
             assetsLabel.setText("No assets found");
         } else {
-            assetsLabel.setText(MyUtils.formatCurrency(assetsValue, "€"));
+            assetsLabel.setText(MyUtils.formatCurrency(assetsValue, user.getCurrencySymbol()));
         }
 
         // display sum of the liabilities assetsValue
@@ -125,11 +125,11 @@ public class DashboardController {
         if (liabilitiesAmount == 0) {
             liabilitiesLabel.setText("No liabilities found");
         } else {
-            liabilitiesLabel.setText("- " + MyUtils.formatCurrency(liabilitiesAmount, "€"));
+            liabilitiesLabel.setText("- " + MyUtils.formatCurrency(liabilitiesAmount, user.getCurrencySymbol()));
         }
 
         double netWorth = assetsValue - liabilitiesAmount;
-        networthLabel.setText(MyUtils.formatCurrency(netWorth, "€"));
+        networthLabel.setText(MyUtils.formatCurrency(netWorth, user.getCurrencySymbol()));
 
         if (netWorth < 0) {
             networthLabel.setStyle("-fx-text-fill: red;");
@@ -373,7 +373,7 @@ public class DashboardController {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         valueColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(
-                        MyUtils.formatCurrency(cellData.getValue().getValue(), "€")
+                        MyUtils.formatCurrency(cellData.getValue().getValue(), user.getCurrencySymbol())
                 )
         );
         acquiredDateColumn.setCellValueFactory(new PropertyValueFactory<>("acquiredDate"));
@@ -389,12 +389,12 @@ public class DashboardController {
         liabilityTypeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         amountColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(
-                        MyUtils.formatCurrency(cellData.getValue().getAmount(), "€")
+                        MyUtils.formatCurrency(cellData.getValue().getAmount(), user.getCurrencySymbol())
                 )
         );
         remainingColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(
-                        MyUtils.formatCurrency(cellData.getValue().getAmountRemaining(), "€")
+                        MyUtils.formatCurrency(cellData.getValue().getAmountRemaining(), user.getCurrencySymbol())
                 )
         );
         rateColumn.setCellValueFactory(new PropertyValueFactory<>("interestRate"));
@@ -414,7 +414,7 @@ public class DashboardController {
                         cellData.getValue().getDate().toString()));
         incomesAmountColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(
-                        MyUtils.formatCurrency(cellData.getValue().getAmount(), "€")
+                        MyUtils.formatCurrency(cellData.getValue().getAmount(), user.getCurrencySymbol())
                 )
         );
         incomesCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
@@ -427,7 +427,7 @@ public class DashboardController {
                         cellData.getValue().getDate().toString()));
         expensesAmountColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(
-                        MyUtils.formatCurrency(cellData.getValue().getAmount(), "€")
+                        MyUtils.formatCurrency(cellData.getValue().getAmount(), user.getCurrencySymbol())
                 )
         );
         expensesCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
