@@ -1,10 +1,8 @@
 package dao;
 
-import model.Achievement;
 import model.User;
 import model.UserAchievement;
 import utils.DbConnection;
-import utils.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;

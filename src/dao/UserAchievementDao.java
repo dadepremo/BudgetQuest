@@ -1,6 +1,5 @@
 package dao;
 
-import model.Achievement;
 import model.User;
 import model.UserAchievement;
 
