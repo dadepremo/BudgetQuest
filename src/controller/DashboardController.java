@@ -37,6 +37,8 @@ public class DashboardController {
     @FXML private Label dpLabel;
     @FXML private Label levelLabel;
     @FXML private Label networthLabel;
+    @FXML private Label expensesLabel;
+    @FXML private Label incomesLabel;
 
     // labels assets table view
     @FXML private TableView<Asset> assetTable;
@@ -96,6 +98,20 @@ public class DashboardController {
         xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
         dpLabel.setText(user.getPoints() + " DP");
 
+        BigDecimal lastMonthExpenses = transactionDao.getLastMonthExpensesSum(user);
+        BigDecimal lastMonthIncomes = transactionDao.getLastMonthIncomesSum(user);
+        if (lastMonthExpenses != null && lastMonthExpenses.compareTo(BigDecimal.valueOf(0)) > 0) {
+            expensesLabel.setText(MyUtils.formatCurrency(lastMonthExpenses, "€"));
+        } else {
+            expensesLabel.setText("No expenses last month");
+        }
+        if (lastMonthIncomes != null && lastMonthIncomes.compareTo(BigDecimal.valueOf(0)) > 0) {
+            incomesLabel.setText(MyUtils.formatCurrency(lastMonthIncomes, "€"));
+        } else {
+            incomesLabel.setText("No income last month");
+        }
+
+
         // display sum of the assets value
         double assetsValue = assetDao.sumAllAssetValues(user);
         if (assetsValue == 0) {
@@ -147,6 +163,8 @@ public class DashboardController {
         dpLabel.setTooltip(new Tooltip("Your points to spend in the store."));
         levelLabel.setTooltip(new Tooltip("Your current level."));
         networthLabel.setTooltip(new Tooltip("Your total net worth (assets minus liabilities)."));
+        expensesLabel.setTooltip(new Tooltip("Last month expenses"));
+        incomesLabel.setTooltip(new Tooltip("Last month income"));
     }
 
 

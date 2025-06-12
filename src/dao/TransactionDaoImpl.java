@@ -174,6 +174,68 @@ public class TransactionDaoImpl implements TransactionDao {
         return results;
     }
 
+    @Override
+    public BigDecimal getLastMonthExpensesSum(User user) {
+        String sql = """
+        SELECT SUM(t.amount) AS summed_expenses
+        FROM transactions t
+        INNER JOIN categories c ON t.category_id = c.id
+        WHERE c.user_id = ?
+          AND c.type = 'expense'
+          AND t.date >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
+          AND t.date < date_trunc('month', CURRENT_DATE);
+    """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, user.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                BigDecimal result = rs.getBigDecimal("summed_expenses");
+                return result != null ? result : BigDecimal.ZERO;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return BigDecimal.ZERO;  // fallback if query fails or has no rows
+    }
+
+
+    @Override
+    public BigDecimal getLastMonthIncomesSum(User user) {
+        String sql = """
+        SELECT SUM(t.amount) AS summed_incomes
+        FROM transactions t
+        INNER JOIN categories c ON t.category_id = c.id
+        WHERE c.user_id = ?
+          AND c.type = 'income'
+          AND t.date >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
+          AND t.date < date_trunc('month', CURRENT_DATE);
+    """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, user.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                BigDecimal result = rs.getBigDecimal("summed_incomes");
+                return result != null ? result : BigDecimal.ZERO;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+
 
     @Override
     public void insert(User user, Transaction transaction, Category category) {

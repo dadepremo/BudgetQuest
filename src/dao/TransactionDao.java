@@ -19,6 +19,10 @@ public interface TransactionDao {
 
     Map<String, BigDecimal> getIncomesGroupedByCategory(User user);
 
+    BigDecimal getLastMonthExpensesSum(User user);
+
+    BigDecimal getLastMonthIncomesSum(User user);
+
     void insert(User user, Transaction transaction, Category category);
 
     List<Transaction> findAllExpensesByUser(User user);
