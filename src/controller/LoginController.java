@@ -1,18 +1,20 @@
 package controller;
 
-import dao.UserDao;
-import dao.UserDaoImpl;
+import dao.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.Achievement;
+import model.Transaction;
 import model.User;
 import org.mindrot.jbcrypt.BCrypt;
 import utils.Logger;
 import utils.MyUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -65,6 +67,8 @@ public class LoginController {
             // Save streak update to DB
             userDao.updateLoginStreak(user);
 
+            checkStreakAchievements(user);
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/dashboard.fxml"));
                 Scene dashboardScene = new Scene(loader.load());
@@ -94,6 +98,43 @@ public class LoginController {
         }
     }
 
+    private void checkStreakAchievements(User user) {
+
+        if (user.getCurrentStreak() == 7) {
+            tryUnlockAchievement("LOGIN_STREAK_7_DAYS", user);
+        }
+
+        if (user.getCurrentStreak() == 14) {
+            tryUnlockAchievement("LOGIN_STREAK_14_DAYS", user);
+        }
+
+        if (user.getCurrentStreak() == 30) {
+            tryUnlockAchievement("LOGIN_STREAK_30_DAYS", user);
+        }
+
+    }
+
+    private void tryUnlockAchievement(String code, User user) {
+        UserAchievementDao userAchievementDao = new UserAchievementDaoImpl();
+        AchievementDao achievementDao = new AchievementDaoImpl();
+        UserDao userDao = new UserDaoImpl();
+        if (!userAchievementDao.isAchievementUnlocked(user, code)) {
+            Achievement achievement = achievementDao.findByCode(code);
+            if (achievement != null) {
+                userAchievementDao.unlockAchievement(user, code);
+                MyUtils.showInfo(
+                        "Achievement unlocked",
+                        "You unlocked a new achievement!\n\n" +
+                                achievement.getName() + "\n" +
+                                achievement.getDescription() + "\n\n+ " +
+                                achievement.getXpReward() + " XP\n+ " +
+                                achievement.getPointsReward() + " DP points"
+                );
+                userDao.updateUserLevel(user, achievement.getXpReward());
+                userDao.updateUserPoints(user, achievement.getPointsReward());
+            }
+        }
+    }
 
     @FXML
     public void switchToRegister() {

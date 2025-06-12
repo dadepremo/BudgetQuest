@@ -33,6 +33,19 @@ CREATE TABLE public.liabilities (
     CONSTRAINT liabilities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE public.net_worth_history (
+	id serial4 NOT NULL,
+	user_id int4 NOT NULL,
+	"date" date NOT NULL,
+	assets_value numeric(12, 2) NOT NULL,
+	liabilities_value numeric(12, 2) NOT NULL,
+	net_worth numeric(12, 2) NOT NULL,
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT net_worth_history_pkey PRIMARY KEY (id),
+	CONSTRAINT unique_user_date UNIQUE (user_id, date),
+	CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE public.achievements (
     id SERIAL PRIMARY KEY,
     code VARCHAR(50) UNIQUE NOT NULL,        -- Unique key for programmatic use, e.g., 'FIRST_EXPENSE'
