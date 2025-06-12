@@ -1,0 +1,8 @@
+.label-link {
+    -fx-cursor: hand; /* cursor pointer */
+}
+
+.label-link:hover {
+    -fx-underline: true; /* underline on hover */
+    -fx-text-fill: green;
+}

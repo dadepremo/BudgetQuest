@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="690.0" prefWidth="504.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.TransactionFormController">
+    <center>
+        <VBox>
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+         <Label text="Transaction">
+            <font>
+               <Font size="30.0" />
+            </font>
+            <VBox.margin>
+               <Insets bottom="15.0" />
+            </VBox.margin>
+         </Label>
+            <!-- Add Expense Section -->
+            <TitledPane text="Add Expense">
+                <VBox>
+                    <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                    </padding>
+                    <TextField fx:id="expenseNameField" promptText="Expense Name">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font></TextField>
+                    <TextField fx:id="expenseAmountField" promptText="Amount">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font></TextField>
+                    <DatePicker fx:id="expenseDatePicker">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></DatePicker>
+                    <ComboBox fx:id="expenseCategoryComboBox" promptText="Select Category">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></ComboBox>
+                    <TextArea fx:id="expenseNotesField" prefRowCount="3" promptText="Notes">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font></TextArea>
+                    <Button onAction="#handleSaveExpense" text="Save Expense" />
+                </VBox>
+            </TitledPane>
+
+            <!-- Add Income Section -->
+            <TitledPane expanded="false" text="Add Income">
+                <VBox>
+                    <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                    </padding>
+                    <TextField fx:id="incomeNameField" promptText="Income Name">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></TextField>
+                    <TextField fx:id="incomeAmountField" promptText="Amount">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></TextField>
+                    <DatePicker fx:id="incomeDatePicker">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></DatePicker>
+                    <ComboBox fx:id="incomeCategoryComboBox" promptText="Select Category">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></ComboBox>
+                    <TextArea fx:id="incomeNotesField" prefRowCount="3" promptText="Notes">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></TextArea>
+                    <Button onAction="#handleSaveIncome" text="Save Income">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></Button>
+                </VBox>
+            </TitledPane>
+
+            <!-- Add Category Section -->
+            <TitledPane expanded="false" text="Add Category">
+                <VBox>
+                    <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                    </padding>
+                    <TextField fx:id="categoryNameField" promptText="Category Name">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font></TextField>
+                    <ComboBox fx:id="categoryTypeComboBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Income" />
+                                <String fx:value="Expense" />
+                            </FXCollections>
+                        </items>
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin>
+                    </ComboBox>
+                    <Button onAction="#handleAddCategory" text="Add Category">
+                  <VBox.margin>
+                     <Insets bottom="10.0" />
+                  </VBox.margin></Button>
+                </VBox>
+            </TitledPane>
+        </VBox>
+    </center>
+</BorderPane>

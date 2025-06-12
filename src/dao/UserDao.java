@@ -1,0 +1,32 @@
+package dao;
+
+import model.User;
+import java.util.List;
+import java.util.Optional;
+
+public interface UserDao {
+
+    Optional<User> getUserById(int id);
+
+    Optional<User> getUserByUsername(String username);
+
+    List<User> getAllUsers();
+
+    boolean createUser(User user);
+
+    boolean updateUser(User user);
+
+    boolean deleteUser(int id);
+
+    void updateLastLogin(User user);
+
+    int getUserXp(User user);
+
+    int getUserPoints(User user);
+
+    void updateUserPoints(User user, int points);
+
+    int getUserLevel(User user);
+
+    void updateUserLevel(User user, int xp);
+}
