@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import model.User;
 import service.UserService;
 import utils.DbConnection;
+import utils.Logger;
+import utils.MyUtils;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
@@ -20,7 +22,6 @@ public class RegisterController {
     @FXML private TextField lastNameField;
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
-    @FXML private Label statusLabel;
 
     private UserService userService;
 
@@ -29,7 +30,7 @@ public class RegisterController {
         try {
             userService = new UserService(new UserDaoImpl());
         } catch (Exception e) {
-            statusLabel.setText("Database error.");
+            MyUtils.showError("Database error", "We've encountered a database error, try later.");
             e.printStackTrace();
         }
     }
@@ -43,16 +44,18 @@ public class RegisterController {
         String password = passwordField.getText();
 
         if (username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            statusLabel.setText("All fields are required.");
+            MyUtils.showWarning("Validation error", "All fields are required.");
             return;
         }
 
         boolean registered = userService.registerUser(username, firstName, lastName, email, password);
         if (registered) {
-            statusLabel.setText("✅ Registered successfully!");
+            MyUtils.showInfo("Registration successful", "✅ Registered successfully!");
+            Logger.info("Registered new user");
             clearForm();
         } else {
-            statusLabel.setText("❌ Registration failed.");
+            MyUtils.showError("Registration error", "❌ Registration failed.");
+            Logger.info("Register new user error");
         }
     }
 

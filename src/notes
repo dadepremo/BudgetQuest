@@ -72,3 +72,17 @@ On expense/income creation
 On login (for streaks)
 On XP/level gain
 On net worth update
+
+
+
+UNLOCK ALL ACHIEVEMENTS
+
+
+INSERT INTO user_achievements (user_id, achievement_id, unlocked_at)
+SELECT 12, a.id, NOW()
+FROM achievements a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM user_achievements ua
+    WHERE ua.user_id = 123 AND ua.achievement_id = a.id
+);

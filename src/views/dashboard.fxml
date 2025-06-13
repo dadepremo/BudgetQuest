@@ -115,13 +115,13 @@
                                     <Font size="25.0" />
                                  </font>
                               </Label>
-                               <Button mnemonicParsing="false" onAction="#handleOpenTransactionForm" prefHeight="32.0" prefWidth="144.0" text="Income" GridPane.columnIndex="2" />
+                               <Button mnemonicParsing="false" onAction="#handleOpenIncomesPieChart" prefHeight="32.0" prefWidth="144.0" text="Income" GridPane.columnIndex="2" />
                               <Label fx:id="incomesLabel" text="1000000 €" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
-                               <Button mnemonicParsing="false" onAction="#handleOpenTransactionForm" prefHeight="32.0" prefWidth="144.0" text="Expenses" GridPane.columnIndex="3" />
+                               <Button mnemonicParsing="false" onAction="#handleOpenExpensesPieChart" prefHeight="32.0" prefWidth="144.0" text="Expenses" GridPane.columnIndex="3" />
                               <Label fx:id="expensesLabel" text="1000000 €" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
