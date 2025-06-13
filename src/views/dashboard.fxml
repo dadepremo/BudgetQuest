@@ -22,10 +22,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="990.0" prefWidth="1504.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
+<TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="990.0" prefWidth="1504.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
     <stylesheets>
-        <URL value="@/style/style.css" />
+        <URL value="@/style/light_theme.css" />
     </stylesheets>
+
 
     <tabs>
     <Tab closable="false" text="Home">
@@ -70,7 +71,7 @@
                         </Button>
                          <Button onAction="#handleOpenTransactionForm" text="Add Transaction" />
                         <Button fx:id="streakButton" mnemonicParsing="false" text="Streak" />
-
+                         <Button onAction="#handleChangeTheme" text="Light" fx:id="changeThemeButton"/>
                      </children>
                       <padding>
                           <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />

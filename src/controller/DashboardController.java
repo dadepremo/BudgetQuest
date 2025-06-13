@@ -41,6 +41,9 @@ public class DashboardController {
     @FXML private Label incomesLabel;
     @FXML private Button streakButton;
 
+    @FXML private TabPane tabPane;
+    @FXML private Button changeThemeButton;
+
     // labels assets table view
     @FXML private TableView<Asset> assetTable;
     @FXML private TableColumn<Asset, String> nameColumn;
@@ -81,6 +84,7 @@ public class DashboardController {
 
     private final NetWorthHistoryDao netWorthDao = new NetWorthHistoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
+    private final UserDao userDao = new UserDaoImpl();
 
     private User currentUser;
     private AssetDao assetDao;
@@ -99,6 +103,14 @@ public class DashboardController {
         xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
         dpLabel.setText(user.getPoints() + " DP");
         streakButton.setText(user.getCurrentStreak() + " Days");
+
+        if (user.getTheme().equals("light")) {
+            changeThemeButton.setText("Light");
+            switchToLightTheme();
+        } else if (user.getTheme().equals("dark")){
+            changeThemeButton.setText("Dark");
+            switchToDarkTheme();
+        }
 
         BigDecimal lastMonthExpenses = transactionDao.getLastMonthExpensesSum(user);
         BigDecimal lastMonthIncomes = transactionDao.getLastMonthIncomesSum(user);
@@ -201,6 +213,32 @@ public class DashboardController {
 //                }
 //            }
 //        });
+    }
+
+    public void handleChangeTheme() {
+        if (currentUser.getTheme().equals("dark")) {
+            currentUser.setTheme("light");
+            userDao.updateUserTheme(currentUser);
+            Logger.info("Changed theme to light");
+            switchToLightTheme(); // <- CORRETTO
+        } else if (currentUser.getTheme().equals("light")) {
+            currentUser.setTheme("dark");
+            userDao.updateUserTheme(currentUser);
+            Logger.info("Changed theme to dark");
+            switchToDarkTheme();
+        }
+    }
+
+    public void switchToLightTheme() {
+        changeThemeButton.setText("Dark");
+        tabPane.getStylesheets().clear();
+        tabPane.getStylesheets().add(getClass().getResource("/style/light_theme.css").toExternalForm());
+    }
+
+    public void switchToDarkTheme() {
+        changeThemeButton.setText("Light");
+        tabPane.getStylesheets().clear();
+        tabPane.getStylesheets().add(getClass().getResource("/style/dark_theme.css").toExternalForm());
     }
 
     @FXML

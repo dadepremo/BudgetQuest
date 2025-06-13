@@ -1,0 +1,48 @@
+.root {
+    -fx-background-color: #f4f4f4;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.label {
+    -fx-text-fill: #222;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* TitledPane Styling */
+.titled-pane > .title {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-font-size: 16px;
+}
+
+.titled-pane > *.content {
+    -fx-background-color: #ffffff;
+}
+
+/* Input Controls */
+.text-field, .text-area, .combo-box, .date-picker {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #222;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-font-size: 14px;
+}
+
+.text-area {
+    -fx-control-inner-background: #ffffff;
+}
+
+/* Button */
+.button {
+    -fx-background-color: #2196f3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 6 14;
+}
+
+.button:hover {
+    -fx-background-color: #1976d2;
+}

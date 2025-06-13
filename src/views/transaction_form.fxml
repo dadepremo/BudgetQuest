@@ -14,7 +14,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="690.0" prefWidth="504.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.TransactionFormController">
+<?import java.net.URL?>
+<BorderPane fx:id="rootPane" prefHeight="690.0" prefWidth="504.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.TransactionFormController">
+    <stylesheets>
+        <URL value="@/style/transaction_form_light.css" />
+    </stylesheets>
     <center>
         <VBox>
             <padding>

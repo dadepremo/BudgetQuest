@@ -10,7 +10,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.AssetFormController">
+<?import java.net.URL?>
+<VBox alignment="CENTER" spacing="15.0" fx:id="rootBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.AssetFormController">
+
+    <stylesheets>
+        <URL value="@/style/asset_form_light.css" />
+    </stylesheets>
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>

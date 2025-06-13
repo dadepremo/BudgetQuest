@@ -371,7 +371,20 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public void updateUserTheme(User user) {
+        String sql = "update users set theme = ? where id = ?";
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            stmt.setString(1, user.getTheme());
+            stmt.setInt(2, user.getId());
+            stmt.executeUpdate();
+            Logger.info("Updated user theme to " + user.getTheme());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
@@ -389,6 +402,7 @@ public class UserDaoImpl implements UserDao {
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         user.setLastStreakDate(rs.getDate("last_streak_date") != null ? rs.getDate("last_streak_date").toLocalDate() : LocalDate.now());
         user.setCurrentStreak(rs.getInt("current_streak"));
+        user.setTheme(rs.getString("theme"));
         return user;
     }
 

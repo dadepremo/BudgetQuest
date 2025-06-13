@@ -104,7 +104,8 @@ CREATE TABLE public.users (
 	preferred_currency VARCHAR(10) DEFAULT 'EUR',
 	currency_symbol VARCHAR(5) DEFAULT '€',
 	last_streak_date date,
-    current_streak int DEFAULT 0;
+    current_streak int DEFAULT 0,
+    theme VARCHAR(20) DEFAULT 'light';
 	CONSTRAINT users_email_key UNIQUE (email),
 	CONSTRAINT users_pkey PRIMARY KEY (id),
 	CONSTRAINT users_username_key UNIQUE (username)
@@ -120,7 +121,7 @@ CREATE TABLE public.xp_givers (
 
 -- truncate
 TRUNCATE net_worth_history, assets, liabilities, transactions, categories, user_achievements CASCADE;
-UPDATE users SET points = 0, xp = 0, level = 1;
+UPDATE users SET points = 0, xp = 0, level = 1, last_streak_date = null, current_streak = 0;
 
 
 

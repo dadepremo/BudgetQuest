@@ -3,6 +3,7 @@ package controller;
 import dao.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import model.Achievement;
 import model.Category;
 import model.Transaction;
@@ -21,6 +22,7 @@ public class TransactionFormController {
     @FXML private DatePicker expenseDatePicker;
     @FXML private ComboBox<String> expenseCategoryComboBox;
     @FXML private TextArea expenseNotesField;
+    @FXML private BorderPane rootPane;
 
     // Income Fields
     @FXML private TextField incomeNameField;
@@ -61,6 +63,12 @@ public class TransactionFormController {
         categoryNameField.setTooltip(new Tooltip("Enter the category name"));
         categoryTypeComboBox.setTooltip(new Tooltip("Choose type of category"));
 
+        if (user.getTheme().equals("light")) {
+            switchToLightTheme();
+        } else if (user.getTheme().equals("dark")){
+            switchToDarkTheme();
+        }
+
     }
 
     @FXML
@@ -92,6 +100,19 @@ public class TransactionFormController {
 
         MyUtils.showInfo("Expense", "Expense inserted successfully");
     }
+
+
+
+    public void switchToLightTheme() {
+        rootPane.getStylesheets().clear();
+        rootPane.getStylesheets().add(getClass().getResource("/style/transaction_form_light.css").toExternalForm());
+    }
+
+    public void switchToDarkTheme() {
+        rootPane.getStylesheets().clear();
+        rootPane.getStylesheets().add(getClass().getResource("/style/transaction_form_dark.css").toExternalForm());
+    }
+
 
     /**
      * All expenses related achievements

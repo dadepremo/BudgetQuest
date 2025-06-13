@@ -18,13 +18,18 @@ import java.util.ResourceBundle;
 
 public class AchievementsController {
 
-    @FXML
-    private VBox achievementList;
+    @FXML private VBox achievementList;
+    @FXML private VBox rootVBox;
 
     private User currentUser;
 
     public void setUser(User user) {
         this.currentUser = user;
+        if (user.getTheme().equals("light")) {
+            switchToLightTheme();
+        } else if (user.getTheme().equals("dark")){
+            switchToDarkTheme();
+        }
         loadAchievements();
     }
 
@@ -41,5 +46,15 @@ public class AchievementsController {
             AchievementCard card = new AchievementCard(a, unlocked, unlockedAt);
             achievementList.getChildren().add(card);
         }
+    }
+
+    public void switchToLightTheme() {
+        rootVBox.getStylesheets().clear();
+        rootVBox.getStylesheets().add(getClass().getResource("/style/achievements_light.css").toExternalForm());
+    }
+
+    public void switchToDarkTheme() {
+        rootVBox.getStylesheets().clear();
+        rootVBox.getStylesheets().add(getClass().getResource("/style/achievements_dark.css").toExternalForm());
     }
 }

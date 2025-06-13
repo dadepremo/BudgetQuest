@@ -3,6 +3,7 @@ package controller;
 import dao.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import model.Liability;
 import model.User;
@@ -23,6 +24,7 @@ public class LiabilityFormController {
     @FXML private DatePicker dueDatePicker;
     @FXML private TextArea notesArea;
     @FXML private Label statusLabel;
+    @FXML private VBox rootVBox;
 
     private XpGiverDao xpGiverDao = new XpGiverDaoImpl();
     private int normalLiabilityBonus = xpGiverDao.getValueByName("normalLiabilityBonus");
@@ -32,6 +34,11 @@ public class LiabilityFormController {
 
     public void setUser(User user) {
         this.loggedUser = user;
+        if (user.getTheme().equals("light")) {
+            switchToLightTheme();
+        } else if (user.getTheme().equals("dark")){
+            switchToDarkTheme();
+        }
     }
 
     @FXML
@@ -154,6 +161,16 @@ public class LiabilityFormController {
         statusLabel.setText("Liability saved successfully!");
 
         clearForm();
+    }
+
+    public void switchToDarkTheme() {
+        rootVBox.getStylesheets().clear();
+        rootVBox.getStylesheets().add(getClass().getResource("/style/liability_form_dark.css").toExternalForm());
+    }
+
+    public void switchToLightTheme() {
+        rootVBox.getStylesheets().clear();
+        rootVBox.getStylesheets().add(getClass().getResource("/style/liability_form_light.css").toExternalForm());
     }
 
     private void clearForm() {

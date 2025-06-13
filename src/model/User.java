@@ -20,11 +20,12 @@ public class User {
     private String currencySymbol;
     private LocalDate lastStreakDate;
     private int currentStreak;
+    private String theme;
 
     public User() {}
 
     public User(int id, String username, String firstName, String lastName, String email, String passwordHash,
-                LocalDateTime createdAt, boolean isDeleted, int xp, int level, int points, LocalDateTime lastLogin, String currency, String currencySymbol, LocalDate lastStreakDate, int currentStreak) {
+                LocalDateTime createdAt, boolean isDeleted, int xp, int level, int points, LocalDateTime lastLogin, String currency, String currencySymbol, LocalDate lastStreakDate, int currentStreak, String theme) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -41,6 +42,15 @@ public class User {
         this.currencySymbol = currencySymbol;
         this.lastStreakDate = lastStreakDate;
         this.currentStreak = currentStreak;
+        this.theme = theme;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 
     public LocalDate getLastStreakDate() {

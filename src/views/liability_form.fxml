@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.LiabilityFormController">
+<VBox fx:id="rootVBox" alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controller.LiabilityFormController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>

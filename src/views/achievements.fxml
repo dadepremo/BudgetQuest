@@ -4,9 +4,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AchievementsController">
+    <stylesheets>
+        <URL value="@/style/achievements_light.css" />
+    </stylesheets>
     <children>
-        <VBox AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10">
+        <VBox fx:id="rootVBox" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10">
+
             <Label text="🏆 Achievements" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
 
             <ScrollPane fitToWidth="true" prefHeight="600">

@@ -1,0 +1,31 @@
+.root {
+    -fx-background-color: #fefefe;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.label {
+    -fx-text-fill: #2e2e2e;
+    -fx-font-size: 14px;
+}
+
+.text-field, .text-area, .date-picker {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+}
+
+.check-box {
+    -fx-text-fill: #000000;
+}
+
+.button {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #d0d0d0;
+}

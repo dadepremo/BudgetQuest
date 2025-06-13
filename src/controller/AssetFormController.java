@@ -3,6 +3,7 @@ package controller;
 import dao.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import model.Asset;
 import model.User;
@@ -21,6 +22,7 @@ public class AssetFormController {
     @FXML private TextArea notesArea;
     @FXML private CheckBox isLiquidCheckBox;
     @FXML private Label statusLabel;
+    @FXML private VBox rootBox;
 
     private XpGiverDao xpGiverDao = new XpGiverDaoImpl();
     private int normalAssetBonus = xpGiverDao.getValueByName("normalAssetBonus");
@@ -31,6 +33,21 @@ public class AssetFormController {
 
     public void setUser(User user) {
         this.loggedUser = user;
+        if (user.getTheme().equals("light")) {
+            switchToLightTheme();
+        } else if (user.getTheme().equals("dark")){
+            switchToDarkTheme();
+        }
+    }
+
+    public void switchToDarkTheme() {
+        rootBox.getStylesheets().clear();
+        rootBox.getStylesheets().add(getClass().getResource("/style/asset_form_dark.css").toExternalForm());
+    }
+
+    public void switchToLightTheme() {
+        rootBox.getStylesheets().clear();
+        rootBox.getStylesheets().add(getClass().getResource("/style/asset_form_light.css").toExternalForm());
     }
 
     @FXML

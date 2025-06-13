@@ -36,4 +36,5 @@ public interface UserDao {
 
     void updateLoginStreak(User user);
 
+    void updateUserTheme(User user);
 }
