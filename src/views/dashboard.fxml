@@ -55,7 +55,7 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="dpLabel" text="10000 DP">
+                        <Label fx:id="dpLabel" onMouseClicked="#handleOpenShop" styleClass="label-link" text="10000 DP">
                            <font>
                               <Font size="15.0" />
                            </font>

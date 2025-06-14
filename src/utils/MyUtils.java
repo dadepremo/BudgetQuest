@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,13 @@ public class MyUtils {
         symbols.setDecimalSeparator(',');   // decimal separator
         DecimalFormat formatter = new DecimalFormat("#,##0.00", symbols);
         return formatter.format(amount) + " " + symbol;
+    }
+
+    public static String formatDpPoints(int points) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.'); // Use dot as thousands separator
+        DecimalFormat formatter = new DecimalFormat("#,##0", symbols);
+        return formatter.format(points) + " DP";
     }
 
     public static void showWarning(String title, String message) {
@@ -86,6 +94,11 @@ public class MyUtils {
     public static String localDateFormattedDisplay(LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return localDate.format(formatter);
+    }
+
+    public static String localDateTimeFormattedDisplay(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return localDateTime.format(formatter);
     }
 
 }

@@ -13,6 +13,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -101,7 +102,7 @@ public class DashboardController {
         levelLabel.setText("Level " + user.getLevel());
         xpLabel.setText(user.getXp() + " / " + ((user.getLevel() + 1) * 500) + " XP");
         xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
-        dpLabel.setText(user.getPoints() + " DP");
+        dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
         streakButton.setText(user.getCurrentStreak() + " Days");
 
         if (user.getTheme().equals("light")) {
@@ -502,4 +503,25 @@ public class DashboardController {
         }
     }
 
+    @FXML
+    public void handleOpenShop(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/shop.fxml"));
+            Parent root = loader.load();
+
+            ShopController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            Stage stage = new Stage();
+            stage.setTitle("Shop");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            refresh();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

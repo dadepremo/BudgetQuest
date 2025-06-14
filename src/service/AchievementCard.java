@@ -8,8 +8,12 @@ import javafx.scene.text.Font;
 import model.Achievement;
 import model.User;
 import utils.DbConnection;
+import utils.MyUtils;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AchievementCard extends VBox {
 
@@ -25,6 +29,14 @@ public class AchievementCard extends VBox {
         title.setStyle("-fx-font-weight: bold;");
 
         // Description
+        if (unlocked) {
+            List<String> descParts;
+            descParts = Arrays.asList(achievement.getDescription().split("&"));
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String s : descParts)
+                stringBuilder.append(s).append("\n");
+            achievement.setDescription(stringBuilder.toString());
+        }
         Label desc = new Label(unlocked ? achievement.getDescription() : "???");
         desc.setWrapText(true);
 
@@ -34,7 +46,9 @@ public class AchievementCard extends VBox {
                 : "⭐ XP: ???   🎯 Points: ???");
 
         // Date
-        Label date = new Label(unlocked ? "🗓️ Unlocked at: " + unlockedAt : "");
+        int ind = unlockedAt.lastIndexOf(".");
+        String result = unlockedAt.substring(0, ind);
+        Label date = new Label(unlocked ? "🗓️ Unlocked at: " + result.replace("T", " ") : "");
 
         getChildren().addAll(title, desc, rewards, date);
 
