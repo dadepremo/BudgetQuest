@@ -100,7 +100,7 @@ public class DashboardController {
         Logger.info("Dashboard infos displayed");
         usernameLabel.setText("Welcome, " + user.getUsername() + "!");
         levelLabel.setText("Level " + user.getLevel());
-        xpLabel.setText(user.getXp() + " / " + ((user.getLevel() + 1) * 500) + " XP");
+        xpLabel.setText(MyUtils.formatInt(user.getXp()) + " / " + MyUtils.formatInt(((user.getLevel() + 1) * 500)) + " XP");
         xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
         dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
         streakButton.setText(user.getCurrentStreak() + " Days");
@@ -227,6 +227,23 @@ public class DashboardController {
             userDao.updateUserTheme(currentUser);
             Logger.info("Changed theme to dark");
             switchToDarkTheme();
+        }
+    }
+
+    public void handleOpenCalendarStreak() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/calendar_streak.fxml"));
+            Parent root = loader.load();
+            CalendarStreakController controller = loader.getController();
+            controller.setUserId(currentUser.getId());
+            Stage stage = new Stage();
+            stage.setTitle("Your Streak");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

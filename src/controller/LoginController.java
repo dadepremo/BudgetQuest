@@ -79,6 +79,8 @@ public class LoginController {
                     Logger.info("Dashboard loading...");
                     Logger.info("Executing update last login");
                     userDao.updateLastLogin(user);
+                    LoginEntryDao loginEntryDao = new LoginEntryDaoImpl();
+                    loginEntryDao.addLoginEntry(user.getId(), LocalDate.now());
                     controller.setUser(user);
                 } else {
                     System.err.println("DashboardController is null. Check fx:controller in dashboard.fxml");

@@ -43,6 +43,13 @@ public class MyUtils {
         return formatter.format(points) + " DP";
     }
 
+    public static String formatInt(int number) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.'); // Use dot as thousands separator
+        DecimalFormat formatter = new DecimalFormat("#,##0", symbols);
+        return formatter.format(number);
+    }
+
     public static void showWarning(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);

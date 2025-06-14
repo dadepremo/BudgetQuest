@@ -45,17 +45,17 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
+                         <Label fx:id="dpLabel" onMouseClicked="#handleOpenShop" styleClass="label-link-dpLabel" text="10000 DP">
+                             <font>
+                                 <Font size="15.0" />
+                             </font>
+                         </Label>
                         <Label fx:id="levelLabel" text="Level 10000">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
                         <Label text="0 / 5000000 XP" fx:id="xpLabel">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="dpLabel" onMouseClicked="#handleOpenShop" styleClass="label-link" text="10000 DP">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -70,7 +70,7 @@
                            </HBox.margin>
                         </Button>
                          <Button onAction="#handleOpenTransactionForm" text="Add Transaction" />
-                        <Button fx:id="streakButton" mnemonicParsing="false" text="Streak" />
+                        <Button fx:id="streakButton" onAction="#handleOpenCalendarStreak" mnemonicParsing="false" text="Streak" />
                          <Button onAction="#handleChangeTheme" text="Light" fx:id="changeThemeButton"/>
                      </children>
                       <padding>

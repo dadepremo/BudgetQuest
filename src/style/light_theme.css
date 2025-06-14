@@ -43,3 +43,11 @@
     -fx-underline: true; /* underline on hover */
     -fx-text-fill: green;
 }
+
+.label-link-dpLabel {
+    -fx-cursor: hand; /* cursor pointer */
+}
+.label-link-dpLabel:hover {
+    -fx-underline: true; /* underline on hover */
+    -fx-text-fill: #2a9d8f;
+}

@@ -104,7 +104,7 @@ public class ShopController implements Initializable {
         desc.setStyle("-fx-font-size: 12px; -fx-text-fill: #666;");
 
         Label price = new Label(item.getPrice() + " DP points");
-        price.setStyle("-fx-text-fill: green; -fx-font-size: 13px;");
+        price.setStyle("-fx-text-fill: #2a9d8f; -fx-font-size: 13px;");
 
         Button buyButton = new Button("Buy");
         buyButton.setPrefWidth(144.0);
