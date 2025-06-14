@@ -108,8 +108,11 @@ public class ShopController implements Initializable {
 
         Button buyButton = new Button("Buy");
         buyButton.setPrefWidth(144.0);
-        buyButton.setOnAction(e -> handlePurchase(item));
-
+        if (currentUser.getPoints() < item.getPrice()) {
+            buyButton.setDisable(true);
+        } else {
+            buyButton.setOnAction(e -> handlePurchase(item));
+        }
         card.getChildren().addAll(name, desc, price, buyButton);
         return card;
     }
@@ -125,9 +128,10 @@ public class ShopController implements Initializable {
     }
 
     private void handlePurchase(ShopItem item) {
-        Logger.debug("Buying: " + item.getName());
 
         // TODO: Implement purchase logic
+
+        Logger.debug("Buy");
 
         updatePointsDisplay();
     }

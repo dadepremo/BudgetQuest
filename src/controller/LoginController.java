@@ -46,28 +46,30 @@ public class LoginController {
 
         if (userOpt.isPresent() && BCrypt.checkpw(password, userOpt.get().getPasswordHash())) {
             User user = userOpt.get();
-
-            // Update streak
             LocalDate today = LocalDate.now();
-            LocalDate lastDate = user.getLastStreakDate();
+            LocalDate lastStreakDate = user.getLastStreakDate();
 
-            if (lastDate.equals(today) && user.getCurrentStreak() == 0) {
-                user.setCurrentStreak(1);
+            // Update streak logic
+            if (lastStreakDate == null || !lastStreakDate.equals(today)) {
+                if (lastStreakDate != null && lastStreakDate.equals(today.minusDays(1))) {
+                    // Continued streak
+                    user.setCurrentStreak(user.getCurrentStreak() + 1);
+                } else {
+                    // Reset streak
+                    user.setCurrentStreak(1);
+                }
                 user.setLastStreakDate(today);
-            } else if (lastDate.equals(today.minusDays(1))) {
-                // Continued streak
-                user.setCurrentStreak(user.getCurrentStreak() + 1);
-                user.setLastStreakDate(today);
-            } else {
-                // Missed one or more days, reset streak
-                user.setCurrentStreak(1);
-                user.setLastStreakDate(today);
+
+                // Save streak update
+                userDao.updateLastLoginForStreak(user);
+
+                // Add login entry
+                LoginEntryDao loginEntryDao = new LoginEntryDaoImpl();
+                loginEntryDao.addLoginEntry(user.getId(), today);
             }
 
-            // Save streak update to DB
-            userDao.updateLoginStreak(user);
-
             checkStreakAchievements(user);
+            userDao.updateLastLogin(user);
 
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/dashboard.fxml"));
@@ -75,12 +77,6 @@ public class LoginController {
 
                 DashboardController controller = loader.getController();
                 if (controller != null) {
-                    Logger.info("Login successful: " + user.getUsername());
-                    Logger.info("Dashboard loading...");
-                    Logger.info("Executing update last login");
-                    userDao.updateLastLogin(user);
-                    LoginEntryDao loginEntryDao = new LoginEntryDaoImpl();
-                    loginEntryDao.addLoginEntry(user.getId(), LocalDate.now());
                     controller.setUser(user);
                 } else {
                     System.err.println("DashboardController is null. Check fx:controller in dashboard.fxml");
@@ -89,7 +85,10 @@ public class LoginController {
                 Stage stage = (Stage) usernameField.getScene().getWindow();
                 stage.setScene(dashboardScene);
                 stage.centerOnScreen();
-            } catch (Exception e) {
+
+                Logger.info("Login successful: " + user.getUsername());
+                Logger.info("Dashboard loaded");
+            } catch (IOException e) {
                 e.printStackTrace();
                 Logger.error("Failed to load dashboard");
                 statusLabel.setText("Failed to load dashboard.");
@@ -99,6 +98,7 @@ public class LoginController {
             MyUtils.showWarning("Invalid credentials", "Invalid credentials.");
         }
     }
+
 
     private void checkStreakAchievements(User user) {
 

@@ -17,6 +17,7 @@
 
 .button:hover {
     -fx-background-color: #d5d5d5;
+    -fx-cursor: hand;
 }
 
 .table-view {

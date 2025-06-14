@@ -22,7 +22,6 @@ public class ShopItem {
         this(0, name, description, price, category, true);
     }
 
-    // Getters and setters
     public int getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }

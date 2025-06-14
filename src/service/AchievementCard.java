@@ -46,9 +46,19 @@ public class AchievementCard extends VBox {
                 : "⭐ XP: ???   🎯 Points: ???");
 
         // Date
-        int ind = unlockedAt.lastIndexOf(".");
-        String result = unlockedAt.substring(0, ind);
-        Label date = new Label(unlocked ? "🗓️ Unlocked at: " + result.replace("T", " ") : "");
+        String dateText = "";
+        if (unlockedAt != null && !unlockedAt.isEmpty()) {
+            int ind = unlockedAt.lastIndexOf(".");
+            if (ind > 0) {
+                String result = unlockedAt.substring(0, ind);
+                dateText = result.replace("T", " ");
+            } else {
+                dateText = unlockedAt.replace("T", " ");
+            }
+        }
+
+        Label date = new Label(unlocked ? "🗓️ Unlocked at: " + dateText : "");
+
 
         getChildren().addAll(title, desc, rewards, date);
 

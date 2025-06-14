@@ -86,3 +86,44 @@ WHERE NOT EXISTS (
     FROM user_achievements ua
     WHERE ua.user_id = 123 AND ua.achievement_id = a.id
 );
+
+
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import javafx.scene.control.TextField;
+
+TextField searchField = new TextField();
+
+PauseTransition pause = new PauseTransition(Duration.millis(300)); // debounce 300ms
+
+searchField.textProperty().addListener((obs, oldText, newText) -> {
+    pause.stop(); // reset debounce timer
+    pause.setOnFinished(event -> {
+        // Call your search method here with newText
+        performSearch(newText);
+    });
+    pause.playFromStart();
+});
+
+private void performSearch(String query) {
+    // Query your database or in-memory data
+    // For example:
+    List<Result> results = myDao.searchItems(query);
+    // Update UI with results
+    updateSearchResults(results);
+}
+
+
+Platform.runLater(() -> {
+            Node line = series.getNode().lookup(".chart-series-line");
+            if (line != null) {
+                line.setStyle("-fx-stroke: green;");
+            }
+
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node node = data.getNode();
+                if (node != null) {
+                    node.setStyle("-fx-background-color: green, white;");
+                }
+            }
+        });

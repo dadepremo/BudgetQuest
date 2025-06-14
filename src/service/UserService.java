@@ -28,7 +28,7 @@ public class UserService {
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setXp(0);
         newUser.setLevel(1);
-        newUser.setPoints(1000);
+        newUser.setPoints(0);
         newUser.setDeleted(false);
 
         return userDao.createUser(newUser);

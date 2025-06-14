@@ -33,6 +33,27 @@ CREATE TABLE public.liabilities (
     CONSTRAINT liabilities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE public.shop_items (
+	id serial4 NOT NULL,
+	"name" text NOT NULL,
+	description text NULL,
+	price int4 NOT NULL,
+	category text NULL,
+	available bool DEFAULT true NULL,
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT shop_items_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.user_purchases (
+	id serial4 NOT NULL,
+	user_id int4 NOT NULL,
+	item_id int4 NOT NULL,
+	purchased_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT user_purchases_pkey PRIMARY KEY (id),
+	CONSTRAINT user_purchases_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.shop_items(id),
+	CONSTRAINT user_purchases_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+
 CREATE TABLE public.net_worth_history (
 	id serial4 NOT NULL,
 	user_id int4 NOT NULL,
@@ -110,6 +131,26 @@ CREATE TABLE public.users (
 	CONSTRAINT users_pkey PRIMARY KEY (id),
 	CONSTRAINT users_username_key UNIQUE (username)
 );
+
+CREATE TABLE public.login_history (
+	id serial4 NOT NULL,
+	user_id int4 NOT NULL,
+	login_date date NOT NULL,
+	CONSTRAINT login_history_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+
+CREATE TABLE public.user_friends (
+    user_id int4 NOT NULL,
+    friend_id int4 NOT NULL,
+    status varchar(20) NOT NULL DEFAULT 'pending', -- 'pending', 'accepted', 'blocked'
+    requested_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    accepted_at timestamp NULL,
+    CONSTRAINT user_friends_pkey PRIMARY KEY (user_id, friend_id),
+    CONSTRAINT user_friends_user_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE,
+    CONSTRAINT user_friends_friend_fk FOREIGN KEY (friend_id) REFERENCES public.users(id) ON DELETE CASCADE,
+    CONSTRAINT user_friends_no_self_friend CHECK (user_id <> friend_id)
+);
+
 
 CREATE TABLE public.xp_givers (
     id serial PRIMARY KEY,

@@ -345,7 +345,7 @@ CREATE TABLE public.users (
     is_deleted boolean DEFAULT false,
     xp integer DEFAULT 0,
     level integer DEFAULT 1,
-    points integer DEFAULT 1000,
+    points integer DEFAULT 0,
     last_login timestamp without time zone,
     preferred_currency character varying(10) DEFAULT 'EUR'::character varying,
     currency_symbol character varying(5) DEFAULT '€'::character varying,

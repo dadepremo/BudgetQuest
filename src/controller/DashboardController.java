@@ -3,6 +3,7 @@ package controller;
 import dao.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -44,6 +45,8 @@ public class DashboardController {
 
     @FXML private TabPane tabPane;
     @FXML private Button changeThemeButton;
+    @FXML private Button buttonIncomeChart;
+    @FXML private Button buttonExpensesChart;
 
     // labels assets table view
     @FXML private TableView<Asset> assetTable;
@@ -103,7 +106,7 @@ public class DashboardController {
         xpLabel.setText(MyUtils.formatInt(user.getXp()) + " / " + MyUtils.formatInt(((user.getLevel() + 1) * 500)) + " XP");
         xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
         dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
-        streakButton.setText(user.getCurrentStreak() + " Days");
+        streakButton.setText(user.getCurrentStreak() + " \uD83D\uDD25");
 
         if (user.getTheme().equals("light")) {
             changeThemeButton.setText("Light");
@@ -118,11 +121,13 @@ public class DashboardController {
         if (lastMonthExpenses != null && lastMonthExpenses.compareTo(BigDecimal.valueOf(0)) > 0) {
             expensesLabel.setText(MyUtils.formatCurrency(lastMonthExpenses, user.getCurrencySymbol()));
         } else {
+            buttonExpensesChart.setDisable(true);
             expensesLabel.setText("No expenses last month");
         }
         if (lastMonthIncomes != null && lastMonthIncomes.compareTo(BigDecimal.valueOf(0)) > 0) {
             incomesLabel.setText(MyUtils.formatCurrency(lastMonthIncomes, user.getCurrencySymbol()));
         } else {
+            buttonIncomeChart.setDisable(true);
             incomesLabel.setText("No income last month");
         }
 
@@ -201,19 +206,6 @@ public class DashboardController {
         lineChart.getData().clear();
         lineChart.getData().add(series);
 
-//        Platform.runLater(() -> {
-//            Node line = series.getNode().lookup(".chart-series-line");
-//            if (line != null) {
-//                line.setStyle("-fx-stroke: green;");
-//            }
-//
-//            for (XYChart.Data<String, Number> data : series.getData()) {
-//                Node node = data.getNode();
-//                if (node != null) {
-//                    node.setStyle("-fx-background-color: green, white;");
-//                }
-//            }
-//        });
     }
 
     public void handleChangeTheme() {
@@ -329,7 +321,7 @@ public class DashboardController {
             Parent root = loader.load();
 
             UserProfileController controller = loader.getController();
-            controller.setUser(currentUser);
+            controller.setUser(currentUser, true);
 
             Stage stage = new Stage();
             stage.setTitle("User Profile");
@@ -533,6 +525,7 @@ public class DashboardController {
             stage.setTitle("Shop");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
             stage.showAndWait();
 
             refresh();
@@ -540,5 +533,30 @@ public class DashboardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void handleSaveProfile() {
+        Logger.debug("Handle save profile");
+    }
+
+    @FXML
+    public void handleApplyTheme() {
+        Logger.debug("Handle apply theme");
+    }
+
+    @FXML
+    public void handleUpdateCurrency() {
+        Logger.debug("Handle update currency");
+    }
+
+    @FXML
+    public void handleSaveNotifications(ActionEvent actionEvent) {
+        Logger.debug("Handle save notifications");
+    }
+
+    @FXML
+    public void handleChangePassword(ActionEvent actionEvent) {
+        Logger.debug("Handle change psw");
     }
 }

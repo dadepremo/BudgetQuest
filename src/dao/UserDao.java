@@ -1,6 +1,8 @@
 package dao;
 
 import model.User;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +20,11 @@ public interface UserDao {
 
     boolean deleteUser(int id);
 
+    void updateLastLoginForStreak(User user);
+
     void updateLastLogin(User user);
+
+    LocalDate getLastStreakDate(User user);
 
     int getUserXp(User user);
 

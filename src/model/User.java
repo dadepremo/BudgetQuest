@@ -180,4 +180,10 @@ public class User {
     public LocalDateTime getLastLogin() {
         return lastLogin;
     }
+
+    @Override
+    public String toString() {
+        return getUsername() + (getEmail() != null ? " (" + getEmail() + ")" : "");
+    }
+
 }

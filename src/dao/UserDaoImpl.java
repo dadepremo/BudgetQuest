@@ -134,6 +134,29 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void updateLastLoginForStreak(User user) {
+        String sql = "UPDATE users SET last_streak_date = ?, current_streak = ? WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            if (user.getLastStreakDate() != null) {
+                stmt.setDate(1, Date.valueOf(user.getLastStreakDate()));
+            } else {
+                stmt.setNull(1, java.sql.Types.DATE);
+            }
+
+            stmt.setInt(2, user.getCurrentStreak());
+            stmt.setInt(3, user.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
     public void updateLastLogin(User user) {
         String sql = "UPDATE users SET last_login = ? WHERE username = ?";
         try (Connection conn = DbConnection.connect();
@@ -146,6 +169,23 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public LocalDate getLastStreakDate(User user) {
+        String sql = "SELECT last_streak_date FROM users WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, user.getId());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDate("last_streak_date").toLocalDate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return LocalDate.now();
     }
 
     @Override
@@ -400,7 +440,7 @@ public class UserDaoImpl implements UserDao {
         user.setCurrency(rs.getString("preferred_currency"));
         user.setCurrencySymbol(rs.getString("currency_symbol"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        user.setLastStreakDate(rs.getDate("last_streak_date") != null ? rs.getDate("last_streak_date").toLocalDate() : LocalDate.now());
+        user.setLastStreakDate(rs.getDate("last_streak_date") != null ? rs.getDate("last_streak_date").toLocalDate() : null);
         user.setCurrentStreak(rs.getInt("current_streak"));
         user.setTheme(rs.getString("theme"));
         return user;
