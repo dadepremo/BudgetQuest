@@ -2,6 +2,8 @@ package controller;
 
 import dao.ShopItemDao;
 import dao.ShopItemDaoImpl;
+import dao.UserDao;
+import dao.UserDaoImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -25,6 +27,7 @@ public class ShopController implements Initializable {
 
 
     private final ShopItemDao shopItemDAO = new ShopItemDaoImpl();
+    private final UserDao userDao = new UserDaoImpl();
 
     private User currentUser;
     private boolean compactView = false;
@@ -108,14 +111,23 @@ public class ShopController implements Initializable {
 
         Button buyButton = new Button("Buy");
         buyButton.setPrefWidth(144.0);
-        if (currentUser.getPoints() < item.getPrice()) {
+
+        boolean ownsItem = shopItemDAO.userOwnsItem(currentUser.getId(), item.getId());
+
+        if (ownsItem) {
+            buyButton.setText("Already bought");
+            buyButton.setDisable(true);
+        } else if (currentUser.getPoints() < item.getPrice()) {
             buyButton.setDisable(true);
         } else {
             buyButton.setOnAction(e -> handlePurchase(item));
         }
+
         card.getChildren().addAll(name, desc, price, buyButton);
         return card;
     }
+
+
 
     private void toggleView() {
         compactView = !compactView;
@@ -127,12 +139,36 @@ public class ShopController implements Initializable {
         return shopItemDAO.getAllItems();
     }
 
+
     private void handlePurchase(ShopItem item) {
+        if (currentUser == null) return;
 
-        // TODO: Implement purchase logic
+        int userPoints = currentUser.getPoints();
+        int price = item.getPrice();
 
-        Logger.debug("Buy");
+        if (userPoints < price) {
+            Logger.info("Not enough points for purchase");
+            return;
+        }
 
-        updatePointsDisplay();
+        // 1. Update user points in DB
+        userDao.updateUserPoints(currentUser, -price);
+
+        // 2. Record purchase in user_purchases
+        boolean purchaseRecorded = shopItemDAO.recordPurchase(currentUser.getId(), item.getId());
+
+        if (purchaseRecorded) {
+            // 3. Update currentUser points locally
+            currentUser.setPoints(userPoints - price);
+
+            // 4. Refresh UI
+            updatePointsDisplay();
+            initializeShop();
+
+            Logger.info("Purchase successful: " + item.getName());
+        } else {
+            Logger.info("Purchase failed to record.");
+        }
     }
+
 }

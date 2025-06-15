@@ -45,6 +45,40 @@ public class ShopItemDaoImpl implements ShopItemDao {
     }
 
     @Override
+    public ShopItem getItemByNameForUser(String name, int id) {
+        String query = "SELECT * FROM shop_items s inner join user_purchases u on s.id = u.item_id where u.user_id = ? and s.name = ? limit 1";
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.setString(2, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean userOwnsItem(int userId, int itemId) {
+        String query = "SELECT 1 FROM user_purchases WHERE user_id = ? AND item_id = ? LIMIT 1";
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, itemId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next(); // returns true if found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public boolean insertItem(ShopItem item) {
         String query = "INSERT INTO shop_items (name, description, price, category, available) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = DbConnection.connect();
@@ -91,6 +125,22 @@ public class ShopItemDaoImpl implements ShopItemDao {
         }
         return false;
     }
+
+
+    @Override
+    public boolean recordPurchase(int userId, int itemId) {
+        String query = "INSERT INTO user_purchases (user_id, item_id) VALUES (?, ?)";
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, itemId);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     private ShopItem mapRow(ResultSet rs) throws SQLException {
         return new ShopItem(

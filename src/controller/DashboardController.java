@@ -1,6 +1,7 @@
 package controller;
 
 import dao.*;
+import javafx.animation.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 import utils.DbConnection;
@@ -53,6 +55,7 @@ public class DashboardController {
     @FXML private Button changeThemeButton;
     @FXML private Button buttonIncomeChart;
     @FXML private Button buttonExpensesChart;
+    @FXML private Label dashboardLabel;
 
     @FXML private TextField usernameField;
     @FXML private TextField emailField;
@@ -105,6 +108,7 @@ public class DashboardController {
     private final NetWorthHistoryDao netWorthDao = new NetWorthHistoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
     private final UserDao userDao = new UserDaoImpl();
+    private final ShopItemDao shopItemDao = new ShopItemDaoImpl();
 
     private User currentUser;
     private AssetDao assetDao;
@@ -115,6 +119,9 @@ public class DashboardController {
         this.assetDao = new AssetDaoImpl();
         this.liabilityDao = new LiabilityDaoImpl();
 
+        if (shopItemDao.getItemByNameForUser("Dashboard Title Animation", user.getId()) != null) {
+            animateDashboardLabel();
+        }
 
         Logger.info("Dashboard infos displayed");
         usernameLabel.setText("Welcome, " + user.getUsername() + "!");
@@ -265,6 +272,43 @@ public class DashboardController {
         changeThemeButton.setText("Light");
         tabPane.getStylesheets().clear();
         tabPane.getStylesheets().add(getClass().getResource("/style/dark_theme.css").toExternalForm());
+    }
+
+    private void animateDashboardLabel() {
+        // Initial state: off-screen and invisible
+        dashboardLabel.setTranslateX(-300);
+        dashboardLabel.setOpacity(0);
+
+        // Slide transition (from left to position 0)
+        TranslateTransition slide = new TranslateTransition(Duration.seconds(4), dashboardLabel);
+        slide.setFromX(-300);
+        slide.setToX(0);
+
+        // Fade transition (opacity 0 to 1)
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), dashboardLabel);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+
+        // Play slide and fade together
+        ParallelTransition slideAndFade = new ParallelTransition(slide, fade);
+
+        slideAndFade.setOnFinished(event -> {
+            // After slide+fade finishes, start pulsing effect
+            startPulseAnimation();
+        });
+
+        slideAndFade.play();
+    }
+
+    private void startPulseAnimation() {
+        ScaleTransition pulse = new ScaleTransition(Duration.seconds(1), dashboardLabel);
+        pulse.setFromX(1.0);
+        pulse.setFromY(1.0);
+        pulse.setToX(1.1);
+        pulse.setToY(1.1);
+        pulse.setCycleCount(Animation.INDEFINITE);
+        pulse.setAutoReverse(true);
+        pulse.play();
     }
 
     @FXML

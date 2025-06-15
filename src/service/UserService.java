@@ -2,7 +2,6 @@ package service;
 
 import dao.UserDao;
 import model.User;
-import utils.PasswordUtils;
 
 import java.time.LocalDateTime;
 

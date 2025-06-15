@@ -13,7 +13,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -25,7 +24,6 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
@@ -43,7 +41,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Dashboard">
+                        <Label fx:id="dashboardLabel" text="Dashboard">
                            <font>
                               <Font size="39.0" />
                            </font>
