@@ -558,31 +558,49 @@ public class DashboardController {
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
 
-
-        String sql = "UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?";
+        String checkSql = "SELECT COUNT(*) FROM users WHERE (username = ? OR email = ?) AND id != ?";
 
         try (Connection conn = DbConnection.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
 
-            stmt.setString(1, username);
-            stmt.setString(2, email);
-            stmt.setString(3, firstName);
-            stmt.setString(4, lastName);
-            stmt.setInt(5, currentUser.getId());
+            checkStmt.setString(1, username);
+            checkStmt.setString(2, email);
+            checkStmt.setInt(3, currentUser.getId());
 
-            int rows = stmt.executeUpdate();
+            ResultSet rs = checkStmt.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
 
-            if (rows > 0) {
-                MyUtils.showInfo("Profile updated!", "Profilo aggiornato con successo.");
-            } else {
-                MyUtils.showWarning("Warning", "Nessuna modifica salvata.");
+            if (count > 0) {
+                MyUtils.showWarning("Conflitto", "Username o email già in uso.");
+                return;
+            }
+
+            // If no conflicts, update
+            String updateSql = "UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?";
+
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                updateStmt.setString(1, username);
+                updateStmt.setString(2, email);
+                updateStmt.setString(3, firstName);
+                updateStmt.setString(4, lastName);
+                updateStmt.setInt(5, currentUser.getId());
+
+                int rows = updateStmt.executeUpdate();
+
+                if (rows > 0) {
+                    MyUtils.showInfo("Successo", "Profilo aggiornato con successo.");
+                } else {
+                    MyUtils.showWarning("Nessuna modifica", "Nessuna modifica salvata.");
+                }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            MyUtils.showError("Error", "Errore durante il salvataggio del profilo.");
+            MyUtils.showError("Errore", "Errore durante il salvataggio del profilo.");
         }
     }
+
 
 
     @FXML
