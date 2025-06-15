@@ -10,6 +10,7 @@ import model.Achievement;
 import model.Transaction;
 import model.User;
 import org.mindrot.jbcrypt.BCrypt;
+import service.MotivationalQuotePopup;
 import utils.Logger;
 import utils.MyUtils;
 
@@ -30,6 +31,8 @@ public class LoginController {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label statusLabel;
+
+    private final ShopItemDao shopItemDao = new ShopItemDaoImpl();
 
     /**
      * Method that handles all the login process. <br><br>
@@ -85,6 +88,8 @@ public class LoginController {
                 Stage stage = (Stage) usernameField.getScene().getWindow();
                 stage.setScene(dashboardScene);
                 stage.centerOnScreen();
+
+                if (shopItemDao.getItemByNameForUser("Daily Motivation Quotes", user.getId()) != null) MotivationalQuotePopup.showPopup(stage);
 
                 Logger.info("Login successful: " + user.getUsername());
                 Logger.info("Dashboard loaded");

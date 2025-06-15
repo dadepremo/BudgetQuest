@@ -3,6 +3,8 @@ package utils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
+import javafx.util.Duration;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -107,5 +109,14 @@ public class MyUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         return localDateTime.format(formatter);
     }
+
+    public static Tooltip createInstantTooltip(String text) {
+        Tooltip tooltip = new Tooltip(text);
+        tooltip.setShowDelay(Duration.ZERO);
+        tooltip.setHideDelay(Duration.ZERO);
+        tooltip.setShowDuration(Duration.seconds(10));
+        return tooltip;
+    }
+
 
 }

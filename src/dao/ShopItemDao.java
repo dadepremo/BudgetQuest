@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ShopItemDao {
     List<ShopItem> getAllItems();
+
     ShopItem getItemById(int id);
 
     ShopItem getItemByNameForUser(String name, int id);

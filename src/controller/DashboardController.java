@@ -2,21 +2,23 @@ package controller;
 
 import dao.*;
 import javafx.animation.*;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -35,10 +37,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
+// Controller class for the main dashboard screen
 public class DashboardController {
 
+    // FXML-bound labels for displaying key user and financial metrics
     @FXML private Label assetsLabel;
     @FXML private Label liabilitiesLabel;
     @FXML private Label usernameLabel;
@@ -50,13 +53,19 @@ public class DashboardController {
     @FXML private Label expensesLabel;
     @FXML private Label incomesLabel;
     @FXML private Button streakButton;
+    @FXML private Button refreshButton;
+    @FXML private Button addTransactionButton;
 
+    // UI controls and tabs
     @FXML private TabPane tabPane;
     @FXML private Button changeThemeButton;
     @FXML private Button buttonIncomeChart;
     @FXML private Button buttonExpensesChart;
+    @FXML private Button buttonIncomeChart1;
+    @FXML private Button buttonExpensesChart1;
     @FXML private Label dashboardLabel;
 
+    // Profile settings fields
     @FXML private TextField usernameField;
     @FXML private TextField emailField;
     @FXML private TextField firstNameField;
@@ -67,7 +76,7 @@ public class DashboardController {
     @FXML private PasswordField newPasswordField;
     @FXML private PasswordField confirmPasswordField;
 
-    // labels assets table view
+    // Asset TableView and its columns
     @FXML private TableView<Asset> assetTable;
     @FXML private TableColumn<Asset, String> nameColumn;
     @FXML private TableColumn<Asset, String> typeColumn;
@@ -76,7 +85,7 @@ public class DashboardController {
     @FXML private TableColumn<Asset, String> liquidColumn;
     @FXML private TableColumn<Asset, String> notesColumns;
 
-    // labels liabilities table view
+    // Liability TableView and its columns
     @FXML private TableView<Liability> liabilityTable;
     @FXML private TableColumn<Liability, String> liabilityNameColumn;
     @FXML private TableColumn<Liability, String> liabilityTypeColumn;
@@ -88,6 +97,7 @@ public class DashboardController {
     @FXML private TableColumn<Liability, String> activeColumn;
     @FXML private TableColumn<Liability, String> liabilityNotesColumn;
 
+    // Expense TableView and its columns
     @FXML private TableView<Transaction> expenseTable;
     @FXML private TableColumn<Transaction, String> expensesNameColumn;
     @FXML private TableColumn<Transaction, String> expensesDateColumn;
@@ -95,7 +105,7 @@ public class DashboardController {
     @FXML private TableColumn<Transaction, String> expensesCategoryColumn;
     @FXML private TableColumn<Transaction, String> expensesDescriptionColumn;
 
-
+    // Income TableView and its columns
     @FXML private TableView<Transaction> incomeTable;
     @FXML private TableColumn<Transaction, String> incomesNameColumn;
     @FXML private TableColumn<Transaction, String> incomesDateColumn;
@@ -103,8 +113,11 @@ public class DashboardController {
     @FXML private TableColumn<Transaction, String> incomesCategoryColumn;
     @FXML private TableColumn<Transaction, String> incomesDescriptionColumn;
 
+    // Line chart to visualize net worth history
     @FXML private LineChart<String, Number> lineChart;
+    @FXML private Tab netWorthTab;
 
+    // DAO implementations for interacting with the database
     private final NetWorthHistoryDao netWorthDao = new NetWorthHistoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
     private final UserDao userDao = new UserDaoImpl();
@@ -114,76 +127,140 @@ public class DashboardController {
     private AssetDao assetDao;
     private LiabilityDao liabilityDao;
 
+    /**
+     * Main method to initialize the dashboard after a user logs in.
+     * Loads user info, financial summaries, theme preferences, and data tables.
+     */
     public void setUser(User user) {
         this.currentUser = user;
         this.assetDao = new AssetDaoImpl();
         this.liabilityDao = new LiabilityDaoImpl();
 
+        // User owns this shop items?
         if (shopItemDao.getItemByNameForUser("Dashboard Title Animation", user.getId()) != null) {
             animateDashboardLabel();
         }
 
         Logger.info("Dashboard infos displayed");
-        usernameLabel.setText("Welcome, " + user.getUsername() + "!");
+
+        // Display user info and level
+        usernameLabel.setText(shopItemDao.getItemByNameForUser("Make your username BIG", user.getId()) != null ? "Welcome, " + user.getUsername().toUpperCase() + "!" : "Welcome, " + user.getUsername() + "!");
         levelLabel.setText("Level " + user.getLevel());
         xpLabel.setText(MyUtils.formatInt(user.getXp()) + " / " + MyUtils.formatInt(((user.getLevel() + 1) * 500)) + " XP");
-        xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
         dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
-        streakButton.setText(user.getCurrentStreak() + " \uD83D\uDD25");
 
-        if (user.getTheme().equals("light")) {
-            changeThemeButton.setText("Light");
-            switchToLightTheme();
-        } else if (user.getTheme().equals("dark")){
-            changeThemeButton.setText("Dark");
-            switchToDarkTheme();
+        if (shopItemDao.getItemByNameForUser("Bicolor Xp Bar", user.getId()) == null) {
+            xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
+        } else {
+            double targetProgress = (double) user.getXp() / ((user.getLevel() + 1) * 500);
+            animateProgressBarColorSmooth(xpBar);    // Start the color animation
+            animateProgressBar(targetProgress);
         }
 
+        if (shopItemDao.getItemByNameForUser("Streak calendar", user.getId()) != null) {
+            streakButton.setText(user.getCurrentStreak() + " 🔥");
+            streakButton.setDisable(false);
+        } else {
+            streakButton.setText("??? 🔥");
+            streakButton.setDisable(true);
+        }
+
+        if (shopItemDao.getItemByNameForUser("Fire it up!", user.getId()) == null) {
+            streakButton.getStyleClass().remove("button-fire");
+        } else {
+            streakButton.getStyleClass().add("button-fire");
+        }
+
+        if (shopItemDao.getItemByNameForUser("Refreshing", user.getId()) != null) animateRefreshButton();
+
+        netWorthTab.setDisable(shopItemDao.getItemByNameForUser("Net Worth details", user.getId()) == null);
+
+        // Apply user's saved theme preference
+        if (shopItemDao.getItemByNameForUser("Dark Mode Theme", user.getId()) != null) {
+            if (user.getTheme().equals("light")) {
+                changeThemeButton.setText("Light");
+                changeThemeButton.setDisable(false);
+                switchToLightTheme();
+            } else if (user.getTheme().equals("dark")) {
+                changeThemeButton.setText("Dark");
+                changeThemeButton.setDisable(false);
+                switchToDarkTheme();
+            }
+        } else {
+            changeThemeButton.setDisable(true);
+        }
+
+
+        // Load and display last month’s expenses and incomes
         BigDecimal lastMonthExpenses = transactionDao.getLastMonthExpensesSum(user);
         BigDecimal lastMonthIncomes = transactionDao.getLastMonthIncomesSum(user);
-        if (lastMonthExpenses != null && lastMonthExpenses.compareTo(BigDecimal.valueOf(0)) > 0) {
-            expensesLabel.setText(MyUtils.formatCurrency(lastMonthExpenses, user.getCurrencySymbol()));
+
+        if (lastMonthExpenses != null && lastMonthExpenses.compareTo(BigDecimal.ZERO) > 0) {
+            expensesLabel.setText("-" + MyUtils.formatCurrency(lastMonthExpenses, user.getCurrencySymbol()));
+            if (shopItemDao.getItemByNameForUser("Expenses are no good!", user.getId()) != null) {
+                expensesLabel.setStyle("-fx-text-fill: red;");
+            }
+            if (shopItemDao.getItemByNameForUser("Expenses pie chart", user.getId()) == null) {
+                buttonExpensesChart.setDisable(true);
+                buttonExpensesChart1.setDisable(true);
+            } else {
+                buttonExpensesChart.setDisable(false);
+                buttonExpensesChart1.setDisable(false);
+            }
         } else {
             buttonExpensesChart.setDisable(true);
             expensesLabel.setText("No expenses last month");
         }
-        if (lastMonthIncomes != null && lastMonthIncomes.compareTo(BigDecimal.valueOf(0)) > 0) {
+
+
+        if (lastMonthIncomes != null && lastMonthIncomes.compareTo(BigDecimal.ZERO) > 0) {
             incomesLabel.setText(MyUtils.formatCurrency(lastMonthIncomes, user.getCurrencySymbol()));
+            if (shopItemDao.getItemByNameForUser("Incomes are so good!", user.getId()) != null) {
+                incomesLabel.setStyle("-fx-text-fill: green;");
+            }
+            if (shopItemDao.getItemByNameForUser("Income pie chart", user.getId()) == null) {
+                buttonIncomeChart.setDisable(true);
+                buttonIncomeChart1.setDisable(true);
+            } else {
+                buttonIncomeChart.setDisable(false);
+                buttonIncomeChart1.setDisable(false);
+            }
         } else {
             buttonIncomeChart.setDisable(true);
             incomesLabel.setText("No income last month");
         }
 
-
-        // display sum of the assets value
+        // Display total assets
         double assetsValue = assetDao.sumAllAssetValues(user);
         if (assetsValue == 0) {
             assetsLabel.setText("No assets found");
         } else {
             assetsLabel.setText(MyUtils.formatCurrency(assetsValue, user.getCurrencySymbol()));
+            if (shopItemDao.getItemByNameForUser("Assets are so good!", user.getId()) != null)
+                assetsLabel.setStyle("-fx-text-fill: green;");
         }
 
-        // display sum of the liabilities assetsValue
+        // Display total liabilities
         double liabilitiesAmount = liabilityDao.sumAllLiabilitiesAmount(user);
         if (liabilitiesAmount == 0) {
             liabilitiesLabel.setText("No liabilities found");
         } else {
             liabilitiesLabel.setText("- " + MyUtils.formatCurrency(liabilitiesAmount, user.getCurrencySymbol()));
+            if (shopItemDao.getItemByNameForUser("Liabilities are no good!", user.getId()) != null)
+                liabilitiesLabel.setStyle("-fx-text-fill: red;");
         }
 
+        // Calculate and display net worth
         double netWorth = assetsValue - liabilitiesAmount;
         networthLabel.setText(MyUtils.formatCurrency(netWorth, user.getCurrencySymbol()));
+        networthLabel.setStyle(netWorth < 0 ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
 
-        if (netWorth < 0) {
-            networthLabel.setStyle("-fx-text-fill: red;");
-        } else {
-            networthLabel.setStyle("-fx-text-fill: green;");
-        }
-
+        // Load chart and table data
         loadNetWorthChart(currentUser);
         setTableViews(currentUser);
         setTooltips();
 
+        // Add shortcut for manual refresh with "R" key
         Scene scene = usernameLabel.getScene();
         if (scene != null) {
             scene.setOnKeyPressed(event -> {
@@ -197,19 +274,67 @@ public class DashboardController {
 
     }
 
+
     private void setTooltips() {
-        assetsLabel.setTooltip(new Tooltip("Total value of your owned assets."));
-        liabilitiesLabel.setTooltip(new Tooltip("Total value of your liabilities or debts."));
-        usernameLabel.setTooltip(new Tooltip("Your username."));
-        xpBar.setTooltip(new Tooltip("Your experience progress toward the next level."));
-        xpLabel.setTooltip(new Tooltip("Current XP out of the total needed to level up."));
-        dpLabel.setTooltip(new Tooltip("Your points to spend in the store."));
-        levelLabel.setTooltip(new Tooltip("Your current level."));
-        networthLabel.setTooltip(new Tooltip("Your total net worth (assets minus liabilities)."));
-        expensesLabel.setTooltip(new Tooltip("Last month expenses"));
-        incomesLabel.setTooltip(new Tooltip("Last month income"));
+        assetsLabel.setTooltip(MyUtils.createInstantTooltip("Total value of your owned assets."));
+        liabilitiesLabel.setTooltip(MyUtils.createInstantTooltip("Total value of your liabilities or debts."));
+        usernameLabel.setTooltip(MyUtils.createInstantTooltip("Your username."));
+        xpBar.setTooltip(MyUtils.createInstantTooltip("Your experience progress toward the next level."));
+        xpLabel.setTooltip(MyUtils.createInstantTooltip("Current XP out of the total needed to level up."));
+        dpLabel.setTooltip(MyUtils.createInstantTooltip("Your points to spend in the store."));
+        levelLabel.setTooltip(MyUtils.createInstantTooltip("Your current level."));
+        networthLabel.setTooltip(MyUtils.createInstantTooltip("Your total net worth (assets minus liabilities)."));
+        expensesLabel.setTooltip(MyUtils.createInstantTooltip("Last month expenses"));
+        incomesLabel.setTooltip(MyUtils.createInstantTooltip("Last month income"));
+        streakButton.setTooltip(MyUtils.createInstantTooltip("Visualize your streak calendar"));
     }
 
+    private void animateRefreshButton() {
+        RotateTransition rotate = new RotateTransition(Duration.seconds(1), refreshButton);
+        rotate.setByAngle(360);
+        rotate.setCycleCount(1);
+        rotate.setInterpolator(Interpolator.EASE_BOTH);
+        rotate.play();
+    }
+
+    private Timeline hoverAnimation;
+    private final String[] hoverTexts = {"Add", "-", "--", "---", "----", "---->"};
+    private int currentIndex = 0;
+
+    @FXML
+    private void handleButtonHover() {
+        if (shopItemDao.getItemByNameForUser("TransACTING", currentUser.getId()) != null) {
+            currentIndex = 0;
+            hoverAnimation = new Timeline(
+                    new KeyFrame(Duration.seconds(0), e -> addTransactionButton.setText(hoverTexts[currentIndex])),
+                    new KeyFrame(Duration.seconds(0.3), e -> updateText()),
+                    new KeyFrame(Duration.seconds(0.6), e -> updateText()),
+                    new KeyFrame(Duration.seconds(0.9), e -> updateText()),
+                    new KeyFrame(Duration.seconds(1.2), e -> updateText()),
+                    new KeyFrame(Duration.seconds(1.5), e -> updateText()),
+                    new KeyFrame(Duration.seconds(1.8), e -> updateText())
+
+            );
+            hoverAnimation.setCycleCount(Timeline.INDEFINITE);
+            hoverAnimation.play();
+            addTransactionButton.setFont(Font.font(addTransactionButton.getFont().getFamily(), FontWeight.BOLD, addTransactionButton.getFont().getSize()));
+        }
+    }
+
+    private void updateText() {
+        currentIndex = (currentIndex + 1) % hoverTexts.length;
+        addTransactionButton.setText(hoverTexts[currentIndex]);
+    }
+
+    @FXML
+    private void handleButtonExit() {
+        if (hoverAnimation != null) {
+            hoverAnimation.stop();
+        }
+        addTransactionButton.setText("Add Transaction");
+        // Reset font to normal weight
+        addTransactionButton.setFont(Font.font(addTransactionButton.getFont().getFamily(), FontWeight.NORMAL, addTransactionButton.getFont().getSize()));
+    }
 
 
     public void loadNetWorthChart(User user) {
@@ -251,16 +376,21 @@ public class DashboardController {
             Parent root = loader.load();
             CalendarStreakController controller = loader.getController();
             controller.setUserId(currentUser.getId());
+
             Stage stage = new Stage();
             stage.setTitle("Your Streak");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.show();
 
+            stage.initOwner(streakButton.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     public void switchToLightTheme() {
         changeThemeButton.setText("Dark");
@@ -272,6 +402,39 @@ public class DashboardController {
         changeThemeButton.setText("Light");
         tabPane.getStylesheets().clear();
         tabPane.getStylesheets().add(getClass().getResource("/style/dark_theme.css").toExternalForm());
+    }
+
+    public void animateProgressBar(double targetProgress) {
+        targetProgress = Math.min(1.0, Math.max(0, targetProgress));
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(xpBar.progressProperty(), xpBar.getProgress())),
+                new KeyFrame(Duration.seconds(3), new KeyValue(xpBar.progressProperty(), targetProgress))
+        );
+        timeline.play();
+    }
+
+    public void animateProgressBarColorSmooth(ProgressBar xpBar) {
+        Color color1 = Color.web("#096303"); // Mint
+        Color color2 = Color.web("#46E327");   // Jungle
+        ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(color1);
+        colorProperty.addListener((obs, oldColor, newColor) -> {
+            String rgba = String.format("rgba(%d, %d, %d, %.2f)",
+                    (int) (newColor.getRed() * 255),
+                    (int) (newColor.getGreen() * 255),
+                    (int) (newColor.getBlue() * 255),
+                    newColor.getOpacity());
+            Platform.runLater(() -> xpBar.setStyle("-fx-accent: " + rgba + ";"));
+        });
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(colorProperty, color1, Interpolator.LINEAR)),
+                new KeyFrame(Duration.seconds(2), new KeyValue(colorProperty, color2, Interpolator.LINEAR)),
+                new KeyFrame(Duration.seconds(4), new KeyValue(colorProperty, color1, Interpolator.LINEAR))
+        );
+
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
     private void animateDashboardLabel() {

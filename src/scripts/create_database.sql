@@ -85,14 +85,16 @@ CREATE TABLE public.user_achievements (
 );
 
 CREATE TABLE public.categories (
-    id serial4 NOT NULL,
-    user_id int4 NOT NULL,
-    name varchar(50) NOT NULL,
-    type varchar(20) NOT NULL CHECK (type IN ('income', 'expense')),
-    is_deleted bool DEFAULT false,
-    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT categories_pkey PRIMARY KEY (id),
-    CONSTRAINT categories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
+	id serial4 NOT NULL,
+	user_id int4 NOT NULL,
+	"name" varchar(50) NOT NULL,
+	"type" varchar(20) NOT NULL,
+	is_deleted bool DEFAULT false NULL,
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT categories_pkey PRIMARY KEY (id),
+	CONSTRAINT categories_type_check CHECK (((type)::text = ANY ((ARRAY['income'::character varying, 'expense'::character varying])::text[]))),
+	CONSTRAINT unique_user_category UNIQUE (user_id, name),
+	CONSTRAINT categories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.transactions (

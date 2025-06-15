@@ -86,6 +86,7 @@ public class UserProfileController {
                     setText(null);
                 } else {
                     setText(user.getUsername() + " (" + user.getEmail() + ")");
+                    setTooltip(MyUtils.createInstantTooltip("Double click to send friend request to " + user.getFirstName() + " " + user.getLastName()));
                 }
             }
         });
@@ -98,6 +99,7 @@ public class UserProfileController {
                     setText(null);
                 } else {
                     setText(user.getUsername());
+                    setTooltip(MyUtils.createInstantTooltip("Double click to open " + user.getUsername().toUpperCase() + " profile"));
                 }
             }
         });
@@ -227,7 +229,7 @@ public class UserProfileController {
         new Thread(() -> {
             boolean success = acceptFriendRequest(selected.getId(), user.getId());
             if (success) {
-                Logger.debug("Accepted friend request from " + selected.getUsername());
+                Logger.info("Accepted friend request from " + selected.getUsername());
                 loadUserFriends();
                 loadIncomingFriendRequests();
             }
@@ -242,7 +244,7 @@ public class UserProfileController {
         new Thread(() -> {
             boolean success = rejectFriendRequest(selected.getId(), user.getId());
             if (success) {
-                Logger.debug("Rejected friend request from " + selected.getUsername());
+                Logger.info("Rejected friend request from " + selected.getUsername());
                 loadIncomingFriendRequests();
             }
         }).start();

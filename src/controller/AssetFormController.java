@@ -1,10 +1,16 @@
 package controller;
 
 import dao.*;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import model.Asset;
 import model.User;
 import utils.Logger;
@@ -12,6 +18,7 @@ import utils.MyUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Random;
 
 public class AssetFormController {
 
@@ -27,7 +34,9 @@ public class AssetFormController {
     private XpGiverDao xpGiverDao = new XpGiverDaoImpl();
     private int normalAssetBonus = xpGiverDao.getValueByName("normalAssetBonus");
 
+    private final ShopItemDao shopItemDao = new ShopItemDaoImpl();
     private final AssetDao assetDao = new AssetDaoImpl();
+
     private User loggedUser;
     private UserDao userDao = new UserDaoImpl();
 
@@ -127,6 +136,8 @@ public class AssetFormController {
                     userDao.updateUserPoints(loggedUser, 10);
                     MyUtils.showInfo("Points added!", "Even the smaller assets matter!\n\nProud of you...\nWe added 10 DP to your balance!");
                 }
+                if (shopItemDao.getItemByNameForUser("Celebrate your new assets!", loggedUser.getId()) != null)
+                    launchConfettiAnimation();
             } else {
                 Logger.info("Error saving asset");
                 statusLabel.setText("Error saving asset.");
@@ -138,4 +149,46 @@ public class AssetFormController {
             Logger.error("Invalid input or system error", (IOException) e);
         }
     }
+
+    private final Random random = new Random();
+
+    private void launchConfettiAnimation() {
+        int count = 50;
+
+        for (int i = 0; i < count; i++) {
+            Rectangle confetti = new Rectangle(5, 10);
+            confetti.setFill(Color.hsb(random.nextDouble() * 360, 1.0, 1.0));
+            confetti.setArcWidth(2);
+            confetti.setArcHeight(2);
+
+            // Add to rootBox *before* calculating width
+            rootBox.getChildren().add(confetti);
+
+            // Wider horizontal spread: -400 to +400
+            double dx = (random.nextDouble() - 0.5) * 800;
+
+            // Higher vertical fall: 400 to 800
+            double dy = 400 + random.nextDouble() * 400;
+
+            TranslateTransition fall = new TranslateTransition(Duration.seconds(2 + random.nextDouble()), confetti);
+            fall.setByX(dx);
+            fall.setByY(dy);
+            fall.setDelay(Duration.millis(random.nextInt(300)));
+
+            RotateTransition rotate = new RotateTransition(Duration.seconds(2 + random.nextDouble()), confetti);
+            rotate.setByAngle(360 + random.nextInt(360));
+
+            FadeTransition fade = new FadeTransition(Duration.seconds(2.5), confetti);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+            fade.setDelay(Duration.millis(500));
+
+            ParallelTransition anim = new ParallelTransition(confetti, fall, rotate, fade);
+            anim.setOnFinished(e -> rootBox.getChildren().remove(confetti));
+            anim.play();
+        }
+    }
+
+
+
 }

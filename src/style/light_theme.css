@@ -52,3 +52,45 @@
     -fx-underline: true; /* underline on hover */
     -fx-text-fill: #2a9d8f;
 }
+
+.tab {
+    -fx-font-weight: bold;
+}
+
+.tab:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #2a9d8f;
+}
+
+.button-fire {
+    -fx-background-color: linear-gradient(to bottom, #FFD700, #FF8C00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0.3, 0, 2);
+    -fx-padding-left: 16;         /* fixed padding */
+    -fx-padding-right: 16;         /* fixed padding */
+    -fx-border-width: 0;            /* no border */
+    -fx-scale-x: 1;                 /* no scale transform */
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0.3, 0, 2);
+    -fx-font-size: 15px;
+}
+
+.button-fire:hover {
+    -fx-background-color: linear-gradient(to bottom, #FFB700, #FF7C00);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-padding-left: 16;         /* fixed padding */
+    -fx-padding-right: 16;
+}
+
+.button-fire:pressed {
+    -fx-background-color: linear-gradient(to bottom, #FF8C00, #FF7000);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-padding-left: 16;         /* fixed padding */
+    -fx-padding-right: 16;
+}
+
