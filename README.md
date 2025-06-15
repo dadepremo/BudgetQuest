@@ -6,12 +6,12 @@ A gamified personal finance tracking application built with **JavaFX** and **Pos
 
 BudgetQuest helps you manage your finances in a fun and engaging way. Track your expenses, set budgets, and achieve your financial goals — all while leveling up through gamified challenges.
 
-## Features
-
-- Add and categorize transactions easily
-- Visualize your spending habits
-- Gamification elements to keep you motivated
-- Secure data storage with PostgreSQL backend
+## 🚀 Features
+- 📊 Track your income and expenses
+- 🧩 Unlock achievements as you meet savings goals
+- 🎯 Set financial targets and see progress
+- 🧠 Motivational quotes to keep you inspired
+- 🗃️ Data stored securely using PostgreSQL
 
 ## Installation & Setup
 
@@ -53,4 +53,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-Contact me for any question and feel free to submit pull requests.
+🤝 Contact & Contributions
+Contact me for any questions, feedback, or suggestions.
+Feel free to fork the repo and submit pull requests!
+
+⚠️ Disclaimer:
+This app is an early-stage MVP (Minimum Viable Product).
+More in-depth features, improved graphics, and performance optimizations are on the roadmap. Stay tuned!
