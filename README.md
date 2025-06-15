@@ -28,7 +28,7 @@ Java version: 24
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/dadepremo/budgetquest.git
+   git clone https://github.com/dadepremo/BudgetQuest.git
    cd budgetquest
 2. Set up PostgreSQL database:
 - Create a new database, e.g., budgetquest_db
