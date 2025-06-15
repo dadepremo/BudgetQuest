@@ -161,8 +161,18 @@ CREATE TABLE public.xp_givers (
 );
 
 -- truncate
-TRUNCATE net_worth_history, assets, liabilities, transactions, categories, user_achievements CASCADE;
-UPDATE users SET points = 0, xp = 0, level = 1, last_streak_date = null, current_streak = 0;
+TRUNCATE TABLE
+    assets,
+    categories,
+    liabilities,
+    login_history,
+    net_worth_history,
+    transactions,
+    user_achievements,
+    user_friends,
+    user_purchases,
+    users
+RESTART IDENTITY CASCADE;
 
 
 

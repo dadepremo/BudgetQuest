@@ -441,19 +441,6 @@
                                 </VBox>
                             </TitledPane>
 
-                            <!-- Sezione: Notifiche -->
-                            <TitledPane text="Notifiche" expanded="false">
-                                <VBox spacing="10">
-                                    <padding>
-                                        <Insets top="10" right="10" bottom="10" left="10" />
-                                    </padding>
-
-                                    <CheckBox text="Abilita notifiche email" fx:id="emailNotificationsCheckBox" />
-                                    <CheckBox text="Notifiche push" fx:id="pushNotificationsCheckBox" />
-                                    <Button text="Salva Preferenze Notifiche" onAction="#handleSaveNotifications" />
-                                </VBox>
-                            </TitledPane>
-
                             <!-- Sezione: Sicurezza -->
                             <TitledPane text="Sicurezza" expanded="false">
                                 <VBox spacing="10">

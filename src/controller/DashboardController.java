@@ -19,11 +19,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
+import utils.DbConnection;
 import utils.Logger;
 import utils.MyUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -47,6 +53,16 @@ public class DashboardController {
     @FXML private Button changeThemeButton;
     @FXML private Button buttonIncomeChart;
     @FXML private Button buttonExpensesChart;
+
+    @FXML private TextField usernameField;
+    @FXML private TextField emailField;
+    @FXML private TextField firstNameField;
+    @FXML private TextField lastNameField;
+    @FXML private ChoiceBox<String> themeChoiceBox;
+    @FXML private ChoiceBox<String> currencyChoiceBox;
+    @FXML private PasswordField currentPasswordField;
+    @FXML private PasswordField newPasswordField;
+    @FXML private PasswordField confirmPasswordField;
 
     // labels assets table view
     @FXML private TableView<Asset> assetTable;
@@ -536,27 +552,127 @@ public class DashboardController {
     }
 
     @FXML
-    public void handleSaveProfile() {
-        Logger.debug("Handle save profile");
+    private void handleSaveProfile() {
+        String username = usernameField.getText();
+        String email = emailField.getText();
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
+
+
+        String sql = "UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, email);
+            stmt.setString(3, firstName);
+            stmt.setString(4, lastName);
+            stmt.setInt(5, currentUser.getId());
+
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                MyUtils.showInfo("Profile updated!", "Profilo aggiornato con successo.");
+            } else {
+                MyUtils.showWarning("Warning", "Nessuna modifica salvata.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MyUtils.showError("Error", "Errore durante il salvataggio del profilo.");
+        }
+    }
+
+
+    @FXML
+    private void handleApplyTheme() {
+        String theme = themeChoiceBox.getValue().toLowerCase();
+
+        String sql = "UPDATE users SET theme = ? WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, theme);
+            stmt.setInt(2, currentUser.getId());
+            stmt.executeUpdate();
+
+            MyUtils.showInfo("Theme updated!", "Tema aggiornato a: " + theme);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MyUtils.showError("Error", "Errore durante l'aggiornamento del tema.");
+        }
+    }
+
+
+    @FXML
+    private void handleUpdateCurrency() {
+        String currency = currencyChoiceBox.getValue();
+
+        // Split to get symbol from choice: "EUR (€)"
+        String[] parts = currency.split(" ");
+        String currencyCode = parts[0];
+        String currencySymbol = parts[1].replace("(", "").replace(")", "");
+
+        String sql = "UPDATE users SET preferred_currency = ?, currency_symbol = ? WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, currencyCode);
+            stmt.setString(2, currencySymbol);
+            stmt.setInt(3, currentUser.getId());
+            stmt.executeUpdate();
+
+            MyUtils.showInfo("Currency updated!", "Valuta aggiornata: " + currencyCode);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MyUtils.showError("Error", "Errore durante l'aggiornamento della valuta.");
+        }
     }
 
     @FXML
-    public void handleApplyTheme() {
-        Logger.debug("Handle apply theme");
+    private void handleChangePassword() {
+        String current = currentPasswordField.getText();
+        String newPass = newPasswordField.getText();
+        String confirm = confirmPasswordField.getText();
+
+        if (!newPass.equals(confirm)) {
+            MyUtils.showError("Password mismatch", "Le nuove password non corrispondono.");
+            return;
+        }
+
+        String sql = "SELECT password_hash FROM users WHERE id = ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, currentUser.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String hash = rs.getString("password_hash");
+
+                if (!BCrypt.checkpw(current, hash)) {
+                    MyUtils.showError("Error", "La password attuale non è corretta.");
+                    return;
+                }
+
+                // Update password
+                String newHash = BCrypt.hashpw(newPass, BCrypt.gensalt());
+                String updateSql = "UPDATE users SET password_hash = ? WHERE id = ?";
+
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                    updateStmt.setString(1, newHash);
+                    updateStmt.setInt(2, currentUser.getId());
+                    updateStmt.executeUpdate();
+                    MyUtils.showInfo("Password updated!", "Password cambiata con successo.");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MyUtils.showError("Error", "Errore durante il cambio password.");
+        }
     }
 
-    @FXML
-    public void handleUpdateCurrency() {
-        Logger.debug("Handle update currency");
-    }
-
-    @FXML
-    public void handleSaveNotifications(ActionEvent actionEvent) {
-        Logger.debug("Handle save notifications");
-    }
-
-    @FXML
-    public void handleChangePassword(ActionEvent actionEvent) {
-        Logger.debug("Handle change psw");
-    }
 }
