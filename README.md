@@ -15,13 +15,7 @@ BudgetQuest helps you manage your finances in a fun and engaging way. Track your
 
 ## Installation & Setup
 
-Maven is not present, jars needed:
-- jbcrypt-0.4.jar
-- postgresql-42.7.6.jar
-- javafx-sdk-24.0.1\lib
-
-Java Fx version:
-- javafx-sdk-24.0.1
+Maven is present
 
 Java version: 24
 
@@ -33,7 +27,7 @@ Java version: 24
 2. Set up PostgreSQL database:
 - Create a new database, e.g., budgetquest_db
 - Run the provided SQL scripts in the /scripts folder to create tables and seed data
-- The db creation script most up to date is the "full_export15062025.sql", other scripts are older or for testing
+- The db creation script most up to date is the "create_db.sql", other scripts are older or for testing
 
 3. Configure database connection:
 - Open the DbConnection class under /utils
