@@ -34,14 +34,14 @@ public class AssetFormController {
     @FXML private Label statusLabel;
     @FXML private VBox rootBox;
 
-    private XpGiverDao xpGiverDao = new XpGiverDaoImpl();
-    private int normalAssetBonus = xpGiverDao.getValueByName("normalAssetBonus");
+    private final XpGiverDao xpGiverDao = new XpGiverDaoImpl();
+    private final int normalAssetBonus = xpGiverDao.getValueByName("normalAssetBonus");
 
     private final ShopItemDao shopItemDao = new ShopItemDaoImpl();
     private final AssetDao assetDao = new AssetDaoImpl();
+    private final UserDao userDao = new UserDaoImpl();
 
     private User loggedUser;
-    private UserDao userDao = new UserDaoImpl();
 
     public void setUser(User user) {
         this.loggedUser = user;

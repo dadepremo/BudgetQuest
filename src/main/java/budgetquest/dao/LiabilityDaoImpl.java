@@ -14,6 +14,46 @@ import java.util.Optional;
 public class LiabilityDaoImpl implements LiabilityDao {
 
     @Override
+    public void updateLiability(Liability liability, User user) throws SQLException {
+        String sql = """
+        UPDATE public.liabilities
+        SET user_id = ?,
+            name = ?,
+            type = ?,
+            amount = ?,
+            amount_remaining = ?,
+            interest_rate = ?,
+            start_date = ?,
+            due_date = ?,
+            notes = ?,
+            is_active = ?,
+            last_updated = CURRENT_TIMESTAMP
+        WHERE id = ? AND is_deleted = false
+    """;
+
+        try (Connection connection = DbConnection.connect();
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, user.getId());
+            stmt.setString(2, liability.getName());
+            stmt.setString(3, liability.getType());
+            stmt.setBigDecimal(4, liability.getAmount());
+            stmt.setBigDecimal(5, liability.getAmountRemaining());
+            stmt.setBigDecimal(6, liability.getInterestRate());
+            stmt.setDate(7, liability.getStartDate() != null ? java.sql.Date.valueOf(liability.getStartDate()) : null);
+            stmt.setDate(8, liability.getDueDate() != null ? java.sql.Date.valueOf(liability.getDueDate()) : null);
+            stmt.setString(9, liability.getNotes());
+            stmt.setBoolean(10, liability.isActive());
+            stmt.setInt(11, liability.getId());
+
+            int rows = stmt.executeUpdate();
+            if (rows == 0) {
+                throw new SQLException("Updating liability failed, no rows affected.");
+            }
+        }
+    }
+
+
+    @Override
     public List<Liability> searchLiabilities(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate) {
         List<Liability> liabilities = new ArrayList<>();
 

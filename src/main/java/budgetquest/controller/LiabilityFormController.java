@@ -55,7 +55,6 @@ public class LiabilityFormController {
         String interestStr = interestRateField.getText().trim();
         LocalDate startDate = startDatePicker.getValue();
         LocalDate dueDate = dueDatePicker.getValue();
-        String notes = notesArea.getText().trim();
 
 
         if (loggedUser == null) {
@@ -133,7 +132,7 @@ public class LiabilityFormController {
             liability.setName(nameField.getText());
             liability.setType(typeField.getText());
             liability.setAmount(BigDecimal.valueOf(amount));
-            liability.setInterestRate(BigDecimal.valueOf(interestRate == null ? 0.0 : interestRate));
+            liability.setInterestRate(BigDecimal.valueOf(interestRate));
             liability.setStartDate(startDate);
             liability.setDueDate(dueDate);
             liability.setNotes(notesArea.getText());

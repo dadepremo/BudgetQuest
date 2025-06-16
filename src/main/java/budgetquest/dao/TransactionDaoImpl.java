@@ -79,6 +79,34 @@ public class TransactionDaoImpl implements TransactionDao {
         return transactions;
     }
 
+    @Override
+    public void updateTransaction(Transaction transaction) throws SQLException {
+        String sql = """
+        UPDATE transactions
+        SET name = ?, amount = ?, date = ?, description = ?, category_id = ?, user_id = ?
+        WHERE id = ?
+    """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, transaction.getName());
+            stmt.setBigDecimal(2, transaction.getAmount());
+            stmt.setDate(3, transaction.getDate() != null ? java.sql.Date.valueOf(transaction.getDate()) : null);
+            stmt.setString(4, transaction.getDescription());
+
+            if (transaction.getCategoryId() != null) {
+                stmt.setInt(5, transaction.getCategoryId());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+
+            stmt.setInt(6, transaction.getUserId());
+            stmt.setInt(7, transaction.getId());
+
+            stmt.executeUpdate();
+        }
+    }
 
     @Override
     public List<Transaction> findAllByUser(User user) {
@@ -129,7 +157,7 @@ public class TransactionDaoImpl implements TransactionDao {
                 tx.setUserId(rs.getInt("user_id"));
                 tx.setCategoryId(rs.getInt("category_id"));
                 tx.setDate(rs.getDate("date").toLocalDate());
-                tx.setAmount(rs.getBigDecimal("amount").negate());
+                tx.setAmount(rs.getBigDecimal("amount"));
                 tx.setDescription(rs.getString("description"));
                 tx.setName(rs.getString("transaction_name"));
                 tx.setCategoryName(rs.getString("category_name"));

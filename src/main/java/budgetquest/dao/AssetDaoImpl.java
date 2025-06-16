@@ -12,6 +12,40 @@ import java.util.List;
 public class AssetDaoImpl implements AssetDao {
 
     @Override
+    public void updateAsset(Asset asset, User user) throws SQLException {
+        String sql = """
+        UPDATE public.assets
+        SET user_id = ?,
+            "name" = ?,
+            "type" = ?,
+            value = ?,
+            acquired_date = ?,
+            notes = ?,
+            is_liquid = ?,
+            last_updated = CURRENT_TIMESTAMP
+        WHERE id = ? AND is_deleted = false
+    """;
+
+        try (Connection connection = DbConnection.connect();
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, user.getId());
+            stmt.setString(2, asset.getName());
+            stmt.setString(3, asset.getType());
+            stmt.setBigDecimal(4, asset.getValue());
+            stmt.setDate(5, asset.getAcquiredDate() != null ? java.sql.Date.valueOf(asset.getAcquiredDate()) : null);
+            stmt.setString(6, asset.getNotes());
+            stmt.setBoolean(7, asset.isLiquid());
+            stmt.setInt(8, asset.getId());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating asset failed, no rows affected.");
+            }
+        }
+    }
+
+
+    @Override
     public List<Asset> searchAssets(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate) {
         List<Asset> assets = new ArrayList<>();
 

@@ -349,7 +349,124 @@ public class DashboardController {
             logger.info("Refresh manually the first time");
         }
 
+        // Editors openings
+        assetTable.setRowFactory(tv -> {
+            TableRow<Asset> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Asset selectedAsset = row.getItem();
+                    openAssetEditor(selectedAsset);
+                }
+            });
+            return row;
+        });
+
+        liabilityTable.setRowFactory(tv -> {
+            TableRow<Liability> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Liability selectedLiability = row.getItem();
+                    openLiabilityEditor(selectedLiability);
+                }
+            });
+            return row;
+        });
+
+        incomeTable.setRowFactory(tv -> {
+            TableRow<Transaction> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Transaction transaction = row.getItem();
+                    openTransactionEditor(transaction, "income");
+                }
+            });
+            return row;
+        });
+
+        expenseTable.setRowFactory(tv -> {
+            TableRow<Transaction> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Transaction transaction = row.getItem();
+                    openTransactionEditor(transaction, "expense");
+                }
+            });
+            return row;
+        });
+
+
     }
+
+    private void openAssetEditor(Asset asset) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/asset_editor.fxml"));
+            Parent root = loader.load();
+
+            AssetEditorController controller = loader.getController();
+            controller.setAsset(asset, currentUser);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Asset");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            assetTable.refresh();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openLiabilityEditor(Liability liability) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/liability_editor.fxml"));
+            Parent root = loader.load();
+
+            LiabilityEditorController controller = loader.getController();
+            controller.setLiability(liability, currentUser);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Liability");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            liabilityTable.refresh();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openTransactionEditor(Transaction transaction, String type) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/transaction_editor.fxml"));
+            Parent root = loader.load();
+
+            TransactionEditorController controller = loader.getController();
+            controller.setTransaction(transaction, currentUser, type);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle(type.equals("income") ? "Edit Income" : "Edit Expense");
+            stage.showAndWait();
+
+            // Refresh table
+            if (type.equals("income")) {
+                filterIncomeTable();
+            } else {
+                filterExpenseTable();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            MyUtils.showError("Error", "Could not open the editor window.");
+        }
+    }
+
 
 
     private void setTooltips() {

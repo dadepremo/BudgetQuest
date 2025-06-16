@@ -1,5 +1,7 @@
 package budgetquest.dao;
 
-public abstract class AppSettingsDao {
+public interface AppSettingsDao {
+
     public abstract String getSetting(String key);
+
 }

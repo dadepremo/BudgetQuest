@@ -5,6 +5,7 @@ import budgetquest.model.Transaction;
 import budgetquest.model.User;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import java.util.Map;
 public interface TransactionDao {
 
     List<Transaction> getTransactionsByType(int userId, String type, String nameFilter, LocalDate fromDate, LocalDate toDate);
+
+    void updateTransaction(Transaction transaction) throws SQLException;
 
     List<Transaction> findAllByUser(User user);
 

@@ -3,11 +3,14 @@ package budgetquest.dao;
 import budgetquest.model.Liability;
 import budgetquest.model.User;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface LiabilityDao {
+
+    void updateLiability(Liability liability, User user) throws SQLException;
 
     List<Liability> searchLiabilities(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate);
 
