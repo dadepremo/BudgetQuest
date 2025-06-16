@@ -39,11 +39,6 @@ Launch the app
 - Start adding transactions and managing your budget
 - Track your progress and enjoy the gamified experience!
 
-Contributing
-Feel free to fork the project and submit pull requests. Please make sure to update tests as appropriate.
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
