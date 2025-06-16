@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="662.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budgetquest.controller.ExpensesPieChartController">
+   <center>
+       <AnchorPane fx:id="chartContainer" layoutX="100" layoutY="50" prefWidth="400" prefHeight="300" />
+   </center>
+</BorderPane>

@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.DatePicker?>
+<TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="990.0" prefWidth="1577.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budgetquest.controller.DashboardController">
+    <stylesheets>
+        <URL value="@/style/light_theme.css" />
+    </stylesheets>
+
+
+    <tabs>
+    <Tab closable="false" text="Home">
+         <content>
+            <BorderPane prefHeight="682.0" prefWidth="1144.0">
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="dashboardLabel" text="Dashboard">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="usernameLabel" onMouseClicked="#openUserProfile" styleClass="label-link" text="Welcome, user!">
+                           <font>
+                              <Font size="23.0" />
+                           </font>
+                        </Label>
+                         <Label fx:id="dpLabel" onMouseClicked="#handleOpenShop" styleClass="label-link-dpLabel" text="10000 DP">
+                             <font>
+                                 <Font size="17.0" />
+                             </font>
+                         </Label>
+                        <Label fx:id="levelLabel" text="Level 10000">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Label>
+                        <Label text="0 / 5000000 XP" fx:id="xpLabel">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Label>
+                        <ProgressBar prefHeight="29.0" prefWidth="373.0" progress="0.0" fx:id="xpBar">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets></ProgressBar>
+                        <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refresh" text="⟳">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                         <Button fx:id="addTransactionButton" onAction="#handleOpenTransactionForm" text="Add Transaction"
+                                 onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit"
+                                 prefWidth="130" >
+
+                         <font>
+                              <Font size="15.0" />
+                           </font></Button>
+                        <Button fx:id="streakButton" mnemonicParsing="false" onAction="#handleOpenCalendarStreak" scaleShape="false" styleClass="button-fire" text="Streak">
+                           <font>
+                              <Font size="15.0" />
+                           </font></Button>
+                         <Button fx:id="changeThemeButton" onAction="#handleChangeTheme" text="Light">
+                           <font>
+                              <Font size="15.0" />
+                           </font></Button>
+                     </children>
+                      <padding>
+                          <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                      </padding>
+                  </HBox>
+               </top>
+               <left>
+                  <VBox prefHeight="883.0" prefWidth="1509.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Separator prefHeight="0.0" prefWidth="1225.0" />
+                        <Label text="Overview">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <GridPane prefHeight="92.0" prefWidth="1445.0">
+                          <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="64.0" minHeight="10.0" prefHeight="56.0" valignment="CENTER" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="36.0" valignment="CENTER" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#handleOpenAssetForm" prefHeight="32.0" prefWidth="144.0" text="Assets" />
+                              <Label fx:id="assetsLabel" text="1000000 €" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
+                               <Button mnemonicParsing="false" onAction="#handleOpenAddLiabilityForm" prefHeight="32.0" prefWidth="144.0" text="Liabilities" GridPane.columnIndex="1" />
+                              <Label fx:id="liabilitiesLabel" text="1000000 €" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
+                               <Button fx:id="buttonIncomeChart" mnemonicParsing="false" onAction="#handleOpenIncomesPieChart" prefHeight="32.0" prefWidth="144.0" text="Income" GridPane.columnIndex="2" />
+                              <Label fx:id="incomesLabel" text="1000000 €" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
+                               <Button fx:id="buttonExpensesChart" mnemonicParsing="false" onAction="#handleOpenExpensesPieChart" prefHeight="32.0" prefWidth="144.0" text="Expenses" GridPane.columnIndex="3" />
+                              <Label fx:id="expensesLabel" text="1000000 €" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
+                               <Button mnemonicParsing="false" onAction="#handleOpenNetWorthForm" prefHeight="32.0" prefWidth="144.0" text="Net Worth" GridPane.columnIndex="4" />
+                              <Label fx:id="networthLabel" text="1000000 €" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </GridPane>
+                     </children>
+                      <padding>
+                          <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                      </padding>
+                  </VBox>
+               </left>
+            </BorderPane>
+         </content></Tab>
+    <Tab closable="false" text="Assets">
+         <content>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <center>
+                        <TableView fx:id="assetTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <columns>
+                            <TableColumn fx:id="nameColumn" prefWidth="280.0" text="Name" />
+                            <TableColumn fx:id="typeColumn" prefWidth="245.0" text="Type" />
+                              <TableColumn fx:id="valueColumn" prefWidth="313.0" text="Value" />
+                              <TableColumn fx:id="acquiredDateColumn" prefWidth="158.0" text="Acquired Date" />
+                              <TableColumn fx:id="liquidColumn" prefWidth="88.0" text="Liquid?" />
+                              <TableColumn fx:id="notesColumns" prefWidth="424.0" text="Notes" />
+                          </columns>
+                        </TableView>
+                     </center></BorderPane>
+               </center>
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Assets" textFill="green">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleOpenAssetForm" text="+">
+                           <font>
+                              <Font size="15.0" />
+                           </font></Button>
+                         <TextField fx:id="assetSearchField" promptText="Search..." />
+                         <DatePicker fx:id="assetFromDatePicker" />
+                         <DatePicker fx:id="assetToDatePicker" />
+                     </children>
+                      <padding>
+                          <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                      </padding>
+                  </HBox>
+               </top>
+            </BorderPane>
+         </content></Tab>
+      <Tab closable="false" text="Liabilities">
+         <content>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <center>
+                         <TableView fx:id="liabilityTable" prefHeight="400" prefWidth="800">
+                             <columns>
+                                 <TableColumn fx:id="liabilityNameColumn" prefWidth="216.0" text="Name" />
+                                 <TableColumn fx:id="liabilityTypeColumn" prefWidth="193.0" text="Type" />
+                                 <TableColumn fx:id="amountColumn" prefWidth="173.0" text="Amount" />
+                                 <TableColumn fx:id="remainingColumn" prefWidth="201.0" text="Remaining" />
+                                 <TableColumn fx:id="rateColumn" text="Interest Rate" />
+                                 <TableColumn fx:id="startColumn" prefWidth="114.0" text="Start Date" />
+                                 <TableColumn fx:id="dueColumn" prefWidth="111.0" text="Due Date" />
+                                 <TableColumn fx:id="activeColumn" text="Active" />
+                                 <TableColumn fx:id="liabilityNotesColumn" prefWidth="340.0" text="Notes" />
+                             </columns>
+                         </TableView>
+
+                     </center>
+                  </BorderPane>
+               </center>
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Liabilities" textFill="red">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleOpenAddLiabilityForm" text="+">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                         <TextField fx:id="liabilitySearchField" promptText="Search..." />
+                         <DatePicker fx:id="liabilityFromDatePicker" />
+                         <DatePicker fx:id="liabilityToDatePicker" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </top>
+            </BorderPane>
+         </content>
+      </Tab>
+      <Tab closable="false" text="Income">
+         <content>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <center>
+                         <TableView fx:id="incomeTable" prefHeight="850.0" prefWidth="1504.0" BorderPane.alignment="CENTER">
+                             <columns>
+                                 <TableColumn fx:id="incomesNameColumn" prefWidth="200.0" text="Name" />
+                                 <TableColumn fx:id="incomesDateColumn" prefWidth="120.0" text="Date" />
+                                 <TableColumn fx:id="incomesAmountColumn" prefWidth="352.0" text="Amount" />
+                                 <TableColumn fx:id="incomesCategoryColumn" prefWidth="210.0" text="Category" />
+                                 <TableColumn fx:id="incomesDescriptionColumn" prefWidth="621.0" text="Description" />
+                             </columns>
+                         </TableView>
+                     </center>
+                  </BorderPane>
+               </center>
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Income" textFill="GREEN">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleOpenTransactionForm" text="+">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="buttonIncomeChart1" mnemonicParsing="false" onAction="#handleOpenIncomesPieChart" text="Open chart">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                         <TextField fx:id="incomeSearchField" promptText="Search..." />
+                         <DatePicker fx:id="incomeFromDatePicker" />
+                         <DatePicker fx:id="incomeToDatePicker" />
+                         <Button fx:id="uploadTransactionsBtn" text="Import Transactions" onAction="#handleUploadTransactions"/>
+                         <ProgressBar fx:id="progressBarImportTransactions" prefWidth="300" />
+                         <Label fx:id="statusLabelImportTransactions" text="Waiting to import..." />
+
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </top>
+            </BorderPane>
+         </content>
+      </Tab>
+      <Tab closable="false" text="Expenses">
+         <content>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <top>
+                         <TableView fx:id="expenseTable" prefHeight="850.0" prefWidth="1504.0" BorderPane.alignment="CENTER">
+                             <columns>
+                                 <TableColumn fx:id="expensesNameColumn" prefWidth="200.0" text="Name" />
+                                 <TableColumn fx:id="expensesDateColumn" prefWidth="120.0" text="Date" />
+                                 <TableColumn fx:id="expensesAmountColumn" prefWidth="352.0" text="Amount" />
+                                 <TableColumn fx:id="expensesCategoryColumn" prefWidth="210.0" text="Category" />
+                                 <TableColumn fx:id="expensesDescriptionColumn" prefWidth="621.0" text="Description" />
+                             </columns>
+                         </TableView>
+                     </top>
+                  </BorderPane>
+               </center>
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Expenses" textFill="RED">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleOpenTransactionForm" text="+">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="buttonExpensesChart1" mnemonicParsing="false" onAction="#handleOpenExpensesPieChart" text="Open chart">
+                           <font>
+                              <Font size="15.0" />
+                           </font></Button>
+                         <TextField fx:id="expenseSearchField" promptText="Search..." />
+                         <DatePicker fx:id="expenseFromDatePicker" />
+                         <DatePicker fx:id="expenseToDatePicker" />
+                         <Button fx:id="uploadTransactionsBtn1" text="Import Transactions" onAction="#handleUploadTransactions"/>
+                         <ProgressBar fx:id="progressBarImportTransactions1" prefWidth="300" />
+                         <Label fx:id="statusLabelImportTransactions1" text="Waiting to import..." />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </top>
+            </BorderPane>
+         </content>
+      </Tab>
+      <Tab fx:id="netWorthTab" closable="false" text="Net Worth">
+          <content>
+              <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <center>
+                      <VBox spacing="10" VBox.vgrow="ALWAYS">
+                          <LineChart fx:id="lineChart" maxHeight="300" minHeight="500" prefHeight="500" VBox.vgrow="ALWAYS">
+                              <xAxis>
+                                  <CategoryAxis label="Date" />
+                              </xAxis>
+                              <yAxis>
+                                  <NumberAxis label="Net Worth" />
+                              </yAxis>
+                          </LineChart>
+                      </VBox>
+                  </center>
+               <top>
+                  <HBox alignment="CENTER_LEFT" prefHeight="88.0" prefWidth="1504.0" spacing="20.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Net Worth">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleOpenNetWorthForm" text="+">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </top>
+              </BorderPane>
+          </content>
+      </Tab>
+
+        <Tab closable="false" text="Settings" xmlns:fx="http://javafx.com/fxml">
+            <content>
+                <ScrollPane fitToWidth="true">
+                    <content>
+                        <VBox spacing="20" style="-fx-background-color: #f9f9f9;">
+                            <padding>
+                                <Insets bottom="20" left="20" right="20" top="20" />
+                            </padding>
+
+                            <!-- Titolo -->
+                            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Settings" />
+
+                            <!-- Sezione: Informazioni Utente -->
+                            <TitledPane text="User Profile">
+                                <VBox spacing="10">
+                                    <padding>
+                                        <Insets bottom="10" left="10" right="10" top="10" />
+                                    </padding>
+
+                                    <HBox spacing="10">
+                                        <Label text="Username:" />
+                                        <TextField fx:id="usernameField" promptText="Username" />
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Label text="Email:" />
+                                        <TextField fx:id="emailField" promptText="Email" />
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Label text="First name:" />
+                                        <TextField fx:id="firstNameField" promptText="Name" />
+                                        <Label text="Last name:" />
+                                        <TextField fx:id="lastNameField" promptText="Last name" />
+                                    </HBox>
+                                    <Button onAction="#handleSaveProfile" text="Save" />
+                                </VBox>
+                            </TitledPane>
+
+                            <!-- Sezione: Tema -->
+                            <TitledPane expanded="false" text="Theme">
+                                <VBox spacing="10">
+                                    <padding>
+                                        <Insets bottom="10" left="10" right="10" top="10" />
+                                    </padding>
+
+                                    <Label text="Preferred theme:" />
+                                    <ChoiceBox fx:id="themeChoiceBox">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="Light" />
+                                                <String fx:value="Dark" />
+                                                <String fx:value="System" />
+                                            </FXCollections>
+                                        </items>
+                                    </ChoiceBox>
+                                    <Button onAction="#handleApplyTheme" text="Apply theme" />
+                                </VBox>
+                            </TitledPane>
+
+                            <!-- Sezione: Valuta -->
+                            <TitledPane expanded="false" text="Preferred currency">
+                                <VBox spacing="10">
+                                    <padding>
+                                        <Insets bottom="10" left="10" right="10" top="10" />
+                                    </padding>
+
+                                    <Label text="Select currency:" />
+                                    <ChoiceBox fx:id="currencyChoiceBox">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="EUR (€)" />
+                                                <String fx:value="USD ($)" />
+                                                <String fx:value="AED (د.إ)" />
+                                                <String fx:value="JPY (¥)" />
+                                            </FXCollections>
+                                        </items>
+                                    </ChoiceBox>
+                                    <Button onAction="#handleUpdateCurrency" text="Update currency" />
+                                </VBox>
+                            </TitledPane>
+
+                            <!-- Sezione: Sicurezza -->
+                            <TitledPane expanded="false" text="Security">
+                                <VBox spacing="10">
+                                    <padding>
+                                        <Insets bottom="10" left="10" right="10" top="10" />
+                                    </padding>
+
+                                    <PasswordField fx:id="currentPasswordField" promptText="Your password" />
+                                    <PasswordField fx:id="newPasswordField" promptText="New password" />
+                                    <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password" />
+                                    <Button onAction="#handleChangePassword" text="Change Password" />
+                                </VBox>
+                            </TitledPane>
+
+                            <!-- Logout -->
+                            <HBox alignment="CENTER_RIGHT">
+                                <Button onAction="#handleLogout" prefHeight="30" prefWidth="100" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 18px" styleClass="button" text="Logout" />
+                            </HBox>
+
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </content>
+        </Tab>
+
+    </tabs>
+</TabPane>

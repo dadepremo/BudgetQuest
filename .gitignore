@@ -27,3 +27,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+src/main/java/budgetquest/utils/DbConnection.java
+src/main/java/budgetquest/scripts/achievements.sql
+src/main/java/budgetquest/scripts/create_database.sql
+src/main/java/budgetquest/scripts/full_export.sql
+src/main/java/budgetquest/scripts/full_export15062025.sql
+src/main/java/budgetquest/scripts/transactions_creator.sql
