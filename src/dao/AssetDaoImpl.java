@@ -4,14 +4,79 @@ import model.User;
 import utils.DbConnection;
 import model.Asset;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssetDaoImpl implements AssetDao {
+
+    @Override
+    public List<Asset> searchAssets(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate) {
+        List<Asset> assets = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("""
+        SELECT *
+        FROM assets
+        WHERE user_id = ?
+          AND is_deleted = false
+          AND (name ILIKE ? OR type ILIKE ? OR notes ILIKE ?)
+    """);
+
+        if (fromDate != null) {
+            sql.append(" AND acquired_date >= ? ");
+        }
+        if (toDate != null) {
+            sql.append(" AND acquired_date <= ? ");
+        }
+
+        sql.append(" ORDER BY acquired_date DESC ");
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            stmt.setInt(paramIndex++, userId);
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+
+            if (fromDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(fromDate));
+            }
+            if (toDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Date acquiredDateSql = rs.getDate("acquired_date");
+                LocalDate acquiredDate = (acquiredDateSql != null) ? acquiredDateSql.toLocalDate() : null;
+
+                Asset asset = new Asset(
+                        rs.getInt("id"),
+                        rs.getInt("user_id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getBigDecimal("value"),
+                        acquiredDate,
+                        rs.getString("notes"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("last_updated"),
+                        rs.getBoolean("is_deleted"),
+                        rs.getBoolean("is_liquid")
+                );
+
+                assets.add(asset);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return assets;
+    }
+
 
     @Override
     public boolean insertAsset(Asset asset) {

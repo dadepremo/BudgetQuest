@@ -3,10 +3,13 @@ package dao;
 import model.Liability;
 import model.User;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface LiabilityDao {
+
+    List<Liability> searchLiabilities(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate);
 
     boolean insert(Liability liability);
 

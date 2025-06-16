@@ -11,9 +11,72 @@ import utils.MyUtils;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 public class TransactionDaoImpl implements TransactionDao {
+
+    @Override
+    public List<Transaction> getTransactionsByType(int userId, String type, String nameFilter, LocalDate fromDate, LocalDate toDate) {
+        List<Transaction> transactions = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("""
+        SELECT t.id, t.user_id, t.category_id, t.date, t.amount, t.description, t.name,
+               c.name AS category_name
+        FROM transactions t
+        LEFT JOIN categories c ON t.category_id = c.id AND c.is_deleted = false
+        WHERE t.user_id = ?
+          AND (c.type = ? OR c.type IS NULL)
+          AND (t.name ILIKE ? OR c.name ILIKE ?)
+    """);
+
+        if (fromDate != null) {
+            sql.append(" AND t.date >= ? ");
+        }
+        if (toDate != null) {
+            sql.append(" AND t.date <= ? ");
+        }
+
+        sql.append(" ORDER BY t.date DESC ");
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+
+            stmt.setInt(paramIndex++, userId);
+            stmt.setString(paramIndex++, type);
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+
+            if (fromDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(fromDate));
+            }
+            if (toDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Transaction tx = new Transaction(
+                        rs.getInt("id"),
+                        rs.getInt("user_id"),
+                        rs.getInt("category_id"),
+                        rs.getDate("date").toLocalDate(),
+                        rs.getBigDecimal("amount"),
+                        rs.getString("description"),
+                        rs.getString("name")
+                );
+                tx.setCategoryName(rs.getString("category_name"));
+                transactions.add(tx);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return transactions;
+    }
+
 
     @Override
     public List<Transaction> findAllByUser(User user) {
@@ -29,7 +92,6 @@ public class TransactionDaoImpl implements TransactionDao {
                 Transaction tx = new Transaction();
                 tx.setId(rs.getInt("id"));
                 tx.setUserId(rs.getInt("user_id"));
-                tx.setAccountId(rs.getObject("account_id") != null ? rs.getInt("account_id") : null);
                 tx.setCategoryId(rs.getObject("category_id") != null ? rs.getInt("category_id") : null);
                 tx.setDate(rs.getDate("date").toLocalDate());
                 tx.setAmount(rs.getBigDecimal("amount"));

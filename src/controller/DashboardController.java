@@ -37,6 +37,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 // Controller class for the main dashboard screen
 public class DashboardController {
@@ -113,6 +114,14 @@ public class DashboardController {
     @FXML private TableColumn<Transaction, String> incomesCategoryColumn;
     @FXML private TableColumn<Transaction, String> incomesDescriptionColumn;
 
+    @FXML private TextField incomeSearchField, expenseSearchField;
+    @FXML private DatePicker incomeFromDatePicker, incomeToDatePicker;
+    @FXML private DatePicker expenseFromDatePicker, expenseToDatePicker;
+    @FXML private TextField assetSearchField;
+    @FXML private DatePicker assetFromDatePicker, assetToDatePicker;
+    @FXML private TextField liabilitySearchField;
+    @FXML private DatePicker liabilityFromDatePicker, liabilityToDatePicker;
+
     // Line chart to visualize net worth history
     @FXML private LineChart<String, Number> lineChart;
     @FXML private Tab netWorthTab;
@@ -136,7 +145,32 @@ public class DashboardController {
         this.assetDao = new AssetDaoImpl();
         this.liabilityDao = new LiabilityDaoImpl();
 
-        // User owns this shop items?
+        incomeFromDatePicker.setValue(LocalDate.now().minusMonths(1));
+        incomeToDatePicker.setValue(LocalDate.now());
+        expenseFromDatePicker.setValue(LocalDate.now().minusMonths(1));
+        expenseToDatePicker.setValue(LocalDate.now());
+
+        filterAssetTable();
+        filterIncomeTable();
+        filterExpenseTable();
+        filterLiabilityTable();
+
+        assetSearchField.textProperty().addListener((obs, oldVal, newVal) -> filterAssetTable());
+        assetFromDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> filterAssetTable());
+        assetToDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> filterAssetTable());
+
+        incomeSearchField.textProperty().addListener((obs, old, newVal) -> filterIncomeTable());
+        incomeFromDatePicker.valueProperty().addListener((obs, old, newVal) -> filterIncomeTable());
+        incomeToDatePicker.valueProperty().addListener((obs, old, newVal) -> filterIncomeTable());
+
+        expenseSearchField.textProperty().addListener((obs, old, newVal) -> filterExpenseTable());
+        expenseFromDatePicker.valueProperty().addListener((obs, old, newVal) -> filterExpenseTable());
+        expenseToDatePicker.valueProperty().addListener((obs, old, newVal) -> filterExpenseTable());
+
+        liabilitySearchField.textProperty().addListener((obs, old, newVal) -> filterLiabilityTable());
+        liabilityFromDatePicker.valueProperty().addListener((obs, old, newVal) -> filterLiabilityTable());
+        liabilityToDatePicker.valueProperty().addListener((obs, old, newVal) -> filterLiabilityTable());
+
         if (shopItemDao.getItemByNameForUser("Dashboard Title Animation", user.getId()) != null) {
             animateDashboardLabel();
         }
@@ -144,10 +178,19 @@ public class DashboardController {
         Logger.info("Dashboard infos displayed");
 
         // Display user info and level
-        usernameLabel.setText(shopItemDao.getItemByNameForUser("Make your username BIG", user.getId()) != null ? "Welcome, " + user.getUsername().toUpperCase() + "!" : "Welcome, " + user.getUsername() + "!");
+        if (shopItemDao.getItemByNameForUser("Welcome!", user.getId()) != null) {
+            MyUtils.animateTyping(usernameLabel, shopItemDao.getItemByNameForUser("Make your username BIG", user.getId()) != null ? "Welcome, " + user.getUsername().toUpperCase() + "!" : "Welcome, " + user.getUsername() + "!", Duration.millis(100), Duration.millis(1000));
+        } else {
+            usernameLabel.setText(shopItemDao.getItemByNameForUser("Make your username BIG", user.getId()) != null ? "Welcome, " + user.getUsername().toUpperCase() + "!" : "Welcome, " + user.getUsername() + "!");
+        }
         levelLabel.setText("Level " + user.getLevel());
         xpLabel.setText(MyUtils.formatInt(user.getXp()) + " / " + MyUtils.formatInt(((user.getLevel() + 1) * 500)) + " XP");
-        dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
+
+        if (shopItemDao.getItemByNameForUser("Points animation", user.getId()) != null) {
+            MyUtils.animateNumber(dpLabel, user.getPoints(), Duration.seconds(5), true, "DP", Duration.millis(2000));
+        } else {
+            dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
+        }
 
         if (shopItemDao.getItemByNameForUser("Bicolor Xp Bar", user.getId()) == null) {
             xpBar.setProgress((double) user.getXp() / ((user.getLevel() + 1) * 500));
@@ -391,17 +434,16 @@ public class DashboardController {
         }
     }
 
-
     public void switchToLightTheme() {
         changeThemeButton.setText("Dark");
         tabPane.getStylesheets().clear();
-        tabPane.getStylesheets().add(getClass().getResource("/style/light_theme.css").toExternalForm());
+        tabPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/light_theme.css")).toExternalForm());
     }
 
     public void switchToDarkTheme() {
         changeThemeButton.setText("Light");
         tabPane.getStylesheets().clear();
-        tabPane.getStylesheets().add(getClass().getResource("/style/dark_theme.css").toExternalForm());
+        tabPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/dark_theme.css")).toExternalForm());
     }
 
     public void animateProgressBar(double targetProgress) {
@@ -516,6 +558,48 @@ public class DashboardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void filterIncomeTable() {
+        List<Transaction> result = transactionDao.getTransactionsByType(
+                currentUser.getId(),
+                "income",
+                incomeSearchField.getText(),
+                incomeFromDatePicker.getValue(),
+                incomeToDatePicker.getValue()
+        );
+        incomeTable.setItems(FXCollections.observableArrayList(result));
+    }
+
+    private void filterExpenseTable() {
+        List<Transaction> result = transactionDao.getTransactionsByType(
+                currentUser.getId(),
+                "expense",
+                expenseSearchField.getText(),
+                expenseFromDatePicker.getValue(),
+                expenseToDatePicker.getValue()
+        );
+        expenseTable.setItems(FXCollections.observableArrayList(result));
+    }
+
+    private void filterAssetTable() {
+        List<Asset> filtered = assetDao.searchAssets(
+                currentUser.getId(),
+                assetSearchField.getText(),
+                assetFromDatePicker.getValue(),
+                assetToDatePicker.getValue()
+        );
+        assetTable.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    private void filterLiabilityTable() {
+        List<Liability> filtered = liabilityDao.searchLiabilities(
+                currentUser.getId(),
+                liabilitySearchField.getText(),
+                liabilityFromDatePicker.getValue(),
+                liabilityToDatePicker.getValue()
+        );
+        liabilityTable.setItems(FXCollections.observableArrayList(filtered));
     }
 
     @FXML

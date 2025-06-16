@@ -13,6 +13,76 @@ import java.util.Optional;
 
 public class LiabilityDaoImpl implements LiabilityDao {
 
+    @Override
+    public List<Liability> searchLiabilities(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate) {
+        List<Liability> liabilities = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("""
+        SELECT *
+        FROM liabilities
+        WHERE user_id = ?
+          AND is_deleted = false
+          AND (name ILIKE ? OR type ILIKE ? OR notes ILIKE ?)
+    """);
+
+        if (fromDate != null) {
+            sql.append(" AND start_date >= ? ");
+        }
+        if (toDate != null) {
+            sql.append(" AND due_date <= ? ");
+        }
+
+        sql.append(" ORDER BY start_date DESC ");
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            stmt.setInt(paramIndex++, userId);
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+            stmt.setString(paramIndex++, "%" + nameFilter + "%");
+
+            if (fromDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(fromDate));
+            }
+            if (toDate != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Liability liability = new Liability();
+                liability.setId(rs.getInt("id"));
+                liability.setUserId(rs.getInt("user_id"));
+                liability.setName(rs.getString("name"));
+                liability.setType(rs.getString("type"));
+                liability.setAmount(rs.getBigDecimal("amount"));
+                liability.setAmountRemaining(rs.getBigDecimal("amount_remaining"));
+                liability.setInterestRate(rs.getBigDecimal("interest_rate"));
+
+                java.sql.Date startDateSql = rs.getDate("start_date");
+                liability.setStartDate(startDateSql != null ? startDateSql.toLocalDate() : null);
+
+                java.sql.Date dueDateSql = rs.getDate("due_date");
+                liability.setDueDate(dueDateSql != null ? dueDateSql.toLocalDate() : null);
+
+                liability.setNotes(rs.getString("notes"));
+                liability.setActive(rs.getBoolean("is_active"));
+                liability.setDeleted(rs.getBoolean("is_deleted"));
+                liability.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                liability.setLastUpdated(rs.getTimestamp("last_updated").toLocalDateTime());
+
+                liabilities.add(liability);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return liabilities;
+    }
+
 
     @Override
     public boolean insert(Liability liability) {

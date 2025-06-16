@@ -11,6 +11,8 @@ import java.util.Map;
 
 public interface TransactionDao {
 
+    List<Transaction> getTransactionsByType(int userId, String type, String nameFilter, LocalDate fromDate, LocalDate toDate);
+
     List<Transaction> findAllByUser(User user);
 
     List<Transaction> findAllIncomesByUser(User user);

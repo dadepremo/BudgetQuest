@@ -6,7 +6,6 @@ import java.time.LocalDate;
 public class Transaction {
     private int id;
     private int userId;
-    private Integer accountId; // nullable
     private Integer categoryId; // nullable
     private LocalDate date;
     private BigDecimal amount;
@@ -14,15 +13,17 @@ public class Transaction {
     private String name;
     private String categoryName;
 
-    public Transaction(int id, int userId, Integer accountId, Integer categoryId, LocalDate date, BigDecimal amount, String description, String name) {
+    public Transaction(int id, int userId, Integer categoryId, LocalDate date, BigDecimal amount, String description, String name) {
         this.id = id;
         this.userId = userId;
-        this.accountId = accountId;
         this.categoryId = categoryId;
         this.date = date;
         this.amount = amount;
         this.description = description;
         this.name = name;
+    }
+
+    public Transaction() {
     }
 
     public String getCategoryName() {
@@ -31,9 +32,6 @@ public class Transaction {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
-    }
-
-    public Transaction() {
     }
 
     public int getId() {
@@ -50,14 +48,6 @@ public class Transaction {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
     }
 
     public Integer getCategoryId() {
@@ -100,4 +90,3 @@ public class Transaction {
         this.name = name;
     }
 }
-

@@ -32,6 +32,14 @@
     -fx-background-color: #cce5ff;
 }
 
+.table-cell {
+    -fx-text-fill: black; /* default text color */
+}
+
+.table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: black; /* text color when selected */
+}
+
 .progress-bar {
     -fx-accent: #42a5f5;
 }

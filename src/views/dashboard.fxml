@@ -28,6 +28,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.DatePicker?>
 <TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="990.0" prefWidth="1577.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
     <stylesheets>
         <URL value="@/style/light_theme.css" />
@@ -194,6 +195,9 @@
                            <font>
                               <Font size="15.0" />
                            </font></Button>
+                         <TextField fx:id="assetSearchField" promptText="Search..." />
+                         <DatePicker fx:id="assetFromDatePicker" />
+                         <DatePicker fx:id="assetToDatePicker" />
                      </children>
                       <padding>
                           <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -238,6 +242,9 @@
                               <Font size="15.0" />
                            </font>
                         </Button>
+                         <TextField fx:id="liabilitySearchField" promptText="Search..." />
+                         <DatePicker fx:id="liabilityFromDatePicker" />
+                         <DatePicker fx:id="liabilityToDatePicker" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -283,6 +290,10 @@
                               <Font size="15.0" />
                            </font>
                         </Button>
+                         <TextField fx:id="incomeSearchField" promptText="Search..." />
+                         <DatePicker fx:id="incomeFromDatePicker" />
+                         <DatePicker fx:id="incomeToDatePicker" />
+
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -327,6 +338,10 @@
                            <font>
                               <Font size="15.0" />
                            </font></Button>
+                         <TextField fx:id="expenseSearchField" promptText="Search..." />
+                         <DatePicker fx:id="expenseFromDatePicker" />
+                         <DatePicker fx:id="expenseToDatePicker" />
+
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -384,10 +399,10 @@
                             </padding>
 
                             <!-- Titolo -->
-                            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Impostazioni" />
+                            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Settings" />
 
                             <!-- Sezione: Informazioni Utente -->
-                            <TitledPane expanded="true" text="Profilo Utente">
+                            <TitledPane text="User Profile">
                                 <VBox spacing="10">
                                     <padding>
                                         <Insets bottom="10" left="10" right="10" top="10" />
@@ -402,23 +417,23 @@
                                         <TextField fx:id="emailField" promptText="Email" />
                                     </HBox>
                                     <HBox spacing="10">
-                                        <Label text="Nome:" />
-                                        <TextField fx:id="firstNameField" promptText="Nome" />
-                                        <Label text="Cognome:" />
-                                        <TextField fx:id="lastNameField" promptText="Cognome" />
+                                        <Label text="First name:" />
+                                        <TextField fx:id="firstNameField" promptText="Name" />
+                                        <Label text="Last name:" />
+                                        <TextField fx:id="lastNameField" promptText="Last name" />
                                     </HBox>
-                                    <Button onAction="#handleSaveProfile" text="Salva Profilo" />
+                                    <Button onAction="#handleSaveProfile" text="Save" />
                                 </VBox>
                             </TitledPane>
 
                             <!-- Sezione: Tema -->
-                            <TitledPane expanded="false" text="Tema">
+                            <TitledPane expanded="false" text="Theme">
                                 <VBox spacing="10">
                                     <padding>
                                         <Insets bottom="10" left="10" right="10" top="10" />
                                     </padding>
 
-                                    <Label text="Tema preferito:" />
+                                    <Label text="Preferred theme:" />
                                     <ChoiceBox fx:id="themeChoiceBox">
                                         <items>
                                             <FXCollections fx:factory="observableArrayList">
@@ -428,18 +443,18 @@
                                             </FXCollections>
                                         </items>
                                     </ChoiceBox>
-                                    <Button onAction="#handleApplyTheme" text="Applica Tema" />
+                                    <Button onAction="#handleApplyTheme" text="Apply theme" />
                                 </VBox>
                             </TitledPane>
 
                             <!-- Sezione: Valuta -->
-                            <TitledPane expanded="false" text="Valuta Preferita">
+                            <TitledPane expanded="false" text="Preferred currency">
                                 <VBox spacing="10">
                                     <padding>
                                         <Insets bottom="10" left="10" right="10" top="10" />
                                     </padding>
 
-                                    <Label text="Seleziona valuta:" />
+                                    <Label text="Select currency:" />
                                     <ChoiceBox fx:id="currencyChoiceBox">
                                         <items>
                                             <FXCollections fx:factory="observableArrayList">
@@ -450,21 +465,21 @@
                                             </FXCollections>
                                         </items>
                                     </ChoiceBox>
-                                    <Button onAction="#handleUpdateCurrency" text="Aggiorna Valuta" />
+                                    <Button onAction="#handleUpdateCurrency" text="Update currency" />
                                 </VBox>
                             </TitledPane>
 
                             <!-- Sezione: Sicurezza -->
-                            <TitledPane expanded="false" text="Sicurezza">
+                            <TitledPane expanded="false" text="Security">
                                 <VBox spacing="10">
                                     <padding>
                                         <Insets bottom="10" left="10" right="10" top="10" />
                                     </padding>
 
-                                    <PasswordField fx:id="currentPasswordField" promptText="Password attuale" />
-                                    <PasswordField fx:id="newPasswordField" promptText="Nuova password" />
-                                    <PasswordField fx:id="confirmPasswordField" promptText="Conferma nuova password" />
-                                    <Button onAction="#handleChangePassword" text="Cambia Password" />
+                                    <PasswordField fx:id="currentPasswordField" promptText="Your password" />
+                                    <PasswordField fx:id="newPasswordField" promptText="New password" />
+                                    <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password" />
+                                    <Button onAction="#handleChangePassword" text="Change Password" />
                                 </VBox>
                             </TitledPane>
 
