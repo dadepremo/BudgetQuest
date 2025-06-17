@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.AnchorPane;
 import budgetquest.model.User;
 
 import java.math.BigDecimal;
@@ -38,7 +39,21 @@ public class IncomePieChartController {
         pieChart.setLegendVisible(true);
         pieChart.setLabelsVisible(true);
 
+        // Optional: improve appearance
+        pieChart.setClockwise(true);
+        pieChart.setStartAngle(90);
+
+        // Bind chart size to container
+        pieChart.prefWidthProperty().bind(chartContainer.widthProperty());
+        pieChart.prefHeightProperty().bind(chartContainer.heightProperty());
+
         chartContainer.getChildren().clear();
         chartContainer.getChildren().add(pieChart);
+
+        // OR anchor it to all sides (alternative to binding)
+        AnchorPane.setTopAnchor(pieChart, 0.0);
+        AnchorPane.setBottomAnchor(pieChart, 0.0);
+        AnchorPane.setLeftAnchor(pieChart, 0.0);
+        AnchorPane.setRightAnchor(pieChart, 0.0);
     }
 }

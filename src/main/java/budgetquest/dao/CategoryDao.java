@@ -17,5 +17,6 @@ public interface CategoryDao {
 
     Category findCategorieByUserAndTypeAndName(User currentUser, String type, String name);
 
+    void update(Category c, int userId);
 }
 

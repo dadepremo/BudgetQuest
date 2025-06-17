@@ -41,5 +41,12 @@ public class ExpensesPieChartController {
 
         chartContainer.getChildren().clear();
         chartContainer.getChildren().add(pieChart);
+
+        // This makes it fill the AnchorPane
+        AnchorPane.setTopAnchor(pieChart, 0.0);
+        AnchorPane.setBottomAnchor(pieChart, 0.0);
+        AnchorPane.setLeftAnchor(pieChart, 0.0);
+        AnchorPane.setRightAnchor(pieChart, 0.0);
     }
+
 }

@@ -6,14 +6,14 @@ import java.sql.SQLException;
 
 public class DbConnection {
 
-    private static String jdbcUrl = "jdbc:postgresql://localhost:5432/budgetquest"; // default to DEV
+    private static String jdbcUrl = "jdbc:postgresql://localhost:5432/budgetquest_DEV"; // default to DEV
     private static final String USER = "postgres";
     private static final String PASS = "root";
 
     public static void setEnvironment(String env) {
         switch (env.toLowerCase()) {
             case "prod" -> jdbcUrl = "jdbc:postgresql://localhost:5432/budgetquest_PROD";
-            case "dev" -> jdbcUrl = "jdbc:postgresql://localhost:5432/budgetquest";
+            case "dev" -> jdbcUrl = "jdbc:postgresql://localhost:5432/budgetquest_DEV";
             default -> throw new IllegalArgumentException("Unknown environment: " + env);
         }
     }

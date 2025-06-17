@@ -27,23 +27,55 @@ public class LiabilityDaoImpl implements LiabilityDao {
             due_date = ?,
             notes = ?,
             is_active = ?,
-            last_updated = CURRENT_TIMESTAMP
+            last_updated = CURRENT_TIMESTAMP,
+            payment_frequency = ?,
+            next_payment_due = ?,
+            minimum_payment = ?,
+            liability_status = ?,
+            category = ?,
+            total_paid = ?,
+            last_payment_date = ?,
+            creditor_name = ?,
+            creditor_contact = ?,
+            reminder_enabled = ?,
+            reminder_days_before = ?,
+            monthly_payment = ?
         WHERE id = ? AND is_deleted = false
     """;
 
         try (Connection connection = DbConnection.connect();
-                PreparedStatement stmt = connection.prepareStatement(sql)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
             stmt.setInt(1, user.getId());
             stmt.setString(2, liability.getName());
             stmt.setString(3, liability.getType());
             stmt.setBigDecimal(4, liability.getAmount());
             stmt.setBigDecimal(5, liability.getAmountRemaining());
             stmt.setBigDecimal(6, liability.getInterestRate());
-            stmt.setDate(7, liability.getStartDate() != null ? java.sql.Date.valueOf(liability.getStartDate()) : null);
-            stmt.setDate(8, liability.getDueDate() != null ? java.sql.Date.valueOf(liability.getDueDate()) : null);
+            stmt.setObject(7, liability.getStartDate());
+            stmt.setObject(8, liability.getDueDate());
             stmt.setString(9, liability.getNotes());
             stmt.setBoolean(10, liability.isActive());
-            stmt.setInt(11, liability.getId());
+            stmt.setString(11, liability.getPaymentFrequency());
+            stmt.setObject(12, liability.getNextPaymentDue());
+            stmt.setBigDecimal(13, liability.getMinimumPayment());
+            stmt.setString(14, liability.getLiabilityStatus());
+            stmt.setString(15, liability.getCategory());
+            stmt.setBigDecimal(16, liability.getTotalPaid());
+            stmt.setObject(17, liability.getLastPaymentDate());
+            stmt.setString(18, liability.getCreditorName());
+            stmt.setString(19, liability.getCreditorContact());
+            stmt.setBoolean(20, liability.isReminderEnabled());
+
+            if (liability.getReminderDaysBefore() != null) {
+                stmt.setInt(21, liability.getReminderDaysBefore());
+            } else {
+                stmt.setNull(21, Types.INTEGER);
+            }
+
+            stmt.setBigDecimal(22, liability.getMonthlyPayment());
+
+            stmt.setInt(23, liability.getId());
 
             int rows = stmt.executeUpdate();
             if (rows == 0) {
@@ -51,7 +83,6 @@ public class LiabilityDaoImpl implements LiabilityDao {
             }
         }
     }
-
 
     @Override
     public List<Liability> searchLiabilities(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate) {
@@ -112,6 +143,18 @@ public class LiabilityDaoImpl implements LiabilityDao {
                 liability.setDeleted(rs.getBoolean("is_deleted"));
                 liability.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 liability.setLastUpdated(rs.getTimestamp("last_updated").toLocalDateTime());
+                liability.setPaymentFrequency(rs.getString("payment_frequency"));
+                liability.setNextPaymentDue(rs.getObject("next_payment_due", LocalDate.class));
+                liability.setMinimumPayment(rs.getBigDecimal("minimum_payment"));
+                liability.setLiabilityStatus(rs.getString("liability_status"));
+                liability.setCategory(rs.getString("category"));
+                liability.setTotalPaid(rs.getBigDecimal("total_paid"));
+                liability.setLastPaymentDate(rs.getObject("last_payment_date", LocalDate.class));
+                liability.setCreditorName(rs.getString("creditor_name"));
+                liability.setCreditorContact(rs.getString("creditor_contact"));
+                liability.setReminderEnabled(rs.getBoolean("reminder_enabled"));
+                liability.setReminderDaysBefore(rs.getObject("reminder_days_before") != null ? rs.getInt("reminder_days_before") : null);
+                liability.setMonthlyPayment(rs.getBigDecimal("monthly_payment"));
 
                 liabilities.add(liability);
             }
@@ -123,15 +166,20 @@ public class LiabilityDaoImpl implements LiabilityDao {
         return liabilities;
     }
 
-
     @Override
-    public boolean insert(Liability liability) {
-        String sql = "INSERT INTO liabilities (user_id, name, type, amount, amount_remaining, interest_rate, " +
-                "start_date, due_date, notes, is_active, created_at, last_updated, is_deleted) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean insert(Liability liability, int userId) {
+        String sql = "INSERT INTO liabilities (" +
+                "user_id, name, type, amount, amount_remaining, interest_rate, " +
+                "start_date, due_date, notes, is_active, created_at, last_updated, is_deleted, " +
+                "payment_frequency, next_payment_due, minimum_payment, liability_status, category, " +
+                "total_paid, last_payment_date, creditor_name, creditor_contact, " +
+                "reminder_enabled, reminder_days_before, monthly_payment" +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection connection = DbConnection.connect(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, liability.getUserId());
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, userId);
             stmt.setString(2, liability.getName());
             stmt.setString(3, liability.getType());
             stmt.setBigDecimal(4, liability.getAmount());
@@ -144,6 +192,24 @@ public class LiabilityDaoImpl implements LiabilityDao {
             stmt.setObject(11, liability.getCreatedAt());
             stmt.setObject(12, liability.getLastUpdated());
             stmt.setBoolean(13, liability.isDeleted());
+            stmt.setString(14, liability.getPaymentFrequency());
+            stmt.setObject(15, liability.getNextPaymentDue());
+            stmt.setBigDecimal(16, liability.getMinimumPayment());
+            stmt.setString(17, liability.getLiabilityStatus());
+            stmt.setString(18, liability.getCategory());
+            stmt.setBigDecimal(19, liability.getTotalPaid());
+            stmt.setObject(20, liability.getLastPaymentDate());
+            stmt.setString(21, liability.getCreditorName());
+            stmt.setString(22, liability.getCreditorContact());
+            stmt.setBoolean(23, liability.isReminderEnabled());
+
+            if (liability.getReminderDaysBefore() != null) {
+                stmt.setInt(24, liability.getReminderDaysBefore());
+            } else {
+                stmt.setNull(24, Types.INTEGER);
+            }
+
+            stmt.setBigDecimal(25, liability.getMonthlyPayment());
 
             stmt.executeUpdate();
 
@@ -180,7 +246,7 @@ public class LiabilityDaoImpl implements LiabilityDao {
     @Override
     public double sumAllLiabilitiesAmount(User user) {
         String sql = """
-        SELECT SUM(amount) as summed_liabilities FROM liabilities WHERE user_id = ? AND is_deleted = false
+        SELECT SUM(amount_remaining) as summed_liabilities FROM liabilities WHERE user_id = ? AND is_deleted = false
         """;
 
         try (Connection conn = DbConnection.connect();
@@ -223,9 +289,14 @@ public class LiabilityDaoImpl implements LiabilityDao {
     @Override
     public void update(Liability liability) {
         String sql = "UPDATE liabilities SET name = ?, type = ?, amount = ?, amount_remaining = ?, interest_rate = ?, " +
-                "start_date = ?, due_date = ?, notes = ?, is_active = ?, last_updated = ?, is_deleted = ? WHERE id = ?";
+                "start_date = ?, due_date = ?, notes = ?, is_active = ?, last_updated = ?, is_deleted = ?, " +
+                "payment_frequency = ?, next_payment_due = ?, minimum_payment = ?, liability_status = ?, " +
+                "category = ?, total_paid = ?, last_payment_date = ?, creditor_name = ?, creditor_contact = ?, " +
+                "reminder_enabled = ?, reminder_days_before = ?, monthly_payment = ? WHERE id = ?";
 
-        try (Connection connection = DbConnection.connect(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
             stmt.setString(1, liability.getName());
             stmt.setString(2, liability.getType());
             stmt.setBigDecimal(3, liability.getAmount());
@@ -237,7 +308,27 @@ public class LiabilityDaoImpl implements LiabilityDao {
             stmt.setBoolean(9, liability.isActive());
             stmt.setObject(10, liability.getLastUpdated());
             stmt.setBoolean(11, liability.isDeleted());
-            stmt.setInt(12, liability.getId());
+
+            // New fields
+            stmt.setString(12, liability.getPaymentFrequency());
+            stmt.setObject(13, liability.getNextPaymentDue());
+            stmt.setBigDecimal(14, liability.getMinimumPayment());
+            stmt.setString(15, liability.getLiabilityStatus());
+            stmt.setString(16, liability.getCategory());
+            stmt.setBigDecimal(17, liability.getTotalPaid());
+            stmt.setObject(18, liability.getLastPaymentDate());
+            stmt.setString(19, liability.getCreditorName());
+            stmt.setString(20, liability.getCreditorContact());
+            stmt.setBoolean(21, liability.isReminderEnabled());
+            if (liability.getReminderDaysBefore() != null) {
+                stmt.setInt(22, liability.getReminderDaysBefore());
+            } else {
+                stmt.setNull(22, Types.INTEGER);
+            }
+            stmt.setBigDecimal(23, liability.getMonthlyPayment());
+
+            // WHERE clause
+            stmt.setInt(24, liability.getId());
 
             stmt.executeUpdate();
 
@@ -245,6 +336,7 @@ public class LiabilityDaoImpl implements LiabilityDao {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void delete(int id) {
@@ -277,6 +369,21 @@ public class LiabilityDaoImpl implements LiabilityDao {
         liability.setLastUpdated(rs.getObject("last_updated", LocalDateTime.class));
         liability.setDeleted(rs.getBoolean("is_deleted"));
 
+        // Extended fields
+        liability.setPaymentFrequency(rs.getString("payment_frequency"));
+        liability.setNextPaymentDue(rs.getObject("next_payment_due", LocalDate.class));
+        liability.setMinimumPayment(rs.getBigDecimal("minimum_payment"));
+        liability.setLiabilityStatus(rs.getString("liability_status"));
+        liability.setCategory(rs.getString("category"));
+        liability.setTotalPaid(rs.getBigDecimal("total_paid"));
+        liability.setLastPaymentDate(rs.getObject("last_payment_date", LocalDate.class));
+        liability.setCreditorName(rs.getString("creditor_name"));
+        liability.setCreditorContact(rs.getString("creditor_contact"));
+        liability.setReminderEnabled(rs.getBoolean("reminder_enabled"));
+        liability.setReminderDaysBefore(rs.getObject("reminder_days_before") != null ? rs.getInt("reminder_days_before") : null);
+        liability.setMonthlyPayment(rs.getBigDecimal("monthly_payment"));
+
         return liability;
     }
+
 }
