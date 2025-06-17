@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="653.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budgetquest.controller.CategoryManagerController">
+    <VBox spacing="10.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Category Manager">
+         <font>
+            <Font size="17.0" />
+         </font></Label>
+
+        <TableView fx:id="categoryTable" prefHeight="400">
+            <columns>
+                <TableColumn fx:id="nameColumn" prefWidth="297.0" text="Name" />
+                <TableColumn fx:id="typeColumn" prefWidth="295.0" text="Type" />
+            </columns>
+        </TableView>
+
+        <HBox alignment="CENTER_RIGHT" spacing="10">
+            <Button onAction="#handleSaveChanges" text="Save Changes" />
+        </HBox>
+
+    </VBox>
+   <padding>
+      <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+   </padding>
+</AnchorPane>

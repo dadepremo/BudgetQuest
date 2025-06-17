@@ -14,7 +14,7 @@ public interface LiabilityDao {
 
     List<Liability> searchLiabilities(int userId, String nameFilter, LocalDate fromDate, LocalDate toDate);
 
-    boolean insert(Liability liability);
+    boolean insert(Liability  liability, int userId);
 
     Optional<Liability> findById(int id);
 

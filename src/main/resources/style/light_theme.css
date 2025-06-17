@@ -28,8 +28,10 @@
     -fx-background-color: white;
 }
 
-.table-row-cell:filled:selected {
+.table-row-cell:filled:selected, .table-row-cell:filled:hover {
     -fx-background-color: #cce5ff;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
 }
 
 .table-cell {
@@ -67,7 +69,8 @@
 
 .tab:hover {
     -fx-cursor: hand;
-    -fx-background-color: #2a9d8f;
+    -fx-background-color: green;
+    -fx-text-fill: #2a9d8f;
 }
 
 .button-fire {

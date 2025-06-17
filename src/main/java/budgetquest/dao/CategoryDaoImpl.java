@@ -131,6 +131,28 @@ public class CategoryDaoImpl implements CategoryDao {
         return cat;
     }
 
+    @Override
+    public void update(Category c, int userId) {
+        String sql = """
+            UPDATE categories SET "name" = ?, "type" = ? WHERE user_id = ? AND id = ?;
+        """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(3, userId);
+            stmt.setString(1, c.getName());
+            stmt.setString(2, c.getType().toLowerCase());
+            stmt.setInt(4, c.getId());
+
+            stmt.executeUpdate();
+            logger.info("Category added: " + c.getName() + " (" + c.getType() + ")");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Category mapResultSetToCategory(ResultSet rs) throws SQLException {
         Category category = new Category();
 

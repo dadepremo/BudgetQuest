@@ -4,7 +4,7 @@ public class Category {
     private int id;
     private int userId;
     private String name;
-    private String type; // "income" or "expense"
+    private String type;
     private boolean isDeleted;
 
     public Category(int id, int userId, String name, String type, boolean isDeleted) {

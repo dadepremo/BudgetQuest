@@ -137,6 +137,7 @@ public class DashboardController {
     @FXML private TextField liabilitySearchField;
     @FXML private DatePicker liabilityFromDatePicker, liabilityToDatePicker;
     @FXML private Button uploadTransactionsBtn;
+    @FXML private Button uploadTransactionsBtn1;
 
     // Line chart to visualize net worth history
     @FXML private LineChart<String, Number> lineChart;
@@ -162,10 +163,10 @@ public class DashboardController {
         this.assetDao = new AssetDaoImpl();
         this.liabilityDao = new LiabilityDaoImpl();
 
-        incomeFromDatePicker.setValue(LocalDate.now().minusMonths(1));
-        incomeToDatePicker.setValue(LocalDate.now());
-        expenseFromDatePicker.setValue(LocalDate.now().minusMonths(1));
-        expenseToDatePicker.setValue(LocalDate.now());
+//        incomeFromDatePicker.setValue(LocalDate.now().minusMonths(1));
+//        incomeToDatePicker.setValue(LocalDate.now());
+//        expenseFromDatePicker.setValue(LocalDate.now().minusMonths(1));
+//        expenseToDatePicker.setValue(LocalDate.now());
 
         filterAssetTable();
         filterIncomeTable();
@@ -322,7 +323,7 @@ public class DashboardController {
         if (liabilitiesAmount == 0) {
             liabilitiesLabel.setText("No liabilities found");
         } else {
-            liabilitiesLabel.setText("- " + MyUtils.formatCurrency(liabilitiesAmount, user.getCurrencySymbol()));
+            liabilitiesLabel.setText("-" + MyUtils.formatCurrency(liabilitiesAmount, user.getCurrencySymbol()));
             if (shopItemDao.getItemByNameForUser("Liabilities are no good!", user.getId()) != null)
                 liabilitiesLabel.setStyle("-fx-text-fill: red;");
         }
@@ -358,6 +359,7 @@ public class DashboardController {
                     openAssetEditor(selectedAsset);
                 }
             });
+            row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
 
@@ -369,6 +371,7 @@ public class DashboardController {
                     openLiabilityEditor(selectedLiability);
                 }
             });
+            row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
 
@@ -380,6 +383,7 @@ public class DashboardController {
                     openTransactionEditor(transaction, "income");
                 }
             });
+            row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
 
@@ -391,6 +395,7 @@ public class DashboardController {
                     openTransactionEditor(transaction, "expense");
                 }
             });
+            row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
 
@@ -409,9 +414,11 @@ public class DashboardController {
             stage.setTitle("Edit Asset");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
 
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(assetTable.getScene().getWindow());
+
+            stage.showAndWait();
             assetTable.refresh();
 
         } catch (IOException e) {
@@ -431,15 +438,18 @@ public class DashboardController {
             stage.setTitle("Edit Liability");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
 
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(liabilityTable.getScene().getWindow());
+
+            stage.showAndWait();
             liabilityTable.refresh();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void openTransactionEditor(Transaction transaction, String type) {
         try {
@@ -452,6 +462,9 @@ public class DashboardController {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle(type.equals("income") ? "Edit Income" : "Edit Expense");
+
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(incomeTable.getScene().getWindow());
             stage.showAndWait();
 
             // Refresh table
@@ -468,7 +481,7 @@ public class DashboardController {
     }
 
 
-
+    // Set UI tooltips
     private void setTooltips() {
         assetsLabel.setTooltip(MyUtils.createInstantTooltip("Total value of your owned assets."));
         liabilitiesLabel.setTooltip(MyUtils.createInstantTooltip("Total value of your liabilities or debts."));
@@ -481,6 +494,10 @@ public class DashboardController {
         expensesLabel.setTooltip(MyUtils.createInstantTooltip("Last month expenses"));
         incomesLabel.setTooltip(MyUtils.createInstantTooltip("Last month income"));
         streakButton.setTooltip(MyUtils.createInstantTooltip("Visualize your streak calendar"));
+        incomeFromDatePicker.setTooltip(MyUtils.createInstantTooltip("From date"));
+        incomeToDatePicker.setTooltip(MyUtils.createInstantTooltip("To date"));
+        expenseFromDatePicker.setTooltip(MyUtils.createInstantTooltip("From date"));
+        expenseToDatePicker.setTooltip(MyUtils.createInstantTooltip("To date"));
     }
 
     private void animateRefreshButton() {
@@ -492,7 +509,7 @@ public class DashboardController {
     }
 
     private Timeline hoverAnimation;
-    private final String[] hoverTexts = {"Add", "-", "--", "---", "----", "---->"};
+    private final String[] hoverTexts = {"Add","a","new","transaction", "-", "--", "---", "----", "---->"};
     private int currentIndex = 0;
 
     @FXML
@@ -506,7 +523,10 @@ public class DashboardController {
                     new KeyFrame(Duration.seconds(0.9), e -> updateText()),
                     new KeyFrame(Duration.seconds(1.2), e -> updateText()),
                     new KeyFrame(Duration.seconds(1.5), e -> updateText()),
-                    new KeyFrame(Duration.seconds(1.8), e -> updateText())
+                    new KeyFrame(Duration.seconds(1.8), e -> updateText()),
+                    new KeyFrame(Duration.seconds(2.1), e -> updateText()),
+                    new KeyFrame(Duration.seconds(2.4), e -> updateText()),
+                    new KeyFrame(Duration.seconds(2.7), e -> updateText())
 
             );
             hoverAnimation.setCycleCount(Timeline.INDEFINITE);
@@ -569,6 +589,8 @@ public class DashboardController {
             statusLabelImportTransactions.setVisible(true);
             progressBarImportTransactions1.setVisible(true);
             statusLabelImportTransactions1.setVisible(true);
+            uploadTransactionsBtn.setDisable(true);
+            uploadTransactionsBtn1.setDisable(true);
 
             Task<Void> importTask = new Task<>() {
                 @Override
@@ -604,7 +626,7 @@ public class DashboardController {
             };
 
 
-            // ✅ Bind progress bar and label
+            // Bind progress bar and label
             progressBarImportTransactions.progressProperty().unbind();
             progressBarImportTransactions.progressProperty().bind(importTask.progressProperty());
             statusLabelImportTransactions.textProperty().bind(importTask.messageProperty());
@@ -612,6 +634,9 @@ public class DashboardController {
             progressBarImportTransactions1.progressProperty().unbind();
             progressBarImportTransactions1.progressProperty().bind(importTask.progressProperty());
             statusLabelImportTransactions1.textProperty().bind(importTask.messageProperty());
+
+            uploadTransactionsBtn.setDisable(false);
+            uploadTransactionsBtn1.setDisable(false);
 
 
             importTask.setOnSucceeded(e -> {
@@ -676,6 +701,28 @@ public class DashboardController {
 
             Stage stage = new Stage();
             stage.setTitle("Your Streak");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+
+            stage.initOwner(streakButton.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleOpenCategoryEditor() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/category_editor.fxml"));
+            Parent root = loader.load();
+
+            CategoryManagerController controller = loader.getController();
+            controller.setUser(currentUser);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit categories");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
 
@@ -783,9 +830,9 @@ public class DashboardController {
             stage.setTitle("Expenses pie chart");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setWidth(900);
+            stage.setHeight(900);
             stage.setResizable(false);
-            stage.setWidth(500);
-            stage.setHeight(500);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -805,9 +852,10 @@ public class DashboardController {
             stage.setTitle("Incomes pie chart");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setWidth(900);
+            stage.setHeight(900);
             stage.setResizable(false);
-            stage.setWidth(500);
-            stage.setHeight(500);
+            stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

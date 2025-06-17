@@ -272,7 +272,7 @@ public class TransactionDaoImpl implements TransactionDao {
         SELECT SUM(t.amount) AS summed_expenses
         FROM transactions t
         INNER JOIN categories c ON t.category_id = c.id
-        WHERE c.user_id = ?
+        WHERE t.user_id = ?
           AND c.type = 'expense'
           AND t.date >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
           AND t.date < date_trunc('month', CURRENT_DATE);
@@ -303,7 +303,7 @@ public class TransactionDaoImpl implements TransactionDao {
         SELECT SUM(t.amount) AS summed_incomes
         FROM transactions t
         INNER JOIN categories c ON t.category_id = c.id
-        WHERE c.user_id = ?
+        WHERE t.user_id = ?
           AND c.type = 'income'
           AND t.date >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
           AND t.date < date_trunc('month', CURRENT_DATE);
@@ -405,7 +405,6 @@ public class TransactionDaoImpl implements TransactionDao {
             }
 
             stmt.executeUpdate();
-            logger.info("Transaction saved: " + MyUtils.formatCurrency(transaction.getAmount(), user.getCurrencySymbol()) + " in " + category.getName() + " (" + category.getType() + ")");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -429,7 +428,6 @@ public class TransactionDaoImpl implements TransactionDao {
             stmt.setString(6, transaction.getDescription());
 
             stmt.executeUpdate();
-            logger.info("Transaction saved: " + MyUtils.formatCurrency(transaction.getAmount(), user.getCurrencySymbol()) + " in " + category.getName() + " (" + category.getType() + ")");
 
         } catch (SQLException e) {
             e.printStackTrace();
