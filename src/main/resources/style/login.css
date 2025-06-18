@@ -41,3 +41,25 @@ Button:default {
     -fx-font-size: 12px;
     -fx-padding: 10px 0 0 0;
 }
+
+
+.login-container {
+    -fx-background-color: #f9f9f9;
+}
+
+.logo-box {
+    -fx-background-color: #ffffff;
+    -fx-alignment: center;
+    -fx-padding: 30;
+}
+
+.logo-image {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.1, 0, 3);
+}
+
+.login-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 10 0;
+}

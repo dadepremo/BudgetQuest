@@ -91,29 +91,24 @@ public class ShopController implements Initializable {
 
     private VBox createShopCard(ShopItem item) {
         VBox card = new VBox(10);
+        card.getStyleClass().add("shop-card");
         card.setPadding(new Insets(10));
-        card.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #ddd;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0.5, 0, 2);"
-        );
         card.setAlignment(Pos.CENTER);
         card.setPrefWidth(150);
 
         Label name = new Label(item.getName());
-        name.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        name.getStyleClass().add("shop-item-name");
 
         Label desc = new Label(item.getDescription());
         desc.setWrapText(true);
-        desc.setStyle("-fx-font-size: 12px; -fx-text-fill: #666;");
+        desc.getStyleClass().add("shop-item-desc");
 
         Label price = new Label(item.getPrice() + " DP points");
-        price.setStyle("-fx-text-fill: #2a9d8f; -fx-font-size: 13px;");
+        price.getStyleClass().add("shop-item-price");
 
         Button buyButton = new Button("Buy");
         buyButton.setPrefWidth(144.0);
+        buyButton.getStyleClass().add("buy-button");
 
         boolean ownsItem = shopItemDAO.userOwnsItem(currentUser.getId(), item.getId());
 
@@ -129,8 +124,6 @@ public class ShopController implements Initializable {
         card.getChildren().addAll(name, desc, price, buyButton);
         return card;
     }
-
-
 
     private void toggleView() {
         compactView = !compactView;

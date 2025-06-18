@@ -1,0 +1,103 @@
+/* shop.css */
+
+.shop-header {
+    -fx-padding: 20;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.shop-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.dp-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a9d8f;
+}
+
+.toggle-button {
+    -fx-background-color: #eeeeee;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.shop-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.shop-category-container {
+    -fx-padding: 20;
+    -fx-background-color: #f9f9f9;
+}
+
+.shop-footer {
+    -fx-padding: 10;
+    -fx-font-style: italic;
+    -fx-text-fill: #777;
+    -fx-font-size: 13px;
+}
+
+.shop-item-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #ddd;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4);
+}
+
+/* shop.css */
+
+.shop-card {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0, 0, 4);
+    -fx-padding: 15;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.shop-card:hover {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #bbb;
+}
+
+.shop-item-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.shop-item-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+.shop-item-price {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2a9d8f;
+    -fx-font-weight: bold;
+}
+
+.buy-button {
+    -fx-background-color: #2a9d8f;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.buy-button:disabled {
+    -fx-background-color: #cccccc;
+    -fx-text-fill: #555;
+    -fx-cursor: default;
+}

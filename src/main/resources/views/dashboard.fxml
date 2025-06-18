@@ -36,7 +36,7 @@
 
 
     <tabs>
-    <Tab closable="false" text="Home" styleClass="tab-name">
+    <Tab closable="false" styleClass="tab-name" text="Home">
          <content>
             <BorderPane prefHeight="682.0" prefWidth="1144.0">
                <top>
@@ -110,8 +110,11 @@
                <left>
                   <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="903.0" prefWidth="1753.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Separator prefHeight="0.0" prefWidth="1225.0" />
-                        <Label text="Overview" styleClass="title-label">
+                        <Separator prefHeight="0.0" prefWidth="1225.0">
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin></Separator>
+                        <Label styleClass="title-label" text="Overview">
                            <font>
                               <Font size="31.0" />
                            </font>
@@ -163,6 +166,9 @@
                                  </font>
                               </Label>
                            </children>
+                           <VBox.margin>
+                              <Insets top="40.0" />
+                           </VBox.margin>
                         </GridPane>
                      </children>
                       <padding>
@@ -172,7 +178,7 @@
                </left>
             </BorderPane>
          </content></Tab>
-    <Tab closable="false" text="Assets" styleClass="tab-name">
+    <Tab closable="false" styleClass="tab-name" text="Assets">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -213,7 +219,7 @@
                </top>
             </BorderPane>
          </content></Tab>
-      <Tab closable="false" text="Liabilities" styleClass="tab-name">
+      <Tab closable="false" styleClass="tab-name" text="Liabilities">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -261,7 +267,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab closable="false" text="Income" styleClass="tab-name">
+      <Tab closable="false" styleClass="tab-name" text="Income">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -313,7 +319,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab closable="false" text="Expenses" styleClass="tab-name">
+      <Tab closable="false" styleClass="tab-name" text="Expenses">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -363,7 +369,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab fx:id="netWorthTab" closable="false" text="Net Worth" styleClass="tab-name">
+      <Tab fx:id="netWorthTab" closable="false" styleClass="tab-name" text="Net Worth">
           <content>
               <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                   <center>
@@ -381,7 +387,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="88.0" prefWidth="1504.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Net Worth" styleClass="title-label">
+                        <Label styleClass="title-label" text="Net Worth">
                            <font>
                               <Font size="39.0" />
                            </font>
@@ -401,7 +407,7 @@
           </content>
       </Tab>
 
-        <Tab closable="false" text="Settings" xmlns:fx="http://javafx.com/fxml" styleClass="tab-name">
+        <Tab closable="false" styleClass="tab-name" text="Settings" xmlns:fx="http://javafx.com/fxml">
             <content>
                 <ScrollPane fitToWidth="true">
                     <content>

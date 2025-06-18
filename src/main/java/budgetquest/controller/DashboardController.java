@@ -229,7 +229,7 @@ public class DashboardController {
         xpLabel.setText(MyUtils.formatInt(user.getXp()) + " / " + MyUtils.formatInt(((user.getLevel() + 1) * 500)) + " XP");
 
         if (shopItemDao.getItemByNameForUser("Points animation", user.getId()) != null) {
-            MyUtils.animateNumber(dpLabel, user.getPoints(), Duration.seconds(5), true, "DP", Duration.millis(2000));
+            MyUtils.animateNumber(dpLabel, user.getPoints(), Duration.seconds(5), true, "DP", Duration.millis(1000));
         } else {
             dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
         }
