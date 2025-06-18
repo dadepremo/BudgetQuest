@@ -5,13 +5,16 @@ import budgetquest.dao.GoalDao.GoalDaoImpl;
 import budgetquest.model.Goal;
 import budgetquest.model.User;
 import budgetquest.utils.MyUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,8 +40,27 @@ public class GoalManagerController {
 
     public void setUser(User user) {
         this.user = user;
+
+        Platform.runLater(() -> {
+            Scene scene = nameField.getScene();
+            if (scene != null) {
+                try {
+                    URL cssUrl = getClass().getResource("/style/goals_light.css");
+                    if (cssUrl != null) {
+                        scene.getStylesheets().clear();
+                        scene.getStylesheets().add(cssUrl.toExternalForm());
+                    } else {
+                        System.err.println("CSS file not found: /style/goals_light.css");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         loadGoals();
     }
+
 
     private void loadGoals() {
         List<Goal> goals = goalDao.findAllByUser(user);
@@ -52,41 +74,71 @@ public class GoalManagerController {
         for (Map.Entry<String, List<Goal>> entry : grouped.entrySet()) {
             String type = entry.getKey();
             VBox goalList = new VBox(10);
+            goalList.setFillWidth(true);
+            goalList.setStyle("-fx-padding: 10;");
 
             for (Goal goal : entry.getValue()) {
                 HBox row = createGoalRow(goal);
                 goalList.getChildren().add(row);
             }
 
-            TitledPane pane = new TitledPane(type.toUpperCase(), goalList);
+            ScrollPane scrollPane = new ScrollPane(goalList);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(300);
+            scrollPane.setStyle("-fx-background-color: transparent;");
+
+            TitledPane pane = new TitledPane(type.toUpperCase(), scrollPane);
+            pane.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
             goalAccordion.getPanes().add(pane);
+
         }
     }
 
+
     private HBox createGoalRow(Goal goal) {
         Label name = new Label(goal.getName());
-        name.setMinWidth(150);
+        name.setStyle("-fx-font-size: 19px; -fx-font-weight: bold;");
 
         BigDecimal progress;
+        BigDecimal target = goal.getTargetAmount();
+        BigDecimal current = goal.getCurrentAmount();
 
-        if (goal.getTargetAmount().compareTo(BigDecimal.ZERO) > 0) {
-            BigDecimal ratio = goal.getCurrentAmount()
-                    .divide(goal.getTargetAmount(), 4, RoundingMode.HALF_UP); // Safe division
-            progress = ratio.min(BigDecimal.ONE); // Cap at 1.0
+        if (target.compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal ratio = current.divide(target, 4, RoundingMode.HALF_UP);
+            progress = ratio.min(BigDecimal.ONE);
         } else {
             progress = BigDecimal.ZERO;
         }
 
+        ProgressBar progressBar = new ProgressBar(progress.doubleValue());
+        progressBar.setPrefWidth(250);
+        progressBar.setStyle("-fx-accent: #4CAF50;"); // verde moderno
 
-        ProgressBar bar = new ProgressBar(progress.doubleValue());
-        bar.setPrefWidth(150);
+        double percentage = target.compareTo(BigDecimal.ZERO) > 0
+                ? current.divide(target, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).doubleValue()
+                : 0.0;
 
-        HBox row = new HBox(10, name, bar);
+        Label amount = new Label(
+                MyUtils.formatCurrency(current, user.getCurrencySymbol()) +
+                        " / " +
+                        MyUtils.formatCurrency(target, user.getCurrencySymbol()) +
+                        String.format(" (%.1f%%)", Math.min(percentage, 100.0))
+        );
+
+        amount.setStyle("-fx-text-fill: #777; -fx-font-size: 13px;");
+
+        VBox textSection = new VBox(5, name, amount, progressBar);
+        textSection.setStyle("-fx-padding: 10;");
+
+        HBox row = new HBox(textSection);
+        row.setStyle("-fx-background-color: #f4f4f4; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-padding: 10px; -fx-cursor: hand;");
+        row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: #e0e0e0; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-padding: 10px; -fx-cursor: hand;"));
+        row.setOnMouseExited(e -> row.setStyle("-fx-background-color: #f4f4f4; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-padding: 10px; -fx-cursor: hand;"));
         row.setOnMouseClicked(e -> loadGoalIntoEditor(goal));
-        row.setStyle("-fx-cursor: hand; -fx-padding: 5;");
 
         return row;
     }
+
 
     private void loadGoalIntoEditor(Goal goal) {
         selectedGoal = goal;
