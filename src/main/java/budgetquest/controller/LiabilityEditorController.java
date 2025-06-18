@@ -4,11 +4,14 @@ import budgetquest.dao.LiabilityDao.LiabilityDao;
 import budgetquest.dao.LiabilityDao.LiabilityDaoImpl;
 import budgetquest.model.Liability;
 import budgetquest.model.User;
+import budgetquest.service.LiabilityPdfGenerator;
 import budgetquest.utils.MyUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -284,5 +287,21 @@ public class LiabilityEditorController {
             closeWindow();
         }
     }
+
+    @FXML
+    private void handleCreatePdf() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Liability Report");
+        fileChooser.setInitialFileName("liability_report.pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        Stage stage = (Stage) nameField.getScene().getWindow();
+
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            new LiabilityPdfGenerator().generateLiabilityPdf(liability, file.getAbsolutePath());
+        }
+    }
+
 
 }
