@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.AssetDao;
 
 import budgetquest.model.Asset;
 import budgetquest.model.User;
@@ -18,4 +18,7 @@ public interface AssetDao {
     double sumAllAssetValues(User user);
 
     List<Asset> findAllByUser(User user);
+
+    void softDelete(Asset asset);
+
 }

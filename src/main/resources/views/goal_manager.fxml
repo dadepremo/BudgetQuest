@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+            fx:controller="budgetquest.controller.GoalManagerController"
+            stylesheets="@/style/goals.css"
+            prefWidth="800" prefHeight="600">
 
-</AnchorPane>
+    <!-- Left: Goal Groups -->
+    <left>
+        <Accordion fx:id="goalAccordion" prefWidth="300" BorderPane.alignment="CENTER">
+            <!-- Filled dynamically with TitledPanes per goal type -->
+        </Accordion>
+    </left>
+
+    <!-- Right: Editor Panel -->
+    <center>
+        <VBox spacing="10" alignment="TOP_LEFT">
+            <padding>
+                <Insets bottom="15" left="30" right="30" top="15" />
+            </padding>
+            <children>
+                <Label text="🎯 Goal Editor" styleClass="header-label"/>
+
+                <TextField fx:id="nameField" promptText="Goal Name" />
+                <TextArea fx:id="descriptionField" promptText="Description" prefRowCount="3"/>
+                <TextField fx:id="goalTypeField" promptText="Type (e.g. saving, debt)" />
+                <TextField fx:id="targetAmountField" promptText="Target Amount" />
+                <TextField fx:id="currentAmountField" promptText="Current Amount" />
+                <DatePicker fx:id="startDatePicker" promptText="Start Date"/>
+                <DatePicker fx:id="endDatePicker" promptText="End Date"/>
+                <CheckBox fx:id="completedCheckBox" text="Completed" />
+
+                <HBox spacing="10">
+                    <Button fx:id="saveButton" text="Save" onAction="#handleSaveGoal" />
+                    <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteGoal" />
+                </HBox>
+
+                <Label fx:id="statusLabel" styleClass="status-label"/>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

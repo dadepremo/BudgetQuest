@@ -1,6 +1,8 @@
-package budgetquest.dao;
+package budgetquest.dao.CategoryDao;
 
 // CategoryDaoImpl.java
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import budgetquest.model.Category;
 import budgetquest.model.User;
 import budgetquest.utils.DbConnection;

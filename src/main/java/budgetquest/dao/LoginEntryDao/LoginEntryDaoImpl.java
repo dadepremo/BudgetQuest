@@ -1,6 +1,5 @@
-package budgetquest.dao;
+package budgetquest.dao.LoginEntryDao;
 
-import budgetquest.controller.NetWorthFormController;
 import budgetquest.utils.DbConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

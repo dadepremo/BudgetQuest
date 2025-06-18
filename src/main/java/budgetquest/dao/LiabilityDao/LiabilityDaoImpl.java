@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.LiabilityDao;
 
 import budgetquest.model.Liability;
 import budgetquest.model.User;
@@ -81,6 +81,29 @@ public class LiabilityDaoImpl implements LiabilityDao {
             if (rows == 0) {
                 throw new SQLException("Updating liability failed, no rows affected.");
             }
+        }
+    }
+
+    @Override
+    public void softDelete(Liability liability) {
+        String sql = """
+        UPDATE public.liabilities
+        SET is_deleted = true
+        WHERE id = ? AND user_id = ?
+    """;
+
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, liability.getId());
+            stmt.setInt(2, liability.getUserId());
+
+            int rows = stmt.executeUpdate();
+            if (rows == 0) {
+                throw new SQLException("Updating liability failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

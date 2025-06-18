@@ -1,6 +1,17 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AchievementDao.AchievementDao;
+import budgetquest.dao.AchievementDao.AchievementDaoImpl;
+import budgetquest.dao.AppSettingsDao.AppSettingsDao;
+import budgetquest.dao.AppSettingsDao.AppSettingsDaoImpl;
+import budgetquest.dao.LoginEntryDao.LoginEntryDao;
+import budgetquest.dao.LoginEntryDao.LoginEntryDaoImpl;
+import budgetquest.dao.ShopItemDao.ShopItemDao;
+import budgetquest.dao.ShopItemDao.ShopItemDaoImpl;
+import budgetquest.dao.UserAchievementDao.UserAchievementDao;
+import budgetquest.dao.UserAchievementDao.UserAchievementDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import budgetquest.utils.DbConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

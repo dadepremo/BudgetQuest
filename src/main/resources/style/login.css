@@ -1,0 +1,43 @@
+/* login.css */
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f9f9f9;
+}
+
+TextField, PasswordField, ComboBox {
+    -fx-pref-height: 40px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #ccc;
+    -fx-background-color: white;
+}
+
+Button {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 20px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+ComboBox:hover {
+    -fx-cursor: hand;
+}
+
+Button:hover {
+    -fx-background-color: #45a049;
+    -fx-cursor: hand;
+}
+
+Button:default {
+    -fx-background-color: #2196F3;
+}
+
+.status-label {
+    -fx-text-fill: red;
+    -fx-font-size: 12px;
+    -fx-padding: 10px 0 0 0;
+}

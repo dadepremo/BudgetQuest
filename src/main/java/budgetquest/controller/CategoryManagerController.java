@@ -1,7 +1,7 @@
 package budgetquest.controller;
 
-import budgetquest.dao.CategoryDao;
-import budgetquest.dao.CategoryDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
 import budgetquest.model.Category;
 import budgetquest.model.User;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -30,7 +30,6 @@ public class CategoryManagerController {
         this.user = user;
         loadCategories();
     }
-
 
     private void loadCategories() {
         List<Category> categoryList = categoryDao.findAllByUser(user);

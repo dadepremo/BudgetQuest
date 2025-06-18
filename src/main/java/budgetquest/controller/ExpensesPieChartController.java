@@ -1,7 +1,7 @@
 package budgetquest.controller;
 
-import budgetquest.dao.TransactionDao;
-import budgetquest.dao.TransactionDaoImpl;
+import budgetquest.dao.TransactionDao.TransactionDao;
+import budgetquest.dao.TransactionDao.TransactionDaoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

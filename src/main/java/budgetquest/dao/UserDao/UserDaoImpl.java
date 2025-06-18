@@ -1,6 +1,11 @@
-package budgetquest.dao;
+package budgetquest.dao.UserDao;
 
-import budgetquest.controller.AssetFormController;
+import budgetquest.dao.AchievementDao.AchievementDao;
+import budgetquest.dao.AchievementDao.AchievementDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
+import budgetquest.dao.UserAchievementDao.UserAchievementDao;
+import budgetquest.dao.UserAchievementDao.UserAchievementDaoImpl;
 import budgetquest.model.Achievement;
 import budgetquest.model.Category;
 import budgetquest.model.User;

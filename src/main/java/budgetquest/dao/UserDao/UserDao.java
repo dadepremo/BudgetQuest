@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.UserDao;
 
 import budgetquest.model.User;
 

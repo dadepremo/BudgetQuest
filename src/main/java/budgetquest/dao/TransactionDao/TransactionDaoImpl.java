@@ -1,10 +1,11 @@
-package budgetquest.dao;
+package budgetquest.dao.TransactionDao;
 
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import budgetquest.model.Category;
 import budgetquest.model.Transaction;
 import budgetquest.model.User;
 import budgetquest.utils.DbConnection;
-import budgetquest.utils.MyUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

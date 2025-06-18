@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.AssetDao;
 
 import budgetquest.model.User;
 import budgetquest.utils.DbConnection;
@@ -193,6 +193,28 @@ public class AssetDaoImpl implements AssetDao {
         }
 
         return assets;
+    }
+
+    @Override
+    public void softDelete(Asset asset) {
+        String sql = """
+        UPDATE public.assets
+        SET is_deleted = true
+        WHERE id = ? AND user_id = ?
+    """;
+
+        try (Connection connection = DbConnection.connect();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, asset.getId());
+            stmt.setInt(2, asset.getUserId());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting asset failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

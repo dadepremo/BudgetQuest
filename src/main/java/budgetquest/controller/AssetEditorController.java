@@ -1,7 +1,7 @@
 package budgetquest.controller;
 
-import budgetquest.dao.AssetDao;
-import budgetquest.dao.AssetDaoImpl;
+import budgetquest.dao.AssetDao.AssetDao;
+import budgetquest.dao.AssetDao.AssetDaoImpl;
 import budgetquest.model.Asset;
 import budgetquest.model.User;
 import budgetquest.utils.MyUtils;
@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class AssetEditorController {
 
@@ -23,6 +24,8 @@ public class AssetEditorController {
 
     private Asset asset;
     private User loggedUser;
+
+    private final AssetDao assetDao = new AssetDaoImpl();
 
     public void setAsset(Asset asset, User user) {
         this.asset = asset;
@@ -105,4 +108,18 @@ public class AssetEditorController {
         stage.close();
     }
 
+    @FXML
+    private void handleAssetDelete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("Are you sure you want to delete this asset?");
+        alert.setContentText("Asset: " + asset.getName());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            assetDao.softDelete(asset);
+            MyUtils.showInfo("Success", "Successfully deleted this asset.");
+            closeWindow();
+        }
+    }
 }

@@ -1,6 +1,15 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AchievementDao.AchievementDao;
+import budgetquest.dao.AchievementDao.AchievementDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
+import budgetquest.dao.TransactionDao.TransactionDao;
+import budgetquest.dao.TransactionDao.TransactionDaoImpl;
+import budgetquest.dao.UserAchievementDao.UserAchievementDao;
+import budgetquest.dao.UserAchievementDao.UserAchievementDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;

@@ -1,6 +1,9 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.ShopItemDao.ShopItemDao;
+import budgetquest.dao.ShopItemDao.ShopItemDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;

@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.GoalDao;
 
 import budgetquest.model.Goal;
 import budgetquest.model.User;
@@ -6,7 +6,7 @@ import budgetquest.model.User;
 import java.util.List;
 
 public interface GoalDao {
-    
+
     void create(Goal goal);
 
     List<Goal> findAllByUser(User user);

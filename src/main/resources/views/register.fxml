@@ -1,23 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="budgetquest.controller.RegisterController"
-            prefWidth="400" prefHeight="450">
-    <VBox spacing="10" layoutX="50" layoutY="30" prefWidth="300">
-        <Label text="Register" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            prefWidth="450" prefHeight="520"
+            stylesheets="@/style/register.css">
 
-        <TextField fx:id="usernameField" promptText="Username"/>
-        <TextField fx:id="firstNameField" promptText="First Name"/>
-        <TextField fx:id="lastNameField" promptText="Last Name"/>
-        <TextField fx:id="emailField" promptText="Email"/>
-        <PasswordField fx:id="passwordField" promptText="Password"/>
+    <center>
+        <VBox spacing="10" alignment="CENTER">
+            <children>
+                <Label text="📝 Create Account" styleClass="header-label"/>
 
-        <Button text="Register" onAction="#handleRegister"/>
-        <Button text="Back to Login" onAction="#switchToLogin"/>
-        <Label fx:id="statusLabel" textFill="red"/>
-    </VBox>
-</AnchorPane>
+                <TextField fx:id="usernameField" promptText="Username"/>
+                <Label fx:id="usernameError" textFill="red" style="-fx-font-size: 11;"/>
+
+                <TextField fx:id="firstNameField" promptText="First Name"/>
+                <Label fx:id="firstNameError" textFill="red" style="-fx-font-size: 11;"/>
+
+                <TextField fx:id="lastNameField" promptText="Last Name"/>
+                <Label fx:id="lastNameError" textFill="red" style="-fx-font-size: 11;"/>
+
+                <TextField fx:id="emailField" promptText="Email"/>
+                <Label fx:id="emailError" textFill="red" style="-fx-font-size: 11;"/>
+
+                <PasswordField fx:id="passwordField" promptText="Password"/>
+                <Label fx:id="passwordError" textFill="red" style="-fx-font-size: 11;"/>
+
+                <Button fx:id="registerBtn" text="Register" defaultButton="true" onAction="#handleRegister"/>
+                <Button fx:id="backBtn" text="← Back to Login" onAction="#switchToLogin" styleClass="flat-button"/>
+            </children>
+            <padding>
+                <Insets top="20" left="40" right="40" bottom="20"/>
+            </padding>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.ShopItemDao;
 
 
 import budgetquest.model.ShopItem;

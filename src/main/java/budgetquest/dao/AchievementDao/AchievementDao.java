@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.AchievementDao;
 
 import budgetquest.model.Achievement;
 

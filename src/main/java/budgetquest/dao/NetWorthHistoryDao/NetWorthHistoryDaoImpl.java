@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.NetWorthHistoryDao;
 
 import budgetquest.model.NetWorthHistory;
 import budgetquest.model.User;

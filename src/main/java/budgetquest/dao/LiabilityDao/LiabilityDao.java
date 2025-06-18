@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.LiabilityDao;
 
 import budgetquest.model.Liability;
 import budgetquest.model.User;
@@ -25,5 +25,7 @@ public interface LiabilityDao {
     void update(Liability liability);
 
     void delete(int id);
+
+    void softDelete(Liability liability);
 
 }

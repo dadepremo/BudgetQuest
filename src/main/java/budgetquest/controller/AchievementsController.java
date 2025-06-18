@@ -1,20 +1,16 @@
 package budgetquest.controller;
 
+import budgetquest.dao.AchievementDao.AchievementDao;
+import budgetquest.dao.AchievementDao.AchievementDaoImpl;
+import budgetquest.dao.UserAchievementDao.UserAchievementDao;
+import budgetquest.dao.UserAchievementDao.UserAchievementDaoImpl;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import budgetquest.model.Achievement;
 import budgetquest.model.User;
-import budgetquest.dao.*;
 import budgetquest.service.AchievementCard;
 
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class AchievementsController {
 

@@ -1,5 +1,7 @@
-package budgetquest.dao;
+package budgetquest.dao.UserAchievementDao;
 
+import budgetquest.dao.AchievementDao.AchievementDao;
+import budgetquest.dao.AchievementDao.AchievementDaoImpl;
 import budgetquest.model.User;
 import budgetquest.model.UserAchievement;
 import budgetquest.utils.DbConnection;

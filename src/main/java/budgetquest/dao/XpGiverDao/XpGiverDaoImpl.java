@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.XpGiverDao;
 
 import budgetquest.model.XpGiver;
 import budgetquest.utils.DbConnection;

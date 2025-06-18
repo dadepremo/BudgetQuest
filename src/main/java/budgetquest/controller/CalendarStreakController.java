@@ -1,11 +1,12 @@
 package budgetquest.controller;
 
+import budgetquest.dao.LoginHistoryDao.LoginHistoryDaoImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Pos;
-import budgetquest.dao.LoginHistoryDao;
+import budgetquest.dao.LoginHistoryDao.LoginHistoryDao;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -18,7 +19,7 @@ public class CalendarStreakController {
     @FXML private Label monthLabel;
     @FXML private Button prevMonthButton, nextMonthButton;
 
-    private final LoginHistoryDao loginHistoryDao = new LoginHistoryDao(); // implement this
+    private final LoginHistoryDao loginHistoryDao = new LoginHistoryDaoImpl(); // implement this
     private int userId;
     private YearMonth currentMonth = YearMonth.now();
 

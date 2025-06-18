@@ -1,6 +1,19 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AssetDao.AssetDao;
+import budgetquest.dao.AssetDao.AssetDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
+import budgetquest.dao.LiabilityDao.LiabilityDao;
+import budgetquest.dao.LiabilityDao.LiabilityDaoImpl;
+import budgetquest.dao.NetWorthHistoryDao.NetWorthHistoryDao;
+import budgetquest.dao.NetWorthHistoryDao.NetWorthHistoryDaoImpl;
+import budgetquest.dao.ShopItemDao.ShopItemDao;
+import budgetquest.dao.ShopItemDao.ShopItemDaoImpl;
+import budgetquest.dao.TransactionDao.TransactionDao;
+import budgetquest.dao.TransactionDao.TransactionDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -16,7 +29,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -29,7 +41,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 import budgetquest.service.ExcelTransactionImporter;
-import budgetquest.service.ImportResult;
 import budgetquest.utils.DbConnection;
 import budgetquest.utils.MyUtils;
 
@@ -676,15 +687,13 @@ public class DashboardController {
 
     }
 
-
-
     public void handleChangeTheme() {
-        if (currentUser.getTheme().equals("dark")) {
+        if (currentUser.getTheme().equalsIgnoreCase("dark")) {
             currentUser.setTheme("light");
             userDao.updateUserTheme(currentUser);
             logger.info("Changed theme to light");
-            switchToLightTheme(); // <- CORRETTO
-        } else if (currentUser.getTheme().equals("light")) {
+            switchToLightTheme();
+        } else if (currentUser.getTheme().equalsIgnoreCase("light")) {
             currentUser.setTheme("dark");
             userDao.updateUserTheme(currentUser);
             logger.info("Changed theme to dark");
@@ -729,7 +738,9 @@ public class DashboardController {
             stage.initOwner(streakButton.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
 
-            stage.show();
+            stage.showAndWait();
+
+            refresh();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -984,6 +995,8 @@ public class DashboardController {
 
             stage.showAndWait();
 
+            refresh();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1122,7 +1135,7 @@ public class DashboardController {
     }
 
     @FXML
-    public void handleOpenShop(MouseEvent mouseEvent) {
+    public void handleOpenShop() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/shop.fxml"));
             Parent root = loader.load();

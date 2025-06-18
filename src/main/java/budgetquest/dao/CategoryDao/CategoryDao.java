@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.CategoryDao;
 
 import budgetquest.model.Category;
 import budgetquest.model.User;

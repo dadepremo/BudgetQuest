@@ -1,7 +1,7 @@
 package budgetquest.service;
 
-import budgetquest.dao.CategoryDao;
-import budgetquest.dao.CategoryDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
 import budgetquest.model.Category;
 import budgetquest.model.Transaction;
 import budgetquest.model.User;
@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

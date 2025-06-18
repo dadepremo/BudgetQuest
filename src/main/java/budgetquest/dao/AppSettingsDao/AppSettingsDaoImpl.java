@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.AppSettingsDao;
 
 import budgetquest.utils.DbConnection;
 

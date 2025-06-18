@@ -1,4 +1,4 @@
-package budgetquest.dao;
+package budgetquest.dao.AppSettingsDao;
 
 public interface AppSettingsDao {
 

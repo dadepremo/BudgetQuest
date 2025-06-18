@@ -83,4 +83,5 @@
     </GridPane>
 
     <Button onAction="#handleSave" text="Save Liability" />
+    <Button onAction="#handleLiabilityDelete" text="Delete" />
 </VBox>
