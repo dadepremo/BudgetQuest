@@ -329,3 +329,23 @@ CREATE TABLE public.assets (
 	CONSTRAINT assets_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE SET NULL,
 	CONSTRAINT assets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
+
+-- goals
+DROP TABLE IF EXISTS public.goals;
+
+CREATE TABLE public.goals (
+	id serial4 NOT NULL,
+	user_id int4 NOT NULL,
+	"name" varchar(100) NOT NULL,
+	description text NULL,
+	goal_type varchar(30) NOT NULL,
+	target_amount numeric(12, 2) NOT NULL,
+	current_amount numeric(12, 2) DEFAULT 0 NULL,
+	start_date date NOT NULL,
+	end_date date NOT NULL,
+	is_completed bool DEFAULT false NULL,
+	is_deleted bool DEFAULT false NULL,
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT goals_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_goals_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
+);

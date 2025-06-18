@@ -325,8 +325,10 @@ public class UserDaoImpl implements UserDao {
             xpToNextLevel = (userLevel + 1) * 500;
             if(userLevel % 100 != 0) {
                 MyUtils.showInfo("Level up!", "You levelled up to level " + userLevel);
+                updateUserPoints(user, 10);
             } else {
                 MyUtils.showInfo("Level up!", "Congrats you reached a big milestone!\nLevel " + userLevel);
+                updateUserPoints(user, 100);
             }
         }
 

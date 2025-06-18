@@ -13,11 +13,32 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 
 public class TransactionDaoImpl implements TransactionDao {
 
     private static final Logger logger = LogManager.getLogger(TransactionDaoImpl.class);
+
+    @Override
+    public double getTotalByTypeAndMonth(int userId, String type, YearMonth month) {
+        LocalDate start = month.atDay(1);
+        LocalDate end = month.atEndOfMonth();
+        String query = "select sum(amount) from transactions t inner JOIN categories c ON t.category_id = c.id WHERE t.user_id = ? and c.type = ? and t.date >= ? AND t.date <= ?";
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            stmt.setString(2, type);
+            stmt.setDate(3, Date.valueOf(start));
+            stmt.setDate(4, Date.valueOf(end));
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() ? rs.getDouble(1) : 0.0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
 
     @Override
     public List<Transaction> getTransactionsByType(int userId, String type, String nameFilter, LocalDate fromDate, LocalDate toDate) {

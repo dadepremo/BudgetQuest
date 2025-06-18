@@ -41,7 +41,8 @@
 
                 <HBox spacing="10">
                     <Button fx:id="saveButton" text="Save" onAction="#handleSaveGoal" />
-                    <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteGoal" />
+                    <Button fx:id="clearButton" text="Clear" onAction="#clearEditor" />
+                    <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteGoal" style="-fx-background-color: #d63a3a;"/>
                 </HBox>
 
                 <Label fx:id="statusLabel" styleClass="status-label" />

@@ -7,10 +7,13 @@ import budgetquest.model.User;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 
 public interface TransactionDao {
+
+    double getTotalByTypeAndMonth(int userId, String type, YearMonth month);
 
     List<Transaction> getTransactionsByType(int userId, String type, String nameFilter, LocalDate fromDate, LocalDate toDate);
 

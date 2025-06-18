@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -193,7 +194,7 @@ public class GoalManagerController {
 
             BigDecimal currentAmount;
             try {
-                currentAmount = new BigDecimal(targetAmountField.getText());
+                currentAmount = new BigDecimal(currentAmountField.getText());
                 if (currentAmount.compareTo(BigDecimal.ZERO) < 0) {
                     MyUtils.showWarning("Validation error", "The target amount must be grater than 0");
                     return;
@@ -205,9 +206,18 @@ public class GoalManagerController {
                 return;
             }
 
-            if (endDatePicker.getValue() == null || startDatePicker.getValue() == null) {
-                MyUtils.showWarning("Validation error", "Please insert the start and end date");
-                return;
+            LocalDate startDate;
+            if (startDatePicker.getValue() == null) {
+                startDate = LocalDate.now();
+            } else {
+                 startDate = startDatePicker.getValue();
+            }
+
+            LocalDate endDate;
+            if (endDatePicker.getValue() == null) {
+                endDate = startDate.plusYears(1);
+            } else {
+                endDate = endDatePicker.getValue();
             }
 
             selectedGoal.setName(nameField.getText());
@@ -215,8 +225,8 @@ public class GoalManagerController {
             selectedGoal.setGoalType(goalTypeField.getText());
             selectedGoal.setTargetAmount(amount);
             selectedGoal.setCurrentAmount(currentAmount);
-            selectedGoal.setStartDate(startDatePicker.getValue());
-            selectedGoal.setEndDate(endDatePicker.getValue());
+            selectedGoal.setStartDate(startDate);
+            selectedGoal.setEndDate(endDate);
             selectedGoal.setCompleted(completedCheckBox.isSelected());
             selectedGoal.setDeleted(false); // Make sure it's not marked deleted
 
@@ -256,6 +266,7 @@ public class GoalManagerController {
         }
     }
 
+    @FXML
     private void clearEditor() {
         nameField.clear();
         descriptionField.clear();

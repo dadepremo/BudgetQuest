@@ -51,13 +51,24 @@ public class CalendarStreakController {
         int daysInMonth = currentMonth.lengthOfMonth();
         int firstWeekday = firstDay.getDayOfWeek().getValue(); // 1 = Monday
 
-        // Add day headers
+        // Day headers
+        // Day headers
         String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         for (int i = 0; i < days.length; i++) {
             Label header = new Label(days[i]);
-            header.setStyle("-fx-font-weight: bold;");
+            header.setPrefSize(60, 30);
+            header.setAlignment(Pos.CENTER);
+
+            // Style Sunday in red
+            if (i == 6) {
+                header.setStyle("-fx-background-color: #d63a3a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;");
+            } else {
+                header.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;");
+            }
+
             calendarGrid.add(header, i, 0);
         }
+
 
         LocalDate today = LocalDate.now();
 
@@ -66,24 +77,22 @@ public class CalendarStreakController {
             Label dayLabel = new Label(String.valueOf(day));
             dayLabel.setPrefSize(60, 60);
             dayLabel.setAlignment(Pos.CENTER);
-            dayLabel.setStyle("-fx-border-color: #ccc; -fx-background-radius: 4;");
+            dayLabel.setStyle("-fx-background-color: #f3f4f6; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
             if (loginDates.contains(date)) {
-                dayLabel.setStyle(dayLabel.getStyle() + "-fx-background-color: lightgreen;");
+                dayLabel.setStyle(dayLabel.getStyle() +
+                        "-fx-background-color: #fdbe8a; -fx-effect: dropshadow(two-pass-box, #f97316, 5, 0, 0, 0);");
             }
 
             if (date.equals(today)) {
                 dayLabel.setStyle(dayLabel.getStyle() +
-                        "-fx-border-color: green; " +
-                        "-fx-border-width: 2; " +
-                        "-fx-border-radius: 3;");
+                        "-fx-border-color: #2563eb; -fx-border-width: 2; -fx-font-weight: bold;");
             }
 
             int col = (firstWeekday + day - 2) % 7;
             int row = ((firstWeekday + day - 2) / 7) + 1;
             calendarGrid.add(dayLabel, col, row);
         }
-
-
     }
+
 }

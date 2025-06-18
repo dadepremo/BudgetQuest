@@ -101,3 +101,7 @@
     -fx-text-fill: #555;
     -fx-cursor: default;
 }
+
+.buy-button:hover {
+    -fx-background-color: #1e5c54;
+}

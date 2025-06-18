@@ -22,15 +22,14 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -54,6 +53,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +64,7 @@ import java.util.Objects;
 public class DashboardController {
 
     private static final Logger logger = LogManager.getLogger(DashboardController.class);
+
 
     // FXML-bound labels for displaying key user and financial metrics
     @FXML private Label assetsLabel;
@@ -156,21 +157,21 @@ public class DashboardController {
     @FXML private LineChart<String, Number> lineChart;
     @FXML private Tab netWorthTab;
 
+    @FXML private Label incomeTrendLabel, expenseTrendLabel;
+    @FXML private VBox incomeTrendCard, expenseTrendCard;
+
+
     // DAO implementations for interacting with the database
     private final NetWorthHistoryDao netWorthDao = new NetWorthHistoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
     private final UserDao userDao = new UserDaoImpl();
     private final ShopItemDao shopItemDao = new ShopItemDaoImpl();
-    private final CategoryDao categoryDao = new CategoryDaoImpl();
 
     private User currentUser;
     private AssetDao assetDao;
     private LiabilityDao liabilityDao;
 
-    /**
-     * Main method to initialize the dashboard after a user logs in.
-     * Loads user info, financial summaries, theme preferences, and data tables.
-     */
+
     public void setUser(User user) {
         this.currentUser = user;
         this.assetDao = new AssetDaoImpl();
@@ -412,8 +413,41 @@ public class DashboardController {
             return row;
         });
 
+        updateMonthlyTrends();
 
     }
+
+    public void updateMonthlyTrends() {
+        YearMonth thisMonth = YearMonth.now().minusMonths(1); // Last month
+        YearMonth prevMonth = thisMonth.minusMonths(1);
+
+        double lastMonthIncome = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "income", thisMonth);
+        double prevMonthIncome = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "income", prevMonth);
+
+        double lastMonthExpenses = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "expense", thisMonth);
+        double prevMonthExpenses = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "expense", prevMonth);
+
+        double incomeDiff = lastMonthIncome - prevMonthIncome;
+        double incomePercent = (prevMonthIncome == 0) ? 0 : (incomeDiff / prevMonthIncome) * 100;
+
+        String sign = (incomeDiff >= 0) ? "+" : "-";
+        String diffText = sign + MyUtils.formatCurrency(Math.abs(incomeDiff), currentUser.getCurrencySymbol());
+        String percentText = String.format(" (%.1f%%)", Math.abs(incomePercent));
+
+        incomeTrendCard.setStyle(incomeDiff >= 0 ? "-fx-background-color: #ecfdf5;" : "-fx-background-color: #fef2f2;");
+        incomeTrendLabel.setText("Last month: " + MyUtils.formatCurrency(lastMonthIncome, currentUser.getCurrencySymbol()) + "\nPrev month: " + MyUtils.formatCurrency(prevMonthIncome, currentUser.getCurrencySymbol()) + "\nChange: " + diffText + percentText);
+
+        double expenseDiff = lastMonthExpenses - prevMonthExpenses;
+        double expensePercent = (prevMonthExpenses == 0) ? 0 : (expenseDiff / prevMonthExpenses) * 100;
+
+        String sign1 = (expenseDiff >= 0) ? "+" : "-";
+        String diffText1 = sign1 + MyUtils.formatCurrency(Math.abs(expenseDiff), currentUser.getCurrencySymbol());
+        String percentText1 = String.format(" (%.1f%%)", Math.abs(expensePercent));
+
+        expenseTrendCard.setStyle(expenseDiff < 0 ? "-fx-background-color: #ecfdf5;" : "-fx-background-color: #fef2f2;");
+        expenseTrendLabel.setText("Last month: " + MyUtils.formatCurrency(lastMonthExpenses, currentUser.getCurrencySymbol()) + "\nPrev month: " + MyUtils.formatCurrency(prevMonthExpenses, currentUser.getCurrencySymbol()) + "\nChange: " + diffText1 + percentText1);
+    }
+
 
     private void openAssetEditor(Asset asset) {
         try {

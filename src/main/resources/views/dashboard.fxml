@@ -122,7 +122,35 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <GridPane prefHeight="92.0" prefWidth="1445.0">
+                         <HBox alignment="CENTER" spacing="20">
+                             <VBox fx:id="incomeTrendCard" alignment="CENTER" prefHeight="163.0" prefWidth="350.0" spacing="10" style="-fx-background-color: #ecfdf5; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);">
+                                 <Label alignment="CENTER" prefHeight="40.0" prefWidth="175.0" style="-fx-font-size: 20; -fx-font-weight: bold;" text="Income Trend">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font></Label>
+                                 <HBox alignment="CENTER" spacing="10">
+                                     <Label fx:id="incomeTrendLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="90.0" prefWidth="255.0" style="-fx-font-size: 16;" text="Up from previous month">
+                                    <font>
+                                       <Font size="17.0" />
+                                    </font></Label>
+                                 </HBox>
+                             </VBox>
+
+                             <VBox fx:id="expenseTrendCard" alignment="CENTER" prefWidth="350.0" spacing="10" style="-fx-background-color: #fef2f2; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);">
+                                 <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="175.0" style="-fx-font-size: 20; -fx-font-weight: bold;" text="Expense Trend">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font></Label>
+                                 <HBox alignment="CENTER" spacing="10">
+                                     <Label fx:id="expenseTrendLabel" alignment="CENTER" prefHeight="90.0" prefWidth="255.0" style="-fx-font-size: 16;" text="Down from previous month">
+                                    <font>
+                                       <Font size="17.0" />
+                                    </font></Label>
+                                 </HBox>
+                             </VBox>
+                         </HBox>
+
+                         <GridPane prefHeight="92.0" prefWidth="1445.0">
                           <columnConstraints>
                               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
