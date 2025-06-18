@@ -22,12 +22,14 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -767,8 +769,9 @@ public class DashboardController {
     }
 
     public void animateProgressBarColorSmooth(ProgressBar xpBar) {
-        Color color1 = Color.web("#096303"); // Mint
-        Color color2 = Color.web("#46E327");   // Jungle
+        Color color1 = Color.web("#00b4db"); // Deep Sky Blue
+        Color color2 = Color.web("#00db94"); // Cool Ocean Blue
+
         ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(color1);
         colorProperty.addListener((obs, oldColor, newColor) -> {
             String rgba = String.format("rgba(%d, %d, %d, %.2f)",

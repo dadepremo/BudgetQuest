@@ -40,7 +40,7 @@
          <content>
             <BorderPane prefHeight="682.0" prefWidth="1144.0">
                <top>
-                  <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1509.0" BorderPane.alignment="CENTER">
+                  <HBox alignment="CENTER" prefHeight="67.0" prefWidth="1509.0" BorderPane.alignment="CENTER">
                      <children>
                         <Label fx:id="dashboardLabel" alignment="CENTER" prefWidth="200" styleClass="title-label" text="Dashboard">
                            <font>

@@ -210,27 +210,31 @@ public class MotivationalQuotePopup {
         quoteLabel.setWrapText(true);
         quoteLabel.setTextAlignment(TextAlignment.CENTER);
         quoteLabel.setAlignment(Pos.CENTER);
-        quoteLabel.setMaxWidth(400);
-        quoteLabel.setFont(Font.font("Arial", 18));
-        quoteLabel.setStyle("-fx-text-fill: #264653; -fx-font-weight: bold;");
+        quoteLabel.setMaxWidth(420);
+        quoteLabel.setFont(Font.font("Segoe UI", 18));
+        quoteLabel.setStyle("""
+            -fx-text-fill: #264653;
+            -fx-font-weight: bold;
+        """);
 
         VBox layout = getVBoxLayout(popupStage, quoteLabel);
         layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(30));
+        layout.setPadding(new Insets(40));
+        layout.setSpacing(30);
         layout.setStyle("""
-            -fx-background-color: white;
-            -fx-background-radius: 15;
+            -fx-background-color: linear-gradient(to bottom right, #ffffff, #f1f1f1);
+            -fx-background-radius: 20;
         """);
-        layout.setEffect(new DropShadow(20, Color.web("#aaa")));
+
+        layout.setEffect(new DropShadow(25, Color.web("#bbb")));
 
         Scene scene = new Scene(layout);
         scene.setFill(Color.TRANSPARENT);
-
         popupStage.setScene(scene);
 
-        // Fade-in transition
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), layout);
+        // Fade in
         layout.setOpacity(0);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), layout);
         fadeIn.setToValue(1);
         fadeIn.play();
 
@@ -240,27 +244,25 @@ public class MotivationalQuotePopup {
     private static VBox getVBoxLayout(Stage popupStage, Label quoteLabel) {
         Button closeButton = new Button("Got it!");
         closeButton.setStyle("""
-            -fx-background-radius: 20;
+            -fx-background-radius: 25;
             -fx-background-color: linear-gradient(to bottom right, #f4a261, #e76f51);
             -fx-text-fill: white;
             -fx-font-weight: bold;
-            -fx-padding: 8 20;
-            -fx-cursor: hand;
+            -fx-font-size: 14px;
+            -fx-padding: 10 25;
+            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 2);
         """);
-        closeButton.setOnMouseEntered(e -> closeButton.setStyle(closeButton.getStyle() + "-fx-opacity: 0.85;"));
-        closeButton.setOnMouseExited(e -> closeButton.setStyle(closeButton.getStyle().replace("-fx-opacity: 0.85;", "")));
+
+        closeButton.setOnMouseEntered(e -> closeButton.setStyle(closeButton.getStyle() + "-fx-opacity: 0.9;"));
+        closeButton.setOnMouseExited(e -> closeButton.setStyle(closeButton.getStyle().replace("-fx-opacity: 0.9;", "")));
         closeButton.setOnAction(e -> popupStage.close());
 
-        VBox layout = new VBox(25, quoteLabel, closeButton);
-        return layout;
+        return new VBox(quoteLabel, closeButton);
     }
 
     private static String getRandomQuote() {
-        if (QUOTES.isEmpty()) {
-            return "Stay motivated and save wisely!";
-        }
-        Random rand = new Random();
-        return QUOTES.get(rand.nextInt(QUOTES.size()));
+        if (QUOTES.isEmpty()) return "Stay motivated and save wisely!";
+        return QUOTES.get(new Random().nextInt(QUOTES.size()));
     }
 
 }
