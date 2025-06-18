@@ -16,6 +16,8 @@ public interface TransactionDao {
 
     void updateTransaction(Transaction transaction) throws SQLException;
 
+    void delete(Transaction transaction) throws SQLException;
+
     List<Transaction> findAllByUser(User user);
 
     List<Transaction> findAllIncomesByUser(User user);
@@ -37,5 +39,6 @@ public interface TransactionDao {
     int countIncomes(User currentUser);
 
     void insertFile(User user, Transaction transaction, Category category);
+
 }
 

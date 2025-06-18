@@ -461,7 +461,6 @@ public class DashboardController {
         }
     }
 
-
     private void openTransactionEditor(Transaction transaction, String type) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/transaction_editor.fxml"));
@@ -490,7 +489,6 @@ public class DashboardController {
             MyUtils.showError("Error", "Could not open the editor window.");
         }
     }
-
 
     // Set UI tooltips
     private void setTooltips() {

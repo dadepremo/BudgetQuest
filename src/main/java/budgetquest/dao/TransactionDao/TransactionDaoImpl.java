@@ -110,6 +110,22 @@ public class TransactionDaoImpl implements TransactionDao {
     }
 
     @Override
+    public void delete(Transaction transaction) throws SQLException {
+        String sql = """
+        DELETE FROM transactions WHERE user_id = ? AND id = ?;
+    """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, transaction.getUserId());
+            stmt.setInt(2, transaction.getId());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
     public List<Transaction> findAllByUser(User user) {
         String sql = "SELECT * FROM transactions WHERE user_id = ?";
         List<Transaction> transactions = new ArrayList<>();
