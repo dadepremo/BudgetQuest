@@ -995,8 +995,6 @@ public class DashboardController {
 
             stage.showAndWait();
 
-            refresh();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

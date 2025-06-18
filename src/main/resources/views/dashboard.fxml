@@ -29,65 +29,74 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="990.0" prefWidth="1577.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budgetquest.controller.DashboardController">
+<TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1008.0" prefWidth="1753.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budgetquest.controller.DashboardController">
     <stylesheets>
         <URL value="@/style/light_theme.css" />
     </stylesheets>
 
 
     <tabs>
-    <Tab closable="false" text="Home">
+    <Tab closable="false" text="Home" styleClass="tab-name">
          <content>
             <BorderPane prefHeight="682.0" prefWidth="1144.0">
                <top>
-                  <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
+                  <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="1509.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label fx:id="dashboardLabel" text="Dashboard">
+                        <Label fx:id="dashboardLabel" alignment="CENTER" prefWidth="200" styleClass="title-label" text="Dashboard">
                            <font>
                               <Font size="39.0" />
                            </font>
                         </Label>
-                        <Label fx:id="usernameLabel" onMouseClicked="#openUserProfile" styleClass="label-link" text="Welcome, user!">
+                        <Label fx:id="usernameLabel" alignment="CENTER" onMouseClicked="#openUserProfile" prefWidth="240" styleClass="label-link" text="Welcome, user!">
                            <font>
                               <Font size="23.0" />
                            </font>
                         </Label>
-                         <Label fx:id="dpLabel" onMouseClicked="#handleOpenShop" styleClass="label-link-dpLabel" text="10000 DP">
+                         <Label fx:id="dpLabel" alignment="CENTER" onMouseClicked="#handleOpenShop" prefHeight="26.0" prefWidth="103.0" styleClass="label-link-dpLabel" text="10000 DP">
                              <font>
                                  <Font size="17.0" />
                              </font>
                          </Label>
-                        <Label fx:id="levelLabel" text="Level 10000">
+                        <Label fx:id="levelLabel" alignment="CENTER" prefHeight="26.0" prefWidth="118.0" styleClass="llabel" text="Level 10000">
                            <font>
-                              <Font size="17.0" />
+                              <Font size="19.0" />
                            </font>
                         </Label>
-                        <Label text="0 / 5000000 XP" fx:id="xpLabel">
+                        <Label alignment="CENTER" prefHeight="26.0" prefWidth="200.0" styleClass="llabel" text="0 / 5000000 XP" fx:id="xpLabel">
                            <font>
-                              <Font size="17.0" />
+                              <Font size="19.0" />
                            </font>
                         </Label>
                         <ProgressBar prefHeight="29.0" prefWidth="373.0" progress="0.0" fx:id="xpBar">
                            <opaqueInsets>
                               <Insets />
-                           </opaqueInsets></ProgressBar>
+                           </opaqueInsets>
+                           <HBox.margin>
+                              <Insets left="20.0" right="20.0" />
+                           </HBox.margin></ProgressBar>
                         <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refresh" text="⟳">
                            <HBox.margin>
-                              <Insets />
+                              <Insets right="20.0" />
                            </HBox.margin>
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Button>
-                         <Button fx:id="addTransactionButton" onAction="#handleOpenTransactionForm" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" prefWidth="130" text="Add Transaction">
+                         <Button fx:id="addTransactionButton" onAction="#handleOpenTransactionForm" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" prefWidth="150" text="Add Transaction">
 
                          <font>
                               <Font size="15.0" />
-                           </font></Button>
+                           </font>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin></Button>
                         <Button fx:id="streakButton" mnemonicParsing="false" onAction="#handleOpenCalendarStreak" scaleShape="false" styleClass="button-fire" text="Streak">
                            <font>
                               <Font size="15.0" />
-                           </font></Button>
+                           </font>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin></Button>
                          <Button fx:id="changeThemeButton" onAction="#handleChangeTheme" text="Light">
                            <font>
                               <Font size="15.0" />
@@ -99,10 +108,10 @@
                   </HBox>
                </top>
                <left>
-                  <VBox prefHeight="883.0" prefWidth="1509.0" BorderPane.alignment="CENTER">
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="903.0" prefWidth="1753.0" BorderPane.alignment="CENTER">
                      <children>
                         <Separator prefHeight="0.0" prefWidth="1225.0" />
-                        <Label text="Overview">
+                        <Label text="Overview" styleClass="title-label">
                            <font>
                               <Font size="31.0" />
                            </font>
@@ -124,31 +133,31 @@
                           </rowConstraints>
                            <children>
                               <Button mnemonicParsing="false" onAction="#handleOpenAssetForm" prefHeight="32.0" prefWidth="144.0" text="Assets" />
-                              <Label fx:id="assetsLabel" text="1000000 €" GridPane.rowIndex="1">
+                              <Label fx:id="assetsLabel" styleClass="sum-labels" text="1000000 €" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
                                <Button mnemonicParsing="false" onAction="#handleOpenAddLiabilityForm" prefHeight="32.0" prefWidth="144.0" text="Liabilities" GridPane.columnIndex="1" />
-                              <Label fx:id="liabilitiesLabel" text="1000000 €" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="liabilitiesLabel" styleClass="sum-labels" text="1000000 €" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
                                <Button fx:id="buttonIncomeChart" mnemonicParsing="false" onAction="#handleOpenIncomesPieChart" prefHeight="32.0" prefWidth="144.0" text="Income" GridPane.columnIndex="2" />
-                              <Label fx:id="incomesLabel" text="1000000 €" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                              <Label fx:id="incomesLabel" styleClass="sum-labels" text="1000000 €" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
                                <Button fx:id="buttonExpensesChart" mnemonicParsing="false" onAction="#handleOpenExpensesPieChart" prefHeight="32.0" prefWidth="144.0" text="Expenses" GridPane.columnIndex="3" />
-                              <Label fx:id="expensesLabel" text="1000000 €" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <Label fx:id="expensesLabel" styleClass="sum-labels" text="1000000 €" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
                               </Label>
                                <Button mnemonicParsing="false" onAction="#handleOpenNetWorthForm" prefHeight="32.0" prefWidth="144.0" text="Net Worth" GridPane.columnIndex="4" />
-                              <Label fx:id="networthLabel" text="1000000 €" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                              <Label fx:id="networthLabel" styleClass="sum-labels" text="1000000 €" GridPane.columnIndex="4" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="25.0" />
                                  </font>
@@ -163,7 +172,7 @@
                </left>
             </BorderPane>
          </content></Tab>
-    <Tab closable="false" text="Assets">
+    <Tab closable="false" text="Assets" styleClass="tab-name">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -184,7 +193,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Assets" textFill="green">
+                        <Label styleClass="title-label" text="Assets" textFill="green">
                            <font>
                               <Font size="39.0" />
                            </font>
@@ -204,7 +213,7 @@
                </top>
             </BorderPane>
          </content></Tab>
-      <Tab closable="false" text="Liabilities">
+      <Tab closable="false" text="Liabilities" styleClass="tab-name">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -230,7 +239,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Liabilities" textFill="red">
+                        <Label styleClass="title-label" text="Liabilities" textFill="red">
                            <font>
                               <Font size="39.0" />
                            </font>
@@ -252,7 +261,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab closable="false" text="Income">
+      <Tab closable="false" text="Income" styleClass="tab-name">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -273,7 +282,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Income" textFill="GREEN">
+                        <Label styleClass="title-label" text="Income" textFill="GREEN">
                            <font>
                               <Font size="39.0" />
                            </font>
@@ -304,7 +313,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab closable="false" text="Expenses">
+      <Tab closable="false" text="Expenses" styleClass="tab-name">
          <content>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
                <center>
@@ -325,7 +334,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1509.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Expenses" textFill="RED">
+                        <Label styleClass="title-label" text="Expenses" textFill="RED">
                            <font>
                               <Font size="39.0" />
                            </font>
@@ -354,7 +363,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab fx:id="netWorthTab" closable="false" text="Net Worth">
+      <Tab fx:id="netWorthTab" closable="false" text="Net Worth" styleClass="tab-name">
           <content>
               <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                   <center>
@@ -372,7 +381,7 @@
                <top>
                   <HBox alignment="CENTER_LEFT" prefHeight="88.0" prefWidth="1504.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Net Worth">
+                        <Label text="Net Worth" styleClass="title-label">
                            <font>
                               <Font size="39.0" />
                            </font>
@@ -392,7 +401,7 @@
           </content>
       </Tab>
 
-        <Tab closable="false" text="Settings" xmlns:fx="http://javafx.com/fxml">
+        <Tab closable="false" text="Settings" xmlns:fx="http://javafx.com/fxml" styleClass="tab-name">
             <content>
                 <ScrollPane fitToWidth="true">
                     <content>
@@ -402,7 +411,7 @@
                             </padding>
 
                             <!-- Titolo -->
-                            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Settings" />
+                            <Label styleClass="title-label" text="Settings" />
 
                             <!-- Sezione: Informazioni Utente -->
                             <TitledPane text="User Profile">
