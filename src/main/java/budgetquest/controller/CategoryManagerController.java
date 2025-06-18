@@ -1,6 +1,5 @@
 package budgetquest.controller;
 
-
 import budgetquest.dao.CategoryDao;
 import budgetquest.dao.CategoryDaoImpl;
 import budgetquest.model.Category;
@@ -56,11 +55,10 @@ public class CategoryManagerController {
     }
 
 
-
     @FXML
     private void handleSaveChanges() {
         for (Category c : categories) {
-            categoryDao.update(c, user.getId());  // Your DAO method to persist changes
+            categoryDao.update(c, user.getId());
         }
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Changes saved successfully.");
         alert.showAndWait();
