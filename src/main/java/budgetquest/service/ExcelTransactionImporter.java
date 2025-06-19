@@ -1,7 +1,7 @@
 package budgetquest.service;
 
-import budgetquest.dao.CategoryDao;
-import budgetquest.dao.CategoryDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
 import budgetquest.model.Category;
 import budgetquest.model.Transaction;
 import budgetquest.model.User;
@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +40,10 @@ public class ExcelTransactionImporter {
             int deafultExpenseId = 0;
             for (Category c : categories) {
                 logger.info("Category found: " + c.getName());
-                if (c.getName().equals("Not categorized") && c.getType().equals("income")) {
+                if (c.getName().equalsIgnoreCase("Not categorized") && c.getType().equals("income")) {
                     deafultIncomeId =  c.getId();
                     logger.info("Default income cat: " + deafultIncomeId);
-                } else if (c.getName().equals("Not categorized") && c.getType().equals("expense")){
+                } else if (c.getName().equalsIgnoreCase("Not categorized") && c.getType().equals("expense")){
                     deafultExpenseId = c.getId();
                     logger.info("Default expense cat: " + deafultExpenseId);
                 }
@@ -107,11 +106,13 @@ public class ExcelTransactionImporter {
                         }
                     }
                     if (category.getId() == 0) {
-                        category.setId(deafultExpenseId);
-                        category.setName("Not categorized");
+                        category.setName(getCellStringValue(row, 2).trim());
+                        category.setType("expense");
+                        category.setUserId(user.getId());
+                        category.setDeleted(false);
+                        categoryDao.insertGetId(user, category);
+                        categories.add(category);
                     }
-                    category.setType("expense");
-                    category.setDeleted(false);
                     amount = BigDecimal.valueOf(rawAmount);
                     if (amount.compareTo(BigDecimal.ZERO) < 0) {
                         amount = amount.negate();
@@ -126,11 +127,13 @@ public class ExcelTransactionImporter {
                         }
                     }
                     if (category.getId() == 0) {
-                        category.setId(deafultIncomeId);
-                        category.setName("Not categorized");
+                        category.setName(getCellStringValue(row, 2).trim());
+                        category.setType("income");
+                        category.setUserId(user.getId());
+                        category.setDeleted(false);
+                        categoryDao.insertGetId(user, category);
+                        categories.add(category);
                     }
-                    category.setDeleted(false);
-                    category.setType("income");
                 } else {
                     for (Category c : categories) {
                         if (c.getName().equalsIgnoreCase(getCellStringValue(row, 2).trim())) {

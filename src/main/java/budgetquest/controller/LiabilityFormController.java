@@ -1,6 +1,11 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.LiabilityDao.LiabilityDao;
+import budgetquest.dao.LiabilityDao.LiabilityDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
+import budgetquest.dao.XpGiverDao.XpGiverDao;
+import budgetquest.dao.XpGiverDao.XpGiverDaoImpl;
 import budgetquest.model.Liability;
 import budgetquest.model.User;
 import budgetquest.utils.MyUtils;

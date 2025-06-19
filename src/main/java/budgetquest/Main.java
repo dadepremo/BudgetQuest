@@ -18,6 +18,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/login.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.setTitle("BudgetQuest");
         stage.show();
     }

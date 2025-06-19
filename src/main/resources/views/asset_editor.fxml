@@ -57,6 +57,7 @@
     <HBox alignment="center_right" spacing="10">
         <Button onAction="#handleSave" text="Save" />
         <Button onAction="#handleCancel" text="Cancel" />
+        <Button onAction="#handleAssetDelete" text="Delete" />
     </HBox>
 
 </VBox>

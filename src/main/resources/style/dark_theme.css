@@ -1,91 +1,177 @@
 .root {
-    -fx-base: #2b2b2b;
-    -fx-background: #1e1e1e;
-    -fx-text-fill: #f0f0f0;
+    -fx-base: #1f1f1f;
+    -fx-background-color: #121212;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-text-fill: #f1f1f1;
 }
 
+/* Labels */
 .label {
-    -fx-text-fill: #f0f0f0;
+    -fx-font-size: 15px;
+    -fx-text-fill: #f1f1f1;
 }
-
-.button {
-    -fx-background-color: #3a3a3a;
-    -fx-text-fill: #ffffff;
-    -fx-border-color: #555555;
-    -fx-border-radius: 5;
-}
-
-.button:hover {
-    -fx-background-color: #505050;
-}
-
-.table-view {
-    -fx-background-color: #2b2b2b;
-}
-
-.table-row-cell {
-    -fx-background-color: #2b2b2b;
-}
-
-.table-row-cell:filled:selected, .table-row-cell:filled:hover {
-    -fx-background-color: #cce5ff;
+.label-link {
+    -fx-text-fill: #1abc9c;
+    -fx-underline: true;
     -fx-cursor: hand;
-    -fx-font-weight: bold;
+    -fx-font-size: 19px;
 }
-
-.table-cell {
-    -fx-text-fill: #f0f0f0; /* this makes the text white */
-    -fx-background-color: transparent;
-}
-
-.progress-bar {
-    -fx-accent: #64b5f6;
-}
-.label-link, .button, .tab {
-    -fx-cursor: hand; /* cursor pointer */
-}
-
 .label-link:hover {
-    -fx-underline: true; /* underline on hover */
-    -fx-text-fill: green;
+    -fx-text-fill: #16a085;
 }
-
 .label-link-dpLabel {
-    -fx-cursor: hand; /* cursor pointer */
-}
-.label-link-dpLabel:hover {
-    -fx-underline: true; /* underline on hover */
-    -fx-text-fill: #2a9d8f;
+    -fx-text-fill: #2ecc71;
+    -fx-font-weight: bold;
+    -fx-font-size: 19px;
 }
 
-.button-fire {
-    -fx-background-color: linear-gradient(to bottom, #FFD700, #FF8C00);
+.label-link-dpLabel:hover {
+    -fx-cursor: hand;
+    -fx-underline: true;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #3498db;
     -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+.button-fire {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+.button-fire:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Table */
+.table-view {
+    -fx-background-color: #2c3e50;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: #34495e;
+    -fx-border-radius: 6px;
+    -fx-font-size: 14px;
+}
+.table-row-cell:hover {
+    -fx-background-color: #3d566e;
+}
+.table-row-cell:filled:selected {
+    -fx-background-color: #46627f;
+}
+.table-column-header-background {
+    -fx-background-color: #34495e;
+}
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Inputs */
+.text-field, .text-area, .date-picker {
+    -fx-background-color: #2c3e50;
+    -fx-border-color: #7f8c8d;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 14px;
+}
+.text-field:focused, .date-picker:focused, .text-area:focused {
+    -fx-border-color: #1abc9c;
+    -fx-background-color: #34495e;
+}
+
+/* ChoiceBox */
+.choice-box {
+    -fx-background-color: #2c3e50;
+    -fx-border-color: #7f8c8d;
+    -fx-font-size: 14px;
+}
+.choice-box .label {
+    -fx-text-fill: #ecf0f1;
+}
+
+/* ProgressBar */
+.progress-bar {
+    -fx-accent: #2ecc71;
+    -fx-control-inner-background: #34495e;
+}
+
+/* TitledPane */
+.titled-pane {
+    -fx-border-color: #7f8c8d;
+    -fx-border-radius: 4;
+}
+.titled-pane > .title {
+    -fx-background-color: #34495e;
+    -fx-padding: 10;
+    -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0.3, 0, 2);
-    -fx-padding-left: 16;         /* fixed padding */
-    -fx-padding-right: 16;         /* fixed padding */
-    -fx-border-width: 0;            /* no border */
-    -fx-scale-x: 1;                 /* no scale transform */
-    -fx-scale-y: 1;
-    -fx-translate-x: 0;
-    -fx-translate-y: 0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0.3, 0, 2);
+    -fx-font-size: 16px;
+}
+
+/* TabPane */
+.tab-pane .tab-header-area {
+    -fx-background-color: #1f1f1f;
+}
+.tab-pane .tab:selected {
+    -fx-background-color: #2c3e50;
+}
+.tab-pane .tab-label {
+    -fx-text-fill: #bdc3c7;
     -fx-font-size: 15px;
 }
 
-.button-fire:hover {
-    -fx-background-color: linear-gradient(to bottom, #FFB700, #FF7C00);
-    -fx-scale-x: 1;
-    -fx-scale-y: 1;
-    -fx-padding-left: 16;         /* fixed padding */
-    -fx-padding-right: 16;
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
 }
 
-.button-fire:pressed {
-    -fx-background-color: linear-gradient(to bottom, #FF8C00, #FF7000);
-    -fx-scale-x: 1;
-    -fx-scale-y: 1;
-    -fx-padding-left: 16;         /* fixed padding */
-    -fx-padding-right: 16;
+.title-label {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ecf0f1;
+}
+
+.title-label:hover {
+    -fx-text-fill: #00cec9;
+    -fx-cursor: hand;
+}
+
+
+.llabel {
+    -fx-font-size: 19px;
+}
+
+.sum-labels {
+    -fx-font-size: 25px;
+}
+
+.tab-pane .tab-header-area .tab {
+    -fx-padding: 10 20 10 20;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab-header-area .tab:selected {
+    -fx-background-color: #333333;
+}
+
+.tab-pane .tab-header-area .tab:selected .tab-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab-header-area .tab:hover {
+    -fx-background-color: #444;
+    -fx-cursor: hand;
+}
+
+.tab-pane .tab-header-area .tab .tab-label {
+    -fx-text-fill: #ccc;
+    -fx-font-size: 16px;
 }

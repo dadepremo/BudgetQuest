@@ -1,13 +1,14 @@
 package budgetquest.controller;
 
-import budgetquest.dao.CategoryDaoImpl;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -20,13 +21,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserProfileController {
 
     private static final Logger logger = LogManager.getLogger(UserProfileController.class);
+    @FXML private BorderPane mainRoot;
 
     @FXML private Label usernameLabel;
     @FXML private Label firstNameLabel;
@@ -51,6 +55,7 @@ public class UserProfileController {
     @FXML private Button achievementsButton;
 
 
+
     private User user;
 
     public void setUser(User user, boolean isOwnProfile) {
@@ -70,7 +75,17 @@ public class UserProfileController {
         } else {
             hideFriendControls();
         }
+
+        if (user.getTheme().equalsIgnoreCase("dark")) {
+            mainRoot.getStylesheets().clear();
+            mainRoot.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/profile_dark.css")).toExternalForm());
+        } else {
+            mainRoot.getStylesheets().clear();
+            mainRoot.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/profile_light.css")).toExternalForm());
+        }
     }
+
+
 
 
     @FXML
@@ -444,6 +459,25 @@ public class UserProfileController {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void handleOpenGoals() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/goal_manager.fxml"));
+            Parent root = loader.load();
+
+            GoalManagerController controller = loader.getController();
+            controller.setUser(user);
+
+            Stage stage = new Stage();
+            stage.setTitle("Goals");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

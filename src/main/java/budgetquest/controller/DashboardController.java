@@ -1,22 +1,40 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AssetDao.AssetDao;
+import budgetquest.dao.AssetDao.AssetDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
+import budgetquest.dao.LiabilityDao.LiabilityDao;
+import budgetquest.dao.LiabilityDao.LiabilityDaoImpl;
+import budgetquest.dao.NetWorthHistoryDao.NetWorthHistoryDao;
+import budgetquest.dao.NetWorthHistoryDao.NetWorthHistoryDaoImpl;
+import budgetquest.dao.ShopItemDao.ShopItemDao;
+import budgetquest.dao.ShopItemDao.ShopItemDaoImpl;
+import budgetquest.dao.TransactionDao.TransactionDao;
+import budgetquest.dao.TransactionDao.TransactionDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
+import budgetquest.service.CsvTransactionExporter;
+import budgetquest.service.CsvTransactionImporter;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -29,7 +47,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 import budgetquest.service.ExcelTransactionImporter;
-import budgetquest.service.ImportResult;
 import budgetquest.utils.DbConnection;
 import budgetquest.utils.MyUtils;
 
@@ -41,6 +58,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +69,7 @@ import java.util.Objects;
 public class DashboardController {
 
     private static final Logger logger = LogManager.getLogger(DashboardController.class);
+
 
     // FXML-bound labels for displaying key user and financial metrics
     @FXML private Label assetsLabel;
@@ -136,28 +155,28 @@ public class DashboardController {
     @FXML private DatePicker assetFromDatePicker, assetToDatePicker;
     @FXML private TextField liabilitySearchField;
     @FXML private DatePicker liabilityFromDatePicker, liabilityToDatePicker;
-    @FXML private Button uploadTransactionsBtn;
-    @FXML private Button uploadTransactionsBtn1;
 
     // Line chart to visualize net worth history
     @FXML private LineChart<String, Number> lineChart;
     @FXML private Tab netWorthTab;
 
-    // DAO implementations for interacting with the database
+    @FXML private Label incomeTrendLabel, expenseTrendLabel;
+    @FXML private VBox incomeTrendCard, expenseTrendCard;
+    @FXML private ComboBox<String> transactionActionsComboBox;
+    @FXML private ComboBox<String> transactionActionsComboBox1;
+
+
+     // DAO implementations for interacting with the database
     private final NetWorthHistoryDao netWorthDao = new NetWorthHistoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
     private final UserDao userDao = new UserDaoImpl();
     private final ShopItemDao shopItemDao = new ShopItemDaoImpl();
-    private final CategoryDao categoryDao = new CategoryDaoImpl();
 
     private User currentUser;
     private AssetDao assetDao;
     private LiabilityDao liabilityDao;
 
-    /**
-     * Main method to initialize the dashboard after a user logs in.
-     * Loads user info, financial summaries, theme preferences, and data tables.
-     */
+
     public void setUser(User user) {
         this.currentUser = user;
         this.assetDao = new AssetDaoImpl();
@@ -218,7 +237,7 @@ public class DashboardController {
         xpLabel.setText(MyUtils.formatInt(user.getXp()) + " / " + MyUtils.formatInt(((user.getLevel() + 1) * 500)) + " XP");
 
         if (shopItemDao.getItemByNameForUser("Points animation", user.getId()) != null) {
-            MyUtils.animateNumber(dpLabel, user.getPoints(), Duration.seconds(5), true, "DP", Duration.millis(2000));
+            MyUtils.animateNumber(dpLabel, user.getPoints(), Duration.seconds(5), true, "DP", Duration.millis(1000));
         } else {
             dpLabel.setText(MyUtils.formatDpPoints(user.getPoints()));
         }
@@ -286,7 +305,7 @@ public class DashboardController {
         } else {
             buttonExpensesChart.setDisable(true);
             buttonExpensesChart1.setDisable(true);
-            expensesLabel.setText("No expenses last month");
+            expensesLabel.setText("No expenses");
         }
 
         // INCOMES (unchanged, for comparison)
@@ -304,14 +323,14 @@ public class DashboardController {
         } else {
             buttonIncomeChart.setDisable(true);
             buttonIncomeChart1.setDisable(true);
-            incomesLabel.setText("No income last month");
+            incomesLabel.setText("No income");
         }
 
 
         // Display total assets
         double assetsValue = assetDao.sumAllAssetValues(user);
         if (assetsValue == 0) {
-            assetsLabel.setText("No assets found");
+            assetsLabel.setText("No assets");
         } else {
             assetsLabel.setText(MyUtils.formatCurrency(assetsValue, user.getCurrencySymbol()));
             if (shopItemDao.getItemByNameForUser("Assets are so good!", user.getId()) != null)
@@ -321,7 +340,7 @@ public class DashboardController {
         // Display total liabilities
         double liabilitiesAmount = liabilityDao.sumAllLiabilitiesAmount(user);
         if (liabilitiesAmount == 0) {
-            liabilitiesLabel.setText("No liabilities found");
+            liabilitiesLabel.setText("No liabilities");
         } else {
             liabilitiesLabel.setText("-" + MyUtils.formatCurrency(liabilitiesAmount, user.getCurrencySymbol()));
             if (shopItemDao.getItemByNameForUser("Liabilities are no good!", user.getId()) != null)
@@ -351,6 +370,11 @@ public class DashboardController {
         }
 
         // Editors openings
+        assetTable.setFixedCellSize(50);
+        liabilityTable.setFixedCellSize(50);
+        incomeTable.setFixedCellSize(30);
+        expenseTable.setFixedCellSize(30);
+
         assetTable.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -359,6 +383,7 @@ public class DashboardController {
                     openAssetEditor(selectedAsset);
                 }
             });
+            row.setStyle("-fx-font-size: 16px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
@@ -371,6 +396,7 @@ public class DashboardController {
                     openLiabilityEditor(selectedLiability);
                 }
             });
+            row.setStyle("-fx-font-size: 16px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
@@ -383,6 +409,7 @@ public class DashboardController {
                     openTransactionEditor(transaction, "income");
                 }
             });
+            row.setStyle("-fx-font-size: 15px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
@@ -395,12 +422,48 @@ public class DashboardController {
                     openTransactionEditor(transaction, "expense");
                 }
             });
+            row.setStyle("-fx-font-size: 15px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
 
+        updateMonthlyTrends();
+        addHoverEffect(incomeTrendCard);
+        addHoverEffect(expenseTrendCard);
 
     }
+
+    public void updateMonthlyTrends() {
+        YearMonth thisMonth = YearMonth.now().minusMonths(1); // Last month
+        YearMonth prevMonth = thisMonth.minusMonths(1);
+
+        double lastMonthIncome = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "income", thisMonth);
+        double prevMonthIncome = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "income", prevMonth);
+
+        double lastMonthExpenses = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "expense", thisMonth);
+        double prevMonthExpenses = transactionDao.getTotalByTypeAndMonth(currentUser.getId(), "expense", prevMonth);
+
+        double incomeDiff = lastMonthIncome - prevMonthIncome;
+        double incomePercent = (prevMonthIncome == 0) ? 0 : (incomeDiff / prevMonthIncome) * 100;
+
+        String sign = (incomeDiff >= 0) ? "+" : "-";
+        String diffText = sign + MyUtils.formatCurrency(Math.abs(incomeDiff), currentUser.getCurrencySymbol());
+        String percentText = String.format(" (%.1f%%)", Math.abs(incomePercent));
+
+        incomeTrendCard.setStyle(incomeDiff >= 0 ? "-fx-background-color: #ecfdf5;" : "-fx-background-color: #fef2f2;");
+        incomeTrendLabel.setText("Last month: " + MyUtils.formatCurrency(lastMonthIncome, currentUser.getCurrencySymbol()) + "\nPrev month: " + MyUtils.formatCurrency(prevMonthIncome, currentUser.getCurrencySymbol()) + "\nChange: " + diffText + percentText);
+
+        double expenseDiff = lastMonthExpenses - prevMonthExpenses;
+        double expensePercent = (prevMonthExpenses == 0) ? 0 : (expenseDiff / prevMonthExpenses) * 100;
+
+        String sign1 = (expenseDiff >= 0) ? "+" : "-";
+        String diffText1 = sign1 + MyUtils.formatCurrency(Math.abs(expenseDiff), currentUser.getCurrencySymbol());
+        String percentText1 = String.format(" (%.1f%%)", Math.abs(expensePercent));
+
+        expenseTrendCard.setStyle(expenseDiff < 0 ? "-fx-background-color: #ecfdf5;" : "-fx-background-color: #fef2f2;");
+        expenseTrendLabel.setText("Last month: " + MyUtils.formatCurrency(lastMonthExpenses, currentUser.getCurrencySymbol()) + "\nPrev month: " + MyUtils.formatCurrency(prevMonthExpenses, currentUser.getCurrencySymbol()) + "\nChange: " + diffText1 + percentText1);
+    }
+
 
     private void openAssetEditor(Asset asset) {
         try {
@@ -450,7 +513,6 @@ public class DashboardController {
         }
     }
 
-
     private void openTransactionEditor(Transaction transaction, String type) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/transaction_editor.fxml"));
@@ -479,7 +541,6 @@ public class DashboardController {
             MyUtils.showError("Error", "Could not open the editor window.");
         }
     }
-
 
     // Set UI tooltips
     private void setTooltips() {
@@ -570,7 +631,28 @@ public class DashboardController {
 
     }
 
+    private void addHoverEffect(VBox card) {
+        DropShadow hoverShadow = new DropShadow(10, Color.GRAY);
+        hoverShadow.setSpread(0.2);
 
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), card);
+
+        card.setOnMouseEntered(e -> {
+            st.setToX(1.03);
+            st.setToY(1.03);
+            st.playFromStart();
+            card.setEffect(hoverShadow);
+            card.setCursor(Cursor.HAND);
+        });
+
+        card.setOnMouseExited(e -> {
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.playFromStart();
+            card.setEffect(null);
+            card.setCursor(Cursor.DEFAULT);
+        });
+    }
 
     // Import transactions from file
     private int totXp = 0;
@@ -579,7 +661,7 @@ public class DashboardController {
         fileChooser.setTitle("Select Excel File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
 
-        Stage stage = (Stage) uploadTransactionsBtn.getScene().getWindow();
+        Stage stage = (Stage) progressBarImportTransactions.getScene().getWindow();
 
         File file = fileChooser.showOpenDialog(stage);
 
@@ -589,8 +671,8 @@ public class DashboardController {
             statusLabelImportTransactions.setVisible(true);
             progressBarImportTransactions1.setVisible(true);
             statusLabelImportTransactions1.setVisible(true);
-            uploadTransactionsBtn.setDisable(true);
-            uploadTransactionsBtn1.setDisable(true);
+            transactionActionsComboBox.setDisable(true);
+            transactionActionsComboBox1.setDisable(true);
 
             Task<Void> importTask = new Task<>() {
                 @Override
@@ -608,7 +690,7 @@ public class DashboardController {
                         counter++;
 
                         updateProgress(counter, total);
-                        updateMessage("Imported " + counter + " of " + total + " transactions...");
+                        updateMessage("Imported " + counter + " of " + total);
 
                         totXp += 50;
 
@@ -635,10 +717,6 @@ public class DashboardController {
             progressBarImportTransactions1.progressProperty().bind(importTask.progressProperty());
             statusLabelImportTransactions1.textProperty().bind(importTask.messageProperty());
 
-            uploadTransactionsBtn.setDisable(false);
-            uploadTransactionsBtn1.setDisable(false);
-
-
             importTask.setOnSucceeded(e -> {
                 statusLabelImportTransactions.textProperty().unbind();
                 statusLabelImportTransactions.setText("Import completed.");
@@ -650,6 +728,8 @@ public class DashboardController {
                 statusLabelImportTransactions1.textProperty().unbind();
                 userDao.updateUserLevel(currentUser, totXp);
                 totXp = 0;
+                transactionActionsComboBox.setDisable(false);
+                transactionActionsComboBox1.setDisable(false);
                 refresh();
             });
 
@@ -668,6 +748,8 @@ public class DashboardController {
                 progressBarImportTransactions1.progressProperty().unbind();
                 statusLabelImportTransactions1.textProperty().unbind();
                 logger.warn(importTask.getException().getMessage());
+                transactionActionsComboBox.setDisable(false);
+                transactionActionsComboBox1.setDisable(false);
             });
 
             // 🔁 Start background task
@@ -676,15 +758,13 @@ public class DashboardController {
 
     }
 
-
-
     public void handleChangeTheme() {
-        if (currentUser.getTheme().equals("dark")) {
+        if (currentUser.getTheme().equalsIgnoreCase("dark")) {
             currentUser.setTheme("light");
             userDao.updateUserTheme(currentUser);
             logger.info("Changed theme to light");
-            switchToLightTheme(); // <- CORRETTO
-        } else if (currentUser.getTheme().equals("light")) {
+            switchToLightTheme();
+        } else if (currentUser.getTheme().equalsIgnoreCase("light")) {
             currentUser.setTheme("dark");
             userDao.updateUserTheme(currentUser);
             logger.info("Changed theme to dark");
@@ -729,7 +809,9 @@ public class DashboardController {
             stage.initOwner(streakButton.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
 
-            stage.show();
+            stage.showAndWait();
+
+            refresh();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -758,8 +840,9 @@ public class DashboardController {
     }
 
     public void animateProgressBarColorSmooth(ProgressBar xpBar) {
-        Color color1 = Color.web("#096303"); // Mint
-        Color color2 = Color.web("#46E327");   // Jungle
+        Color color1 = Color.web("#00b4db"); // Deep Sky Blue
+        Color color2 = Color.web("#00db94"); // Cool Ocean Blue
+
         ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(color1);
         colorProperty.addListener((obs, oldColor, newColor) -> {
             String rgba = String.format("rgba(%d, %d, %d, %.2f)",
@@ -1122,7 +1205,7 @@ public class DashboardController {
     }
 
     @FXML
-    public void handleOpenShop(MouseEvent mouseEvent) {
+    public void handleOpenShop() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/shop.fxml"));
             Parent root = loader.load();
@@ -1286,4 +1369,74 @@ public class DashboardController {
         }
     }
 
+    @FXML
+    private void handleExportButtonClick() {
+        CsvTransactionExporter exporter = new CsvTransactionExporter();
+        exporter.exportWithFileChooser(refreshButton.getScene().getWindow(), currentUser.getId());
+    }
+
+    @FXML
+    private void handleImportButtonClick() {
+        CsvTransactionImporter importer = new CsvTransactionImporter(currentUser.getId());
+        importer.importFromFileChooser(refreshButton.getScene().getWindow());
+    }
+
+    // TODO: fix
+    @FXML
+    public void handleDeleteUser() {
+        boolean done = userDao.deleteUser(currentUser.getId());
+        if (done) {
+            MyUtils.showInfo("User deleted", "User has been deleted successfully");
+            handleLogout();
+        } else {
+            logger.warn("Error deleting user");
+        }
+
+    }
+
+    @FXML
+    private void handleTransactionComboAction() {
+
+        if (transactionActionsComboBox.getValue() == null) return;
+        if (transactionActionsComboBox.getItems().isEmpty()) return;
+
+        String selected = transactionActionsComboBox.getValue();
+
+        if (selected == null) return;
+
+        CsvTransactionExporter csvTransactionExporter = new CsvTransactionExporter();
+        CsvTransactionImporter csvTransactionImporter = new CsvTransactionImporter(currentUser.getId());
+
+        switch (selected) {
+            case "Import from ISP file" -> handleUploadTransactions();
+            case "Import from CSV" -> csvTransactionImporter.importFromFileChooser(refreshButton.getScene().getWindow());
+            case "Export to CSV" -> csvTransactionExporter.exportWithFileChooser(refreshButton.getScene().getWindow(), currentUser.getId());
+            default -> logger.warn("Unknown action: " + selected);
+        }
+
+        transactionActionsComboBox.setPromptText("Tools");
+    }
+
+    @FXML
+    private void handleTransactionComboAction1() {
+
+        if (transactionActionsComboBox1.getValue() == null) return;
+        if (transactionActionsComboBox1.getItems().isEmpty()) return;
+
+        String selected = transactionActionsComboBox1.getValue();
+
+        if (selected == null) return;
+
+        CsvTransactionExporter csvTransactionExporter = new CsvTransactionExporter();
+        CsvTransactionImporter csvTransactionImporter = new CsvTransactionImporter(currentUser.getId());
+
+        switch (selected) {
+            case "Import from ISP file" -> handleUploadTransactions();
+            case "Import from CSV" -> csvTransactionImporter.importFromFileChooser(refreshButton.getScene().getWindow());
+            case "Export to CSV" -> csvTransactionExporter.exportWithFileChooser(refreshButton.getScene().getWindow(), currentUser.getId());
+            default -> logger.warn("Unknown action: " + selected);
+        }
+
+        transactionActionsComboBox1.setPromptText("Tools");
+    }
 }

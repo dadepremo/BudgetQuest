@@ -1,19 +1,22 @@
 package budgetquest.controller;
 
-import budgetquest.dao.LiabilityDao;
-import budgetquest.dao.LiabilityDaoImpl;
+import budgetquest.dao.LiabilityDao.LiabilityDao;
+import budgetquest.dao.LiabilityDao.LiabilityDaoImpl;
 import budgetquest.model.Liability;
 import budgetquest.model.User;
+import budgetquest.service.LiabilityPdfGenerator;
 import budgetquest.utils.MyUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class LiabilityEditorController {
 
@@ -40,6 +43,8 @@ public class LiabilityEditorController {
 
     private Liability liability;
     private User loggedUser;
+
+    private final LiabilityDao liabilityDao = new LiabilityDaoImpl();
 
     public void setLiability(Liability liability, User user) {
         this.liability = liability;
@@ -267,5 +272,36 @@ public class LiabilityEditorController {
     private String getSafeText(TextField field) {
         return field.getText() != null ? field.getText().trim() : null;
     }
+
+    @FXML
+    private void handleLiabilityDelete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("Are you sure you want to delete this asset?");
+        alert.setContentText("Asset: " + liability.getName());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            liabilityDao.softDelete(liability);
+            MyUtils.showInfo("Success", "Successfully deleted this asset.");
+            closeWindow();
+        }
+    }
+
+    @FXML
+    private void handleCreatePdf() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Liability Report");
+        fileChooser.setInitialFileName("liability_report.pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        Stage stage = (Stage) nameField.getScene().getWindow();
+
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            new LiabilityPdfGenerator().generateLiabilityPdf(liability, file.getAbsolutePath());
+        }
+    }
+
 
 }

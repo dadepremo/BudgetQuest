@@ -1,6 +1,13 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AssetDao.AssetDao;
+import budgetquest.dao.AssetDao.AssetDaoImpl;
+import budgetquest.dao.ShopItemDao.ShopItemDao;
+import budgetquest.dao.ShopItemDao.ShopItemDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
+import budgetquest.dao.XpGiverDao.XpGiverDao;
+import budgetquest.dao.XpGiverDao.XpGiverDaoImpl;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;

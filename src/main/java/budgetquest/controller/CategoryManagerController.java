@@ -1,8 +1,7 @@
 package budgetquest.controller;
 
-
-import budgetquest.dao.CategoryDao;
-import budgetquest.dao.CategoryDaoImpl;
+import budgetquest.dao.CategoryDao.CategoryDao;
+import budgetquest.dao.CategoryDao.CategoryDaoImpl;
 import budgetquest.model.Category;
 import budgetquest.model.User;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -21,6 +20,11 @@ public class CategoryManagerController {
     @FXML private TableColumn<Category, Integer> idColumn;
     @FXML private TableColumn<Category, String> nameColumn;
     @FXML private TableColumn<Category, String> typeColumn;
+    @FXML private TableView<Category> incomeCategoryTable;
+    @FXML private TableView<Category> expenseCategoryTable;
+    @FXML private TableColumn<Category, String> incomeNameColumn;
+    @FXML private TableColumn<Category, String> expenseNameColumn;
+
 
     private final CategoryDao categoryDao = new CategoryDaoImpl();
     private User user;
@@ -32,37 +36,48 @@ public class CategoryManagerController {
         loadCategories();
     }
 
-
     private void loadCategories() {
         List<Category> categoryList = categoryDao.findAllByUser(user);
-        categories = FXCollections.observableArrayList(categoryList);
 
-        // Sort categories by type
-        SortedList<Category> sortedCategories = new SortedList<>(categories,
-                (c1, c2) -> c1.getType().compareToIgnoreCase(c2.getType()));
+        ObservableList<Category> incomeCategories = FXCollections.observableArrayList();
+        ObservableList<Category> expenseCategories = FXCollections.observableArrayList();
 
-        categoryTable.setItems(sortedCategories);
+        for (Category c : categoryList) {
+            if ("income".equalsIgnoreCase(c.getType())) {
+                incomeCategories.add(c);
+            } else if ("expense".equalsIgnoreCase(c.getType())) {
+                expenseCategories.add(c);
+            }
+        }
 
-        // Set up columns as before, with ReadOnlyStringWrapper if needed
-        nameColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getName()));
-        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        nameColumn.setOnEditCommit(e -> e.getRowValue().setName(e.getNewValue()));
+        incomeCategoryTable.setItems(incomeCategories);
+        expenseCategoryTable.setItems(expenseCategories);
 
-        typeColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getType()));
-        typeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        typeColumn.setOnEditCommit(e -> e.getRowValue().setType(e.getNewValue()));
+        incomeNameColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getName()));
+        incomeNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        incomeNameColumn.setOnEditCommit(e -> e.getRowValue().setName(e.getNewValue()));
 
-        categoryTable.setEditable(true);
+        expenseNameColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getName()));
+        expenseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        expenseNameColumn.setOnEditCommit(e -> e.getRowValue().setName(e.getNewValue()));
+
+        incomeCategoryTable.setEditable(true);
+        expenseCategoryTable.setEditable(true);
     }
 
 
 
     @FXML
     private void handleSaveChanges() {
-        for (Category c : categories) {
-            categoryDao.update(c, user.getId());  // Your DAO method to persist changes
+        for (Category c : incomeCategoryTable.getItems()) {
+            categoryDao.update(c, user.getId());
         }
+        for (Category c : expenseCategoryTable.getItems()) {
+            categoryDao.update(c, user.getId());
+        }
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Changes saved successfully.");
         alert.showAndWait();
     }
+
 }

@@ -1,11 +1,24 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AchievementDao.AchievementDao;
+import budgetquest.dao.AchievementDao.AchievementDaoImpl;
+import budgetquest.dao.AppSettingsDao.AppSettingsDao;
+import budgetquest.dao.AppSettingsDao.AppSettingsDaoImpl;
+import budgetquest.dao.LoginEntryDao.LoginEntryDao;
+import budgetquest.dao.LoginEntryDao.LoginEntryDaoImpl;
+import budgetquest.dao.ShopItemDao.ShopItemDao;
+import budgetquest.dao.ShopItemDao.ShopItemDaoImpl;
+import budgetquest.dao.UserAchievementDao.UserAchievementDao;
+import budgetquest.dao.UserAchievementDao.UserAchievementDaoImpl;
+import budgetquest.dao.UserDao.UserDao;
+import budgetquest.dao.UserDao.UserDaoImpl;
 import budgetquest.utils.DbConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import budgetquest.model.Achievement;
 import budgetquest.model.User;
@@ -43,22 +56,27 @@ public class LoginController {
         AppSettingsDao appSettingsDao = new AppSettingsDaoImpl();
         String version = appSettingsDao.getSetting("app.version");
         String env = appSettingsDao.getSetting("env.mode");
-        envComboBox.getSelectionModel().select("DEV");
 
+        // Select the environment in the ComboBox based on env.mode value
+        if (env != null) {
+            envComboBox.getSelectionModel().select(env.toUpperCase()); // selects DEV / PROD / SQLITE
+            DbConnection.setEnvironment(env); // make sure DB is set on app start
+        }
+
+        appSettings.setText("v" + version + " - " + env.toUpperCase());
+
+        // Apply change if user selects a different env
         envComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 DbConnection.setEnvironment(newVal);
                 appSettings.setText("v" + version + " - " + newVal.toUpperCase());
+                logger.info("Switched environment to: " + newVal);
             }
         });
 
-        DbConnection.setEnvironment(envComboBox.getValue());
-
-        appSettings.setText("v" + version + " - " + env.toUpperCase());
-
-
         logger.info("App initialized. Version: " + version + ", Environment: " + env);
     }
+
 
 
     /**
@@ -109,7 +127,7 @@ public class LoginController {
                 if (controller != null) {
                     controller.setUser(user);
                 } else {
-                    System.err.println("DashboardController is null. Check fx:controller in dashboard.fxml");
+                    logger.warn("DashboardController is null. Check fx:controller in dashboard.fxml");
                 }
 
                 Stage stage = (Stage) usernameField.getScene().getWindow();

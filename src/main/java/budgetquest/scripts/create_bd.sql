@@ -174,10 +174,9 @@ CREATE TABLE public.app_settings (
 	CONSTRAINT app_settings_pkey PRIMARY KEY (key)
 );
 
-INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('app.version', '1.0.0', 'Current application version', '2025-06-16 19:25:03.440');
+INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('app.version', '1.0.1', 'Current application version', '2025-06-16 19:25:03.440');
 INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('env.mode', 'PROD', 'Current environment mode: dev, staging, production', '2025-06-16 19:25:03.440');
-INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('api.base_url', '', 'Base URL for backend API', '2025-06-16 19:25:03.440');
-INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('build.date', '16-06-2025', 'Date of last build or deploy', '2025-06-16 19:25:03.440');
+INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('build.date', '19-06-2025', 'Date of last build or deploy', '2025-06-16 19:25:03.440');
 
 -- categories
 DROP TABLE IF EXISTS public.categories;
@@ -186,11 +185,10 @@ CREATE TABLE public.categories (
 	id serial4 NOT NULL,
 	user_id int4 NOT NULL,
 	"name" varchar(50) NOT NULL,
-	"type" varchar(20) NOT NULL,
+	"type" varchar(20) NULL,
 	is_deleted bool DEFAULT false NULL,
 	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
 	CONSTRAINT categories_pkey PRIMARY KEY (id),
-	CONSTRAINT categories_type_check CHECK (((type)::text = ANY ((ARRAY['income'::character varying, 'expense'::character varying])::text[]))),
 	CONSTRAINT categories_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
@@ -247,7 +245,6 @@ CREATE TABLE public.transactions (
 	description text NULL,
 	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
 	CONSTRAINT transactions_pkey PRIMARY KEY (id),
-	CONSTRAINT transactions_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE SET NULL,
 	CONSTRAINT transactions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
@@ -285,7 +282,6 @@ CREATE TABLE public.liabilities (
 	user_id int4 NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"type" varchar(50) NOT NULL,
-	amount numeric(12, 2) NOT NULL,
 	amount_remaining numeric(12, 2) NULL,
 	interest_rate numeric(5, 2) NULL,
 	start_date date NULL,
@@ -295,6 +291,19 @@ CREATE TABLE public.liabilities (
 	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
 	last_updated timestamp DEFAULT CURRENT_TIMESTAMP NULL,
 	is_deleted bool DEFAULT false NULL,
+	payment_frequency varchar(20) NULL,
+	next_payment_due date NULL,
+	minimum_payment numeric(12, 2) NULL,
+	liability_status varchar(50) NULL,
+	category varchar(50) NULL,
+	total_paid numeric(12, 2) DEFAULT 0 NULL,
+	last_payment_date date NULL,
+	creditor_name varchar(100) NULL,
+	creditor_contact varchar(150) NULL,
+	reminder_enabled bool DEFAULT false NULL,
+	reminder_days_before int4 DEFAULT 7 NULL,
+	monthly_payment numeric(12, 2) NULL,
+	amount numeric(12, 2) NOT NULL,
 	CONSTRAINT liabilities_pkey PRIMARY KEY (id),
 	CONSTRAINT liabilities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
@@ -305,6 +314,7 @@ DROP TABLE IF EXISTS public.assets;
 CREATE TABLE public.assets (
 	id serial4 NOT NULL,
 	user_id int4 NULL,
+	category_id int4 NULL,
 	"name" varchar(100) NOT NULL,
 	"type" varchar(50) NOT NULL,
 	value numeric(12, 2) NOT NULL,
@@ -315,5 +325,26 @@ CREATE TABLE public.assets (
 	last_updated timestamp DEFAULT CURRENT_TIMESTAMP NULL,
 	is_deleted bool DEFAULT false NULL,
 	CONSTRAINT assets_pkey PRIMARY KEY (id),
+	CONSTRAINT assets_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE SET NULL,
 	CONSTRAINT assets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
+);
+
+-- goals
+DROP TABLE IF EXISTS public.goals;
+
+CREATE TABLE public.goals (
+	id serial4 NOT NULL,
+	user_id int4 NOT NULL,
+	"name" varchar(100) NOT NULL,
+	description text NULL,
+	goal_type varchar(30) NOT NULL,
+	target_amount numeric(12, 2) NOT NULL,
+	current_amount numeric(12, 2) DEFAULT 0 NULL,
+	start_date date NOT NULL,
+	end_date date NOT NULL,
+	is_completed bool DEFAULT false NULL,
+	is_deleted bool DEFAULT false NULL,
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT goals_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_goals_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );

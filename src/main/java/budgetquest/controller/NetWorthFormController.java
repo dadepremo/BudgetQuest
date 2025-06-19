@@ -1,6 +1,11 @@
 package budgetquest.controller;
 
-import budgetquest.dao.*;
+import budgetquest.dao.AssetDao.AssetDao;
+import budgetquest.dao.AssetDao.AssetDaoImpl;
+import budgetquest.dao.LiabilityDao.LiabilityDao;
+import budgetquest.dao.LiabilityDao.LiabilityDaoImpl;
+import budgetquest.dao.NetWorthHistoryDao.NetWorthHistoryDao;
+import budgetquest.dao.NetWorthHistoryDao.NetWorthHistoryDaoImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;

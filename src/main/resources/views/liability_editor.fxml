@@ -83,4 +83,6 @@
     </GridPane>
 
     <Button onAction="#handleSave" text="Save Liability" />
+    <Button onAction="#handleLiabilityDelete" text="Delete" />
+    <Button onAction="#handleCreatePdf" text="PDF" />
 </VBox>
