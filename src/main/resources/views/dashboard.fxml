@@ -524,10 +524,15 @@
                                         <Insets right="100.0" />
                                     </HBox.margin>
                                 </Button>
-                                <Button onAction="#handleOpenCategoryEditor" prefHeight="39.0" prefWidth="111.0" style="-fx-font-size: 18px" styleClass="button" text="Categories">
+                                <Button onAction="#handleOpenCategoryEditor" prefHeight="39.0" prefWidth="150.0" style="-fx-font-size: 18px" styleClass="button" text="Categories">
                                    <HBox.margin>
                                       <Insets right="100.0" />
                                    </HBox.margin>
+                                </Button>
+                                <Button onAction="#handleDeleteUser" prefHeight="39.0" prefWidth="111.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 18px" styleClass="button" text="Delete">
+                                    <HBox.margin>
+                                        <Insets right="100.0" />
+                                    </HBox.margin>
                                 </Button>
                                 <Button onAction="#handleLogout" prefHeight="30" prefWidth="100" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 18px" styleClass="button" text="Logout" />
                             </HBox>

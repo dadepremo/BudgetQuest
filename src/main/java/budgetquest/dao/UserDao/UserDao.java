@@ -18,6 +18,8 @@ public interface UserDao {
 
     boolean updateUser(User user);
 
+    boolean softDeleteUser(int id);
+
     boolean deleteUser(int id);
 
     void updateLastLoginForStreak(User user);

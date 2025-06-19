@@ -174,10 +174,9 @@ CREATE TABLE public.app_settings (
 	CONSTRAINT app_settings_pkey PRIMARY KEY (key)
 );
 
-INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('app.version', '1.0.0', 'Current application version', '2025-06-16 19:25:03.440');
+INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('app.version', '1.0.1', 'Current application version', '2025-06-16 19:25:03.440');
 INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('env.mode', 'PROD', 'Current environment mode: dev, staging, production', '2025-06-16 19:25:03.440');
-INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('api.base_url', '', 'Base URL for backend API', '2025-06-16 19:25:03.440');
-INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('build.date', '16-06-2025', 'Date of last build or deploy', '2025-06-16 19:25:03.440');
+INSERT INTO public.app_settings ("key", value, description, updated_at) VALUES('build.date', '19-06-2025', 'Date of last build or deploy', '2025-06-16 19:25:03.440');
 
 -- categories
 DROP TABLE IF EXISTS public.categories;

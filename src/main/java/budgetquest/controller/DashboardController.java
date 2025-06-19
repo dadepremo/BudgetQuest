@@ -22,6 +22,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -1380,5 +1381,16 @@ public class DashboardController {
         importer.importFromFileChooser(refreshButton.getScene().getWindow());
     }
 
+    // TODO: fix
+    @FXML
+    public void handleDeleteUser() {
+        boolean done = userDao.deleteUser(currentUser.getId());
+        if (done) {
+            MyUtils.showInfo("User deleted", "User has been deleted successfully");
+            handleLogout();
+        } else {
+            logger.warn("Error deleting user");
+        }
 
+    }
 }

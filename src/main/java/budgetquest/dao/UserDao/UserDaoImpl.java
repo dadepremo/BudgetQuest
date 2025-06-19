@@ -134,9 +134,25 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean deleteUser(int id) {
+    public boolean softDeleteUser(int id) {
         // Soft delete
         String sql = "UPDATE users SET is_deleted = true WHERE id = ?";
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteUser(int id) {
+        // Soft delete
+        String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DbConnection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -381,6 +397,7 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    // TODO: fix
     @Override
     public void deleteUserData(User user) {
         String deleteTransactions = "DELETE FROM transactions WHERE category_id IN (SELECT id FROM categories WHERE user_id = ?)";
