@@ -19,7 +19,7 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public List<Category> findAllByUser(User user) {
-        String sql = "SELECT * FROM categories WHERE user_id = ? AND is_deleted = false";
+        String sql = "SELECT * FROM categories WHERE user_id = ? AND is_deleted = false and name != 'Not categorized'";
         List<Category> categories = new ArrayList<>();
 
         try (Connection conn = DbConnection.connect();

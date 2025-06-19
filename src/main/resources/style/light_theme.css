@@ -59,6 +59,7 @@
 }
 .table-row-cell:hover {
     -fx-background-color: #f1f3f5;
+    -fx-cursor: hand;
 }
 .table-row-cell:filled:selected {
     -fx-background-color: #dee2e6;
@@ -168,4 +169,51 @@
 .tab-pane .tab-header-area .tab .tab-label {
     -fx-text-fill: #333333;
     -fx-font-size: 16px;
+}
+
+.trend-card {
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.summary-card {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 15;
+    -fx-padding: 30;
+    -fx-spacing: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0.3, 0, 4);
+    -fx-border-radius: 15;
+    -fx-alignment: center;
+    -fx-min-height: 150;
+    -fx-max-height: 200;
+    -fx-cursor: hand;
+}
+
+.summary-card:hover {
+    -fx-background-color: #e0f2fe;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.summary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 12 24;
+    -fx-cursor: hand;
+}
+
+.summary-button:hover {
+    -fx-background-color: #1e40af;
+}
+
+.sum-label {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
 }

@@ -122,7 +122,7 @@ public class LoginController {
                 if (controller != null) {
                     controller.setUser(user);
                 } else {
-                    System.err.println("DashboardController is null. Check fx:controller in dashboard.fxml");
+                    logger.warn("DashboardController is null. Check fx:controller in dashboard.fxml");
                 }
 
                 Stage stage = (Stage) usernameField.getScene().getWindow();

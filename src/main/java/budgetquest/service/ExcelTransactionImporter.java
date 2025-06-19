@@ -40,10 +40,10 @@ public class ExcelTransactionImporter {
             int deafultExpenseId = 0;
             for (Category c : categories) {
                 logger.info("Category found: " + c.getName());
-                if (c.getName().equals("Not categorized") && c.getType().equals("income")) {
+                if (c.getName().equalsIgnoreCase("Not categorized") && c.getType().equals("income")) {
                     deafultIncomeId =  c.getId();
                     logger.info("Default income cat: " + deafultIncomeId);
-                } else if (c.getName().equals("Not categorized") && c.getType().equals("expense")){
+                } else if (c.getName().equalsIgnoreCase("Not categorized") && c.getType().equals("expense")){
                     deafultExpenseId = c.getId();
                     logger.info("Default expense cat: " + deafultExpenseId);
                 }

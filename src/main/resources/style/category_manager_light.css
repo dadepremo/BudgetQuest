@@ -1,0 +1,95 @@
+/* category-manager.css */
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f9fafb;
+}
+
+/* Titoli */
+.label {
+    -fx-text-fill: #111827;
+}
+
+/* Titolo principale */
+.label:title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+/* Sottotitoli (income / expense) */
+.label:subtitle {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* TableView generale */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10;
+    -fx-table-cell-border-color: transparent;
+    -fx-font-size: 15px;
+}
+
+/* Header tabella */
+.table-view .column-header-background {
+    -fx-background-color: #e5e7eb;
+    -fx-border-radius: 10px 10px 0 0;
+}
+
+.table-view .column-header {
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 8 10;
+}
+
+/* Riga della tabella */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5 10;
+}
+.table-row-cell:filled:selected, .table-row-cell:filled:hover {
+    -fx-background-color: #f3f4f6;
+}
+
+/* Pulsanti */
+.button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #2563eb;
+}
+
+.button:pressed {
+    -fx-background-color: #1d4ed8;
+}
+
+/* Layout spacing */
+.vbox, .hbox {
+    -fx-spacing: 15;
+}
+
+/* Scroll bar (opzionale) */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #d1d5db;
+    -fx-background-radius: 5px;
+}
+
+/* Hover cursor on table rows */
+.table-row-cell:hover {
+    -fx-cursor: hand;
+}

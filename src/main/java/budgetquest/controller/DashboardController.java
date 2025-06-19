@@ -14,6 +14,8 @@ import budgetquest.dao.TransactionDao.TransactionDao;
 import budgetquest.dao.TransactionDao.TransactionDaoImpl;
 import budgetquest.dao.UserDao.UserDao;
 import budgetquest.dao.UserDao.UserDaoImpl;
+import budgetquest.service.CsvTransactionExporter;
+import budgetquest.service.CsvTransactionImporter;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -22,12 +24,14 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -161,7 +165,7 @@ public class DashboardController {
     @FXML private VBox incomeTrendCard, expenseTrendCard;
 
 
-    // DAO implementations for interacting with the database
+     // DAO implementations for interacting with the database
     private final NetWorthHistoryDao netWorthDao = new NetWorthHistoryDaoImpl();
     private final TransactionDao transactionDao = new TransactionDaoImpl();
     private final UserDao userDao = new UserDaoImpl();
@@ -300,7 +304,7 @@ public class DashboardController {
         } else {
             buttonExpensesChart.setDisable(true);
             buttonExpensesChart1.setDisable(true);
-            expensesLabel.setText("No expenses last month");
+            expensesLabel.setText("No expenses");
         }
 
         // INCOMES (unchanged, for comparison)
@@ -318,14 +322,14 @@ public class DashboardController {
         } else {
             buttonIncomeChart.setDisable(true);
             buttonIncomeChart1.setDisable(true);
-            incomesLabel.setText("No income last month");
+            incomesLabel.setText("No income");
         }
 
 
         // Display total assets
         double assetsValue = assetDao.sumAllAssetValues(user);
         if (assetsValue == 0) {
-            assetsLabel.setText("No assets found");
+            assetsLabel.setText("No assets");
         } else {
             assetsLabel.setText(MyUtils.formatCurrency(assetsValue, user.getCurrencySymbol()));
             if (shopItemDao.getItemByNameForUser("Assets are so good!", user.getId()) != null)
@@ -335,7 +339,7 @@ public class DashboardController {
         // Display total liabilities
         double liabilitiesAmount = liabilityDao.sumAllLiabilitiesAmount(user);
         if (liabilitiesAmount == 0) {
-            liabilitiesLabel.setText("No liabilities found");
+            liabilitiesLabel.setText("No liabilities");
         } else {
             liabilitiesLabel.setText("-" + MyUtils.formatCurrency(liabilitiesAmount, user.getCurrencySymbol()));
             if (shopItemDao.getItemByNameForUser("Liabilities are no good!", user.getId()) != null)
@@ -365,6 +369,11 @@ public class DashboardController {
         }
 
         // Editors openings
+        assetTable.setFixedCellSize(50);
+        liabilityTable.setFixedCellSize(50);
+        incomeTable.setFixedCellSize(30);
+        expenseTable.setFixedCellSize(30);
+
         assetTable.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -373,6 +382,7 @@ public class DashboardController {
                     openAssetEditor(selectedAsset);
                 }
             });
+            row.setStyle("-fx-font-size: 16px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
@@ -385,6 +395,7 @@ public class DashboardController {
                     openLiabilityEditor(selectedLiability);
                 }
             });
+            row.setStyle("-fx-font-size: 16px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
@@ -397,6 +408,7 @@ public class DashboardController {
                     openTransactionEditor(transaction, "income");
                 }
             });
+            row.setStyle("-fx-font-size: 15px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
@@ -409,11 +421,14 @@ public class DashboardController {
                     openTransactionEditor(transaction, "expense");
                 }
             });
+            row.setStyle("-fx-font-size: 15px;");
             row.setTooltip(MyUtils.createInstantTooltip("Double click to edit"));
             return row;
         });
 
         updateMonthlyTrends();
+        addHoverEffect(incomeTrendCard);
+        addHoverEffect(expenseTrendCard);
 
     }
 
@@ -615,7 +630,28 @@ public class DashboardController {
 
     }
 
+    private void addHoverEffect(VBox card) {
+        DropShadow hoverShadow = new DropShadow(10, Color.GRAY);
+        hoverShadow.setSpread(0.2);
 
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), card);
+
+        card.setOnMouseEntered(e -> {
+            st.setToX(1.03);
+            st.setToY(1.03);
+            st.playFromStart();
+            card.setEffect(hoverShadow);
+            card.setCursor(Cursor.HAND);
+        });
+
+        card.setOnMouseExited(e -> {
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.playFromStart();
+            card.setEffect(null);
+            card.setCursor(Cursor.DEFAULT);
+        });
+    }
 
     // Import transactions from file
     private int totXp = 0;
@@ -653,7 +689,7 @@ public class DashboardController {
                         counter++;
 
                         updateProgress(counter, total);
-                        updateMessage("Imported " + counter + " of " + total + " transactions...");
+                        updateMessage("Imported " + counter + " of " + total);
 
                         totXp += 50;
 
@@ -680,10 +716,6 @@ public class DashboardController {
             progressBarImportTransactions1.progressProperty().bind(importTask.progressProperty());
             statusLabelImportTransactions1.textProperty().bind(importTask.messageProperty());
 
-            uploadTransactionsBtn.setDisable(false);
-            uploadTransactionsBtn1.setDisable(false);
-
-
             importTask.setOnSucceeded(e -> {
                 statusLabelImportTransactions.textProperty().unbind();
                 statusLabelImportTransactions.setText("Import completed.");
@@ -695,6 +727,8 @@ public class DashboardController {
                 statusLabelImportTransactions1.textProperty().unbind();
                 userDao.updateUserLevel(currentUser, totXp);
                 totXp = 0;
+                uploadTransactionsBtn.setDisable(false);
+                uploadTransactionsBtn1.setDisable(false);
                 refresh();
             });
 
@@ -713,6 +747,8 @@ public class DashboardController {
                 progressBarImportTransactions1.progressProperty().unbind();
                 statusLabelImportTransactions1.textProperty().unbind();
                 logger.warn(importTask.getException().getMessage());
+                uploadTransactionsBtn.setDisable(false);
+                uploadTransactionsBtn1.setDisable(false);
             });
 
             // 🔁 Start background task
@@ -1331,5 +1367,18 @@ public class DashboardController {
             MyUtils.showError("Error", "Errore durante il cambio password.");
         }
     }
+
+    @FXML
+    private void handleExportButtonClick() {
+        CsvTransactionExporter exporter = new CsvTransactionExporter();
+        exporter.exportWithFileChooser(refreshButton.getScene().getWindow(), currentUser.getId());
+    }
+
+    @FXML
+    private void handleImportButtonClick() {
+        CsvTransactionImporter importer = new CsvTransactionImporter(currentUser.getId());
+        importer.importFromFileChooser(refreshButton.getScene().getWindow());
+    }
+
 
 }
