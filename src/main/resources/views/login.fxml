@@ -44,6 +44,7 @@
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="DEV" />
                      <String fx:value="PROD" />
+                     <String fx:value="SQLITE" />
                   </FXCollections>
                </items>
             </ComboBox>

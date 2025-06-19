@@ -123,56 +123,56 @@ public class CsvTransactionImporter {
     }
 
 
-    private void importFromCSV(File file) throws IOException {
-        try (
-                Reader reader = new FileReader(file);
-                CSVReader csvReader = new CSVReaderBuilder(reader)
-                        .withCSVParser(
-                                new CSVParserBuilder()
-                                        .withSeparator(',')
-                                        .withQuoteChar('"')
-                                        .build()
-                        )
-                        .build()
-        ) {
-            String[] values;
-            boolean isFirstLine = true;
-
-            while ((values = csvReader.readNext()) != null) {
-                if (isFirstLine) {
-                    isFirstLine = false;
-                    continue; // skip header
-                }
-
-                if (values.length < 8) {
-                    logger.warn("Skipping line with insufficient columns: {}", String.join(",", values));
-                    continue;
-                }
-
-                try {
-                    String name = values[1].trim();
-                    LocalDate date = LocalDate.parse(values[2].trim());
-                    double amount = Double.parseDouble(values[3].trim());
-                    String description = values[4].trim();
-
-                    String createdAtStr = values[5].trim();
-                    Timestamp createdAt = createdAtStr.isEmpty() ? Timestamp.valueOf(LocalDate.now().atStartOfDay()) : Timestamp.valueOf(createdAtStr);
-
-                    String categoryName = values[6].trim();
-                    String categoryType = values[7].trim();
-
-                    int categoryId = getOrCreateCategoryId(categoryName, categoryType);
-                    insertTransaction(name, date, amount, description, createdAt, categoryId);
-
-                } catch (Exception e) {
-                    logger.error("Failed to process CSV line: {}", String.join(",", values), e);
-                }
-            }
-        } catch (CsvValidationException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+//    private void importFromCSV(File file) throws IOException {
+//        try (
+//                Reader reader = new FileReader(file);
+//                CSVReader csvReader = new CSVReaderBuilder(reader)
+//                        .withCSVParser(
+//                                new CSVParserBuilder()
+//                                        .withSeparator(',')
+//                                        .withQuoteChar('"')
+//                                        .build()
+//                        )
+//                        .build()
+//        ) {
+//            String[] values;
+//            boolean isFirstLine = true;
+//
+//            while ((values = csvReader.readNext()) != null) {
+//                if (isFirstLine) {
+//                    isFirstLine = false;
+//                    continue; // skip header
+//                }
+//
+//                if (values.length < 8) {
+//                    logger.warn("Skipping line with insufficient columns: {}", String.join(",", values));
+//                    continue;
+//                }
+//
+//                try {
+//                    String name = values[1].trim();
+//                    LocalDate date = LocalDate.parse(values[2].trim());
+//                    double amount = Double.parseDouble(values[3].trim());
+//                    String description = values[4].trim();
+//
+//                    String createdAtStr = values[5].trim();
+//                    Timestamp createdAt = createdAtStr.isEmpty() ? Timestamp.valueOf(LocalDate.now().atStartOfDay()) : Timestamp.valueOf(createdAtStr);
+//
+//                    String categoryName = values[6].trim();
+//                    String categoryType = values[7].trim();
+//
+//                    int categoryId = getOrCreateCategoryId(categoryName, categoryType);
+//                    insertTransaction(name, date, amount, description, createdAt, categoryId);
+//
+//                } catch (Exception e) {
+//                    logger.error("Failed to process CSV line: {}", String.join(",", values), e);
+//                }
+//            }
+//        } catch (CsvValidationException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
     private String clean(String input) {
         if (input == null) return "";

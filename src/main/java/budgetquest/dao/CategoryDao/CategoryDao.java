@@ -11,6 +11,8 @@ public interface CategoryDao {
 
     void insert(User user, Category category);
 
+    void insertGetId(User user, Category category);
+
     void insertForNew(User user, Category category);
 
     List<Category> findCategoriesByUserAndType(User currentUser, String type);

@@ -64,6 +64,40 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
+    public void insertGetId(User user, Category category) {
+        String sql = """
+        INSERT INTO categories (user_id, "name", "type", is_deleted) VALUES (?, ?, ?, false);
+    """;
+
+        try (Connection conn = DbConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, user.getId());
+            stmt.setString(2, category.getName());
+            stmt.setString(3, category.getType().toLowerCase());
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Inserting category failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    category.setId(generatedKeys.getInt(1)); // ✅ set ID in Java object
+                    logger.info("Category added with ID: " + category.getId() + " — " + category.getName() + " (" + category.getType() + ")");
+                } else {
+                    throw new SQLException("Inserting category failed, no ID obtained.");
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.error("SQL Exception while inserting category: " + e.getMessage(), e);
+        }
+    }
+
+
+    @Override
     public void insertForNew(User user, Category category) {
         String sql = """
             INSERT INTO categories (user_id, "name", "type", is_deleted) VALUES(?, ?, ?, false);

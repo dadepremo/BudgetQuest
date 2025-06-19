@@ -217,3 +217,35 @@
     -fx-font-weight: bold;
     -fx-text-fill: #1e293b;
 }
+.combo-box.transaction-combo {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10 5 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+    -fx-prompt-text-fill: #888;
+}
+
+.combo-box.transaction-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box.transaction-combo .arrow {
+    -fx-background-color: #666;
+}
+
+.combo-box.transaction-combo .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+}
+
+.combo-box.transaction-combo .list-cell:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-cursor: hand;
+}
+
+.combo-box.transaction-combo .list-cell:selected {
+    -fx-background-color: #e0e0e0;
+}

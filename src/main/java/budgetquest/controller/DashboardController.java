@@ -155,8 +155,6 @@ public class DashboardController {
     @FXML private DatePicker assetFromDatePicker, assetToDatePicker;
     @FXML private TextField liabilitySearchField;
     @FXML private DatePicker liabilityFromDatePicker, liabilityToDatePicker;
-    @FXML private Button uploadTransactionsBtn;
-    @FXML private Button uploadTransactionsBtn1;
 
     // Line chart to visualize net worth history
     @FXML private LineChart<String, Number> lineChart;
@@ -164,6 +162,8 @@ public class DashboardController {
 
     @FXML private Label incomeTrendLabel, expenseTrendLabel;
     @FXML private VBox incomeTrendCard, expenseTrendCard;
+    @FXML private ComboBox<String> transactionActionsComboBox;
+    @FXML private ComboBox<String> transactionActionsComboBox1;
 
 
      // DAO implementations for interacting with the database
@@ -661,7 +661,7 @@ public class DashboardController {
         fileChooser.setTitle("Select Excel File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
 
-        Stage stage = (Stage) uploadTransactionsBtn.getScene().getWindow();
+        Stage stage = (Stage) progressBarImportTransactions.getScene().getWindow();
 
         File file = fileChooser.showOpenDialog(stage);
 
@@ -671,8 +671,8 @@ public class DashboardController {
             statusLabelImportTransactions.setVisible(true);
             progressBarImportTransactions1.setVisible(true);
             statusLabelImportTransactions1.setVisible(true);
-            uploadTransactionsBtn.setDisable(true);
-            uploadTransactionsBtn1.setDisable(true);
+            transactionActionsComboBox.setDisable(true);
+            transactionActionsComboBox1.setDisable(true);
 
             Task<Void> importTask = new Task<>() {
                 @Override
@@ -728,8 +728,8 @@ public class DashboardController {
                 statusLabelImportTransactions1.textProperty().unbind();
                 userDao.updateUserLevel(currentUser, totXp);
                 totXp = 0;
-                uploadTransactionsBtn.setDisable(false);
-                uploadTransactionsBtn1.setDisable(false);
+                transactionActionsComboBox.setDisable(false);
+                transactionActionsComboBox1.setDisable(false);
                 refresh();
             });
 
@@ -748,8 +748,8 @@ public class DashboardController {
                 progressBarImportTransactions1.progressProperty().unbind();
                 statusLabelImportTransactions1.textProperty().unbind();
                 logger.warn(importTask.getException().getMessage());
-                uploadTransactionsBtn.setDisable(false);
-                uploadTransactionsBtn1.setDisable(false);
+                transactionActionsComboBox.setDisable(false);
+                transactionActionsComboBox1.setDisable(false);
             });
 
             // 🔁 Start background task
@@ -1392,5 +1392,51 @@ public class DashboardController {
             logger.warn("Error deleting user");
         }
 
+    }
+
+    @FXML
+    private void handleTransactionComboAction() {
+
+        if (transactionActionsComboBox.getValue() == null) return;
+        if (transactionActionsComboBox.getItems().isEmpty()) return;
+
+        String selected = transactionActionsComboBox.getValue();
+
+        if (selected == null) return;
+
+        CsvTransactionExporter csvTransactionExporter = new CsvTransactionExporter();
+        CsvTransactionImporter csvTransactionImporter = new CsvTransactionImporter(currentUser.getId());
+
+        switch (selected) {
+            case "Import from ISP file" -> handleUploadTransactions();
+            case "Import from CSV" -> csvTransactionImporter.importFromFileChooser(refreshButton.getScene().getWindow());
+            case "Export to CSV" -> csvTransactionExporter.exportWithFileChooser(refreshButton.getScene().getWindow(), currentUser.getId());
+            default -> logger.warn("Unknown action: " + selected);
+        }
+
+        transactionActionsComboBox.setPromptText("Tools");
+    }
+
+    @FXML
+    private void handleTransactionComboAction1() {
+
+        if (transactionActionsComboBox1.getValue() == null) return;
+        if (transactionActionsComboBox1.getItems().isEmpty()) return;
+
+        String selected = transactionActionsComboBox1.getValue();
+
+        if (selected == null) return;
+
+        CsvTransactionExporter csvTransactionExporter = new CsvTransactionExporter();
+        CsvTransactionImporter csvTransactionImporter = new CsvTransactionImporter(currentUser.getId());
+
+        switch (selected) {
+            case "Import from ISP file" -> handleUploadTransactions();
+            case "Import from CSV" -> csvTransactionImporter.importFromFileChooser(refreshButton.getScene().getWindow());
+            case "Export to CSV" -> csvTransactionExporter.exportWithFileChooser(refreshButton.getScene().getWindow(), currentUser.getId());
+            default -> logger.warn("Unknown action: " + selected);
+        }
+
+        transactionActionsComboBox1.setPromptText("Tools");
     }
 }

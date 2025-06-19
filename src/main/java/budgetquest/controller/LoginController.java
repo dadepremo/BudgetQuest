@@ -56,22 +56,27 @@ public class LoginController {
         AppSettingsDao appSettingsDao = new AppSettingsDaoImpl();
         String version = appSettingsDao.getSetting("app.version");
         String env = appSettingsDao.getSetting("env.mode");
-        envComboBox.getSelectionModel().select("DEV");
 
+        // Select the environment in the ComboBox based on env.mode value
+        if (env != null) {
+            envComboBox.getSelectionModel().select(env.toUpperCase()); // selects DEV / PROD / SQLITE
+            DbConnection.setEnvironment(env); // make sure DB is set on app start
+        }
+
+        appSettings.setText("v" + version + " - " + env.toUpperCase());
+
+        // Apply change if user selects a different env
         envComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 DbConnection.setEnvironment(newVal);
                 appSettings.setText("v" + version + " - " + newVal.toUpperCase());
+                logger.info("Switched environment to: " + newVal);
             }
         });
 
-        DbConnection.setEnvironment(envComboBox.getValue());
-
-        appSettings.setText("v" + version + " - " + env.toUpperCase());
-
-
         logger.info("App initialized. Version: " + version + ", Environment: " + env);
     }
+
 
 
     /**

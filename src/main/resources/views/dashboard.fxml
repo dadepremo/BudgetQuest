@@ -26,6 +26,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ComboBox?>
 <TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1008.0" prefWidth="1753.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="budgetquest.controller.DashboardController">
     <stylesheets>
         <URL value="@/style/light_theme.css" />
@@ -317,7 +318,19 @@
                          <TextField fx:id="incomeSearchField" promptText="Search..." />
                          <DatePicker fx:id="incomeFromDatePicker" />
                          <DatePicker fx:id="incomeToDatePicker" />
-                         <Button fx:id="uploadTransactionsBtn" onAction="#handleUploadTransactions" text="Import Transactions" />
+                         <ComboBox fx:id="transactionActionsComboBox"
+                                   promptText="Tools"
+                                   onAction="#handleTransactionComboAction"
+                                   prefWidth="180" styleClass="transaction-combo">
+                             <items>
+                                 <FXCollections fx:factory="observableArrayList">
+                                     <String fx:value="Import from ISP file"/>
+                                     <String fx:value="Import from CSV"/>
+                                     <String fx:value="Export to CSV"/>
+                                 </FXCollections>
+                             </items>
+                         </ComboBox>
+
                          <ProgressBar fx:id="progressBarImportTransactions" prefWidth="300" />
                          <Label fx:id="statusLabelImportTransactions" text="Waiting to import..." />
 
@@ -368,7 +381,18 @@
                          <TextField fx:id="expenseSearchField" promptText="Search..." />
                          <DatePicker fx:id="expenseFromDatePicker" />
                          <DatePicker fx:id="expenseToDatePicker" />
-                         <Button fx:id="uploadTransactionsBtn1" onAction="#handleUploadTransactions" text="Import Transactions" />
+                         <ComboBox fx:id="transactionActionsComboBox1"
+                                   promptText="Tools"
+                                   onAction="#handleTransactionComboAction1"
+                                   prefWidth="180" styleClass="transaction-combo">
+                             <items>
+                                 <FXCollections fx:factory="observableArrayList">
+                                     <String fx:value="Import from ISP file"/>
+                                     <String fx:value="Import from CSV"/>
+                                     <String fx:value="Export to CSV"/>
+                                 </FXCollections>
+                             </items>
+                         </ComboBox>
                          <ProgressBar fx:id="progressBarImportTransactions1" prefWidth="300" />
                          <Label fx:id="statusLabelImportTransactions1" text="Waiting to import..." />
                      </children>
@@ -514,16 +538,6 @@
 
                             <!-- Logout -->
                             <HBox alignment="CENTER_RIGHT">
-                                <Button onAction="#handleImportButtonClick" prefHeight="39.0" prefWidth="111.0" style="-fx-font-size: 18px" styleClass="button" text="Import">
-                                    <HBox.margin>
-                                        <Insets right="100.0" />
-                                    </HBox.margin>
-                                </Button>
-                                <Button onAction="#handleExportButtonClick" prefHeight="39.0" prefWidth="111.0" style="-fx-font-size: 18px" styleClass="button" text="Export">
-                                    <HBox.margin>
-                                        <Insets right="100.0" />
-                                    </HBox.margin>
-                                </Button>
                                 <Button onAction="#handleOpenCategoryEditor" prefHeight="39.0" prefWidth="150.0" style="-fx-font-size: 18px" styleClass="button" text="Categories">
                                    <HBox.margin>
                                       <Insets right="100.0" />
